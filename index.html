@@ -105,7 +105,7 @@
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">overTarget</span><span class="p">.</span><span class="na">getState</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
 </code></pre></div>
 
-<p>The configuration is stored in the board&rsquo;s flash, so it survives power cycles. Once it is set up, the board keeps doing its job whether or not your code is talking to it — which also means a driver-station disconnect or a crashed OpMode doesn&rsquo;t take your sensing with it.</p>
+<p>The configuration is stored in the board&rsquo;s flash, so it survives power cycles. Once it is set up, the board keeps doing its job whether or not your code is talking to it — which also means a driver-station disconnect or a crashed OpMode doesn&rsquo;t take your sensing with it. Any of the four outputs can watch any of four things: a colour you taught it, a distance inside a range you set, an encoder passing a count, or the robot facing a heading — see <a href="guides/digital-outputs.html">Digital outputs and triggers</a>.</p>
 <p>You do not have to work this way. Every value is also readable directly over I2C, and plenty of teams will just use it as four more encoders and four more sensors. Both styles are supported and you can mix them.</p>
 <h2 id="two-tiers-of-api">Two tiers of API<a class="headerlink" href="#two-tiers-of-api" title="Permanent link">#</a></h2>
 <p>The Java driver is deliberately split, because a rookie programmer and a fourth-year programmer want different things from the same board.</p>
