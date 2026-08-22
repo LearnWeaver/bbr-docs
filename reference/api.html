@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Java API summary · BBR Digital Expander</title>
+<meta name="description" content="Java API summary The everyday tier, which is what most teams need. Every method validates its arguments and throws a message that names the fix rather than an array index exception">
+<link rel="canonical" href="https://learnweaver.github.io/bbr-docs/reference/api.html">
+<link rel="stylesheet" href="../style.css">
+<script>
+  // Set the theme before first paint so the page never flashes the wrong one.
+  try {
+    var t = localStorage.getItem('bbr-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
+</head>
+<body class="page">
+
+<a class="skip" href="#content">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-btn" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <a class="brand" href="../index.html">
+    <span class="brand-name">BBR Digital Expander</span>
+    <span class="brand-tagline">Documentation</span>
+  </a>
+  <div class="search" role="search">
+    <input type="search" id="search-input" placeholder="Search"
+           autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <kbd class="search-key">/</kbd>
+    <div id="search-results" class="search-results" hidden></div>
+  </div>
+  <button class="theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.5"/>
+      <g class="rays"><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.4 4.4l2.1 2.1M17.5 17.5l2.1 2.1M19.6 4.4l-2.1 2.1M6.5 17.5l-2.1 2.1"/></g>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>
+    </svg>
+  </button>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <nav aria-label="Documentation">
+      <ul class="nav-list">
+<li><a href="../index.html">BBR Digital Expander</a></li>
+</ul>
+<p class="nav-group">Getting started</p>
+<ul class="nav-list">
+<li><a href="../getting-started/hardware.html">What you have</a></li>
+<li><a href="../getting-started/wiring.html">Wiring it up</a></li>
+<li><a href="../getting-started/configuration.html">Robot configuration</a></li>
+<li><a href="../getting-started/first-opmode.html">Your first OpMode</a></li>
+</ul>
+<p class="nav-group">Guides</p>
+<ul class="nav-list">
+<li><a href="../guides/encoders.html">Encoders</a></li>
+<li><a href="../guides/colour.html">Colour sensors</a></li>
+<li><a href="../guides/distance.html">Distance sensors</a></li>
+<li><a href="../guides/digital-outputs.html">Digital outputs and triggers</a></li>
+<li><a href="../guides/heading.html">Heading (IMU)</a></li>
+<li><a href="../guides/odometry.html">Odometry and pose</a></li>
+</ul>
+<p class="nav-group">Reference</p>
+<ul class="nav-list">
+<li><a href="../reference/api.html" class="active">Java API summary</a></li>
+<li><a href="../reference/examples.html">Example OpModes</a></li>
+<li><a href="../reference/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+    </nav>
+  </aside>
+
+  <main id="content" class="content">
+    <article class="prose">
+      <h1 id="java-api-summary">Java API summary<a class="headerlink" href="#java-api-summary" title="Permanent link">#</a></h1>
+<p>The everyday tier, which is what most teams need. Every method validates its arguments and throws a message that names the fix rather than an array index exception.</p>
+<h2 id="getting-the-device">Getting the device<a class="headerlink" href="#getting-the-device" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="w"> </span><span class="n">exp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hardwareMap</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="s">"expander"</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="encoders">Encoders<a class="headerlink" href="#encoders" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>getEncoderCount(channel)</code></td>
+<td>Signed accumulated counts</td>
+</tr>
+<tr>
+<td><code>getEncoderVelocity(channel)</code></td>
+<td>Signed counts per second, computed on the board</td>
+</tr>
+<tr>
+<td><code>getPulseWidthUs(channel)</code></td>
+<td>Pulse width in µs (PULSE_WIDTH mode only)</td>
+</tr>
+<tr>
+<td><code>resetEncoder(channel)</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>resetAllEncoders()</code></td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sensors">Sensors<a class="headerlink" href="#sensors" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>isSensorConnected(port)</code></td>
+<td><code>boolean</code></td>
+</tr>
+<tr>
+<td><code>getSensorType(port)</code></td>
+<td><code>COLOR</code>, <code>DISTANCE</code>, or <code>EMPTY</code></td>
+</tr>
+<tr>
+<td><code>getColorClass(port)</code></td>
+<td><code>0</code> for no match, else the colour slot <code>1</code>–<code>7</code></td>
+</tr>
+<tr>
+<td><code>seesColor(port, classSlot)</code></td>
+<td><code>boolean</code></td>
+</tr>
+<tr>
+<td><code>getDistanceMm(port)</code></td>
+<td>Distance in mm</td>
+</tr>
+</tbody>
+</table>
+<h2 id="teaching-and-triggers">Teaching and triggers<a class="headerlink" href="#teaching-and-triggers" title="Permanent link">#</a></h2>
+<p>All of these <strong>save to flash automatically</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>teachColor(port, classSlot)</code></td>
+<td>Learn the colour currently in view</td>
+</tr>
+<tr>
+<td><code>triggerOnColor(output, port, classSlot)</code></td>
+<td>Output high while that colour is seen</td>
+</tr>
+<tr>
+<td><code>triggerWhenNear(output, port, maxMm)</code></td>
+<td>Output high while something is within range</td>
+</tr>
+<tr>
+<td><code>triggerWhenEncoderPast(output, channel, counts)</code></td>
+<td>Output high past a threshold</td>
+</tr>
+<tr>
+<td><code>triggerWhenFacing(output, headingDeg, toleranceDeg)</code></td>
+<td>Output high while facing that heading</td>
+</tr>
+<tr>
+<td><code>clearOutputLatch(output)</code></td>
+<td>Un-latch one output</td>
+</tr>
+<tr>
+<td><code>clearAllOutputLatches()</code></td>
+<td>Un-latch all four</td>
+</tr>
+</tbody>
+</table>
+<h2 id="heading-and-pose">Heading and pose<a class="headerlink" href="#heading-and-pose" title="Permanent link">#</a></h2>
+<p>Odometry variant only; these throw on a base board.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>getHeading()</code></td>
+<td>Degrees, CCW positive</td>
+</tr>
+<tr>
+<td><code>resetHeading()</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>calibrateGyro()</code></td>
+<td>— (robot must be still, ~1 s)</td>
+</tr>
+<tr>
+<td><code>getPose()</code></td>
+<td><code>Pose2D</code> — mm, radians, +X forward, +Y left</td>
+</tr>
+<tr>
+<td><code>setPose(pose)</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>waitForLocalizerReady(timeoutMs)</code></td>
+<td><code>boolean</code></td>
+</tr>
+<tr>
+<td><code>readImu()</code></td>
+<td><code>ImuState</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="mounting-and-direction">Mounting and direction<a class="headerlink" href="#mounting-and-direction" title="Permanent link">#</a></h2>
+<p>Set once when the board is bolted on; <strong>not</strong> auto-saved, so follow with <code>saveConfigToFlash()</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>setEncoderInvertMask(mask)</code></td>
+<td>Bit per channel; set inverts that encoder&rsquo;s direction</td>
+</tr>
+<tr>
+<td><code>getEncoderInvertMask()</code></td>
+<td>Current mask</td>
+</tr>
+<tr>
+<td><code>setImuAxisUp(axis)</code></td>
+<td>Which board axis points up (<code>BBRRegMap.AXIS_*</code>, flat is <code>AXIS_POS_Z</code>)</td>
+</tr>
+<tr>
+<td><code>getImuAxisUp()</code></td>
+<td>Current axis-up setting</td>
+</tr>
+</tbody>
+</table>
+<h2 id="board-identity">Board identity<a class="headerlink" href="#board-identity" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>isOdometryVariant()</code></td>
+<td><code>boolean</code></td>
+</tr>
+<tr>
+<td><code>getCapabilities()</code></td>
+<td>Capability bits</td>
+</tr>
+<tr>
+<td><code>isConfigDirty()</code></td>
+<td>Are there unsaved config changes</td>
+</tr>
+<tr>
+<td><code>isDataFresh()</code></td>
+<td>Did the last read actually reach the device</td>
+</tr>
+</tbody>
+</table>
+<h2 id="advanced-tier">Advanced tier<a class="headerlink" href="#advanced-tier" title="Permanent link">#</a></h2>
+<p>The full register map is available underneath: <code>configureOutput()</code>, <code>writeColorClass()</code>, <code>writeDistanceClass()</code>, <code>setChannelMode()</code>, <code>setPwmChannelParams()</code>, <code>setLocalizerParams()</code>, <code>readTelemetry()</code>, <code>runCommand()</code>.</p>
+<div class="hint hint-danger">
+<p><strong>Nothing in the advanced tier saves automatically.</strong> Call <code>saveConfigToFlash()</code>, or the configuration is gone at power-off. <code>isConfigDirty()</code> tells you whether you have unsaved changes.</p>
+</div>
+<h2 id="behaviour-worth-knowing">Behaviour worth knowing<a class="headerlink" href="#behaviour-worth-knowing" title="Permanent link">#</a></h2>
+<p><strong>Init refuses loudly.</strong> A wrong device ID, an unsupported protocol version, or an unknown hardware variant throws at init rather than producing corrupt data later.</p>
+<p><strong>One transaction per snapshot.</strong> The everyday getters share a snapshot refreshed roughly every 10 ms, so four questions in one loop iteration cost one transaction and the answers are mutually consistent.</p>
+<p><strong>Commands are idempotent.</strong> Every command carries a token, so an I2C retry cannot execute it twice.</p>
+<p><strong>Config writes are verified by readback.</strong> The bus layer never NAKs, so an out-of-range value would otherwise be silently ignored.</p>
+<p><strong>IMU access throws on a base board</strong> rather than returning zeros, because a heading of <code>0.00</code> that never changes is indistinguishable from working software.</p>
+<p><strong>Failed reads serve the last known good value.</strong> When a read cannot reach the device the driver returns the previous snapshot and <code>isDataFresh()</code> goes false, rather than throwing. This is what stops a normal OpMode shutdown from detonating your loop. A genuine wiring fault — a long streak of failures — still throws.</p>
+<p><strong><code>BBRTransportException</code> means the read never reached the device</strong>, not that anything is broken. The SDK tears the I2C device down when an OpMode stops, so a read already in flight comes back empty. A polling loop should catch it and <code>break</code>.</p>
+    </article>
+    <nav class="pager-row"><a class="pager prev" href="../guides/odometry.html"><span class="pager-label">Previous</span><span class="pager-title">Odometry and pose</span></a><a class="pager next" href="../reference/examples.html"><span class="pager-label">Next</span><span class="pager-title">Example OpModes</span></a></nav>
+    <footer class="page-footer">
+      <a href="https://github.com/LearnWeaver/BBRDigitalExpander/edit/main/docs/gitbook/reference/api.md" rel="noopener">Edit this page on GitHub</a>
+    </footer>
+  </main>
+
+  <aside class="onpage" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+<ul class="toc-list">
+<li><a href="#getting-the-device">Getting the device</a>
+</li>
+<li><a href="#encoders">Encoders</a>
+</li>
+<li><a href="#sensors">Sensors</a>
+</li>
+<li><a href="#teaching-and-triggers">Teaching and triggers</a>
+</li>
+<li><a href="#heading-and-pose">Heading and pose</a>
+</li>
+<li><a href="#mounting-and-direction">Mounting and direction</a>
+</li>
+<li><a href="#board-identity">Board identity</a>
+</li>
+<li><a href="#advanced-tier">Advanced tier</a>
+</li>
+<li><a href="#behaviour-worth-knowing">Behaviour worth knowing</a>
+</li>
+</ul>
+  </aside>
+</div>
+
+<div class="scrim" hidden></div>
+<script src="../app.js" defer></script>
+</body>
+</html>

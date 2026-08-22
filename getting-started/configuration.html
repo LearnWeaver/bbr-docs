@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Robot configuration · BBR Digital Expander</title>
+<meta name="description" content="Robot configuration Install the driver Copy two folders into your FTC project, under TeamCode/src/main/java/: Folder What it is com/botbuilders/bbr/ The driver itself. Copy all of ">
+<link rel="canonical" href="https://learnweaver.github.io/bbr-docs/getting-started/configuration.html">
+<link rel="stylesheet" href="../style.css">
+<script>
+  // Set the theme before first paint so the page never flashes the wrong one.
+  try {
+    var t = localStorage.getItem('bbr-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
+</head>
+<body class="page">
+
+<a class="skip" href="#content">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-btn" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <a class="brand" href="../index.html">
+    <span class="brand-name">BBR Digital Expander</span>
+    <span class="brand-tagline">Documentation</span>
+  </a>
+  <div class="search" role="search">
+    <input type="search" id="search-input" placeholder="Search"
+           autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <kbd class="search-key">/</kbd>
+    <div id="search-results" class="search-results" hidden></div>
+  </div>
+  <button class="theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.5"/>
+      <g class="rays"><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.4 4.4l2.1 2.1M17.5 17.5l2.1 2.1M19.6 4.4l-2.1 2.1M6.5 17.5l-2.1 2.1"/></g>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>
+    </svg>
+  </button>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <nav aria-label="Documentation">
+      <ul class="nav-list">
+<li><a href="../index.html">BBR Digital Expander</a></li>
+</ul>
+<p class="nav-group">Getting started</p>
+<ul class="nav-list">
+<li><a href="../getting-started/hardware.html">What you have</a></li>
+<li><a href="../getting-started/wiring.html">Wiring it up</a></li>
+<li><a href="../getting-started/configuration.html" class="active">Robot configuration</a></li>
+<li><a href="../getting-started/first-opmode.html">Your first OpMode</a></li>
+</ul>
+<p class="nav-group">Guides</p>
+<ul class="nav-list">
+<li><a href="../guides/encoders.html">Encoders</a></li>
+<li><a href="../guides/colour.html">Colour sensors</a></li>
+<li><a href="../guides/distance.html">Distance sensors</a></li>
+<li><a href="../guides/digital-outputs.html">Digital outputs and triggers</a></li>
+<li><a href="../guides/heading.html">Heading (IMU)</a></li>
+<li><a href="../guides/odometry.html">Odometry and pose</a></li>
+</ul>
+<p class="nav-group">Reference</p>
+<ul class="nav-list">
+<li><a href="../reference/api.html">Java API summary</a></li>
+<li><a href="../reference/examples.html">Example OpModes</a></li>
+<li><a href="../reference/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+    </nav>
+  </aside>
+
+  <main id="content" class="content">
+    <article class="prose">
+      <h1 id="robot-configuration">Robot configuration<a class="headerlink" href="#robot-configuration" title="Permanent link">#</a></h1>
+<h2 id="install-the-driver">Install the driver<a class="headerlink" href="#install-the-driver" title="Permanent link">#</a></h2>
+<p>Copy two folders into your FTC project, under <code>TeamCode/src/main/java/</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Folder</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>com/botbuilders/bbr/</code></td>
+<td>The driver itself. Copy all of it.</td>
+</tr>
+<tr>
+<td><code>org/firstinspires/ftc/teamcode/</code></td>
+<td>Example OpModes. Copy the ones you want.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>com/botbuilders/bbr/</code> folder contains <code>BBRDigitalExpander.java</code> (the driver) and <code>BBRRegMap.java</code> (generated constants).</p>
+<div class="hint hint-warning">
+<p>Do not edit <code>BBRRegMap.java</code>. It is generated from the register map specification, and any change you make will be overwritten the next time it is regenerated.</p>
+</div>
+<h2 id="add-the-device-in-the-driver-station">Add the device in the Driver Station<a class="headerlink" href="#add-the-device-in-the-driver-station" title="Permanent link">#</a></h2>
+<p>On the Driver Station, in the robot configuration:</p>
+<ol>
+<li>Pick the <strong>I2C bus</strong> the Expander is wired to.</li>
+<li>Add a device of type <strong>&ldquo;BBR Digital Expander&rdquo;</strong>.</li>
+<li>Give it a name. The examples all use <code>expander</code>.</li>
+<li>Save the configuration and activate it.</li>
+</ol>
+<p>The name you choose is the string you pass to <code>hardwareMap</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="w"> </span><span class="n">exp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hardwareMap</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="s">"expander"</span><span class="p">);</span>
+</code></pre></div>
+
+<p>If you name it something else, change that string in every example you copied.</p>
+<h2 id="digital-inputs-for-triggers">Digital inputs for triggers<a class="headerlink" href="#digital-inputs-for-triggers" title="Permanent link">#</a></h2>
+<p>If you are using digital outputs, each one also needs an entry in the robot configuration — as a <strong>Digital Device</strong> on the Hub port you wired it to, not as part of the Expander.</p>
+<p>Name these for what they mean rather than for which pin they are on:</p>
+<div class="highlight"><pre><span></span><code><span class="n">DigitalChannel</span><span class="w"> </span><span class="n">overTarget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hardwareMap</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">DigitalChannel</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="s">"over_target"</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="what-happens-at-init">What happens at init<a class="headerlink" href="#what-happens-at-init" title="Permanent link">#</a></h2>
+<p>When your OpMode gets the device from <code>hardwareMap</code>, the driver checks that it is really talking to an Expander: device ID, protocol version, and hardware variant.</p>
+<p>If any of those are wrong it <strong>throws immediately</strong>, with a message saying which check failed. That is intentional — a clear exception during init is much easier to deal with than corrupt data halfway through a match.</p>
+<p>This means a wiring mistake or a bad address shows up the moment you press INIT, not later.</p>
+    </article>
+    <nav class="pager-row"><a class="pager prev" href="../getting-started/wiring.html"><span class="pager-label">Previous</span><span class="pager-title">Wiring it up</span></a><a class="pager next" href="../getting-started/first-opmode.html"><span class="pager-label">Next</span><span class="pager-title">Your first OpMode</span></a></nav>
+    <footer class="page-footer">
+      <a href="https://github.com/LearnWeaver/BBRDigitalExpander/edit/main/docs/gitbook/getting-started/configuration.md" rel="noopener">Edit this page on GitHub</a>
+    </footer>
+  </main>
+
+  <aside class="onpage" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+<ul class="toc-list">
+<li><a href="#install-the-driver">Install the driver</a>
+</li>
+<li><a href="#add-the-device-in-the-driver-station">Add the device in the Driver Station</a>
+</li>
+<li><a href="#digital-inputs-for-triggers">Digital inputs for triggers</a>
+</li>
+<li><a href="#what-happens-at-init">What happens at init</a>
+</li>
+</ul>
+  </aside>
+</div>
+
+<div class="scrim" hidden></div>
+<script src="../app.js" defer></script>
+</body>
+</html>

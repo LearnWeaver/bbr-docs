@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digital outputs and triggers · BBR Digital Expander</title>
+<meta name="description" content="Digital outputs and triggers This is the feature that makes the Expander different from “some more sensor ports”. The idea You configure a condition once. The board watches for it ">
+<link rel="canonical" href="https://learnweaver.github.io/bbr-docs/guides/digital-outputs.html">
+<link rel="stylesheet" href="../style.css">
+<script>
+  // Set the theme before first paint so the page never flashes the wrong one.
+  try {
+    var t = localStorage.getItem('bbr-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
+</head>
+<body class="page">
+
+<a class="skip" href="#content">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-btn" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <a class="brand" href="../index.html">
+    <span class="brand-name">BBR Digital Expander</span>
+    <span class="brand-tagline">Documentation</span>
+  </a>
+  <div class="search" role="search">
+    <input type="search" id="search-input" placeholder="Search"
+           autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <kbd class="search-key">/</kbd>
+    <div id="search-results" class="search-results" hidden></div>
+  </div>
+  <button class="theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.5"/>
+      <g class="rays"><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.4 4.4l2.1 2.1M17.5 17.5l2.1 2.1M19.6 4.4l-2.1 2.1M6.5 17.5l-2.1 2.1"/></g>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>
+    </svg>
+  </button>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <nav aria-label="Documentation">
+      <ul class="nav-list">
+<li><a href="../index.html">BBR Digital Expander</a></li>
+</ul>
+<p class="nav-group">Getting started</p>
+<ul class="nav-list">
+<li><a href="../getting-started/hardware.html">What you have</a></li>
+<li><a href="../getting-started/wiring.html">Wiring it up</a></li>
+<li><a href="../getting-started/configuration.html">Robot configuration</a></li>
+<li><a href="../getting-started/first-opmode.html">Your first OpMode</a></li>
+</ul>
+<p class="nav-group">Guides</p>
+<ul class="nav-list">
+<li><a href="../guides/encoders.html">Encoders</a></li>
+<li><a href="../guides/colour.html">Colour sensors</a></li>
+<li><a href="../guides/distance.html">Distance sensors</a></li>
+<li><a href="../guides/digital-outputs.html" class="active">Digital outputs and triggers</a></li>
+<li><a href="../guides/heading.html">Heading (IMU)</a></li>
+<li><a href="../guides/odometry.html">Odometry and pose</a></li>
+</ul>
+<p class="nav-group">Reference</p>
+<ul class="nav-list">
+<li><a href="../reference/api.html">Java API summary</a></li>
+<li><a href="../reference/examples.html">Example OpModes</a></li>
+<li><a href="../reference/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+    </nav>
+  </aside>
+
+  <main id="content" class="content">
+    <article class="prose">
+      <h1 id="digital-outputs-and-triggers">Digital outputs and triggers<a class="headerlink" href="#digital-outputs-and-triggers" title="Permanent link">#</a></h1>
+<p>This is the feature that makes the Expander different from &ldquo;some more sensor ports&rdquo;.</p>
+<h2 id="the-idea">The idea<a class="headerlink" href="#the-idea" title="Permanent link">#</a></h2>
+<p>You configure a condition <strong>once</strong>. The board watches for it continuously, at a speed your OpMode loop cannot match, and reports the answer on a pin. Your match code reads that pin as an ordinary digital input.</p>
+<p>The result: no I2C traffic, no BBR driver on the hot path, no loop cost, and the condition keeps being enforced even if your code crashes or never runs.</p>
+<h2 id="setting-one-up">Setting one up<a class="headerlink" href="#setting-one-up" title="Permanent link">#</a></h2>
+<p>Write a setup OpMode. Run it once. It never needs to run again.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@TeleOp</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"BBR: Setup colour trigger"</span><span class="p">)</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">BBRSetupTrigger</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">LinearOpMode</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">runOpMode</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">BBRDigitalExpander</span><span class="w"> </span><span class="n">exp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hardwareMap</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="s">"expander"</span><span class="p">);</span>
+<span class="w">        </span><span class="n">waitForStart</span><span class="p">();</span>
+
+<span class="w">        </span><span class="n">exp</span><span class="p">.</span><span class="na">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">          </span><span class="c1">// teach the target colour</span>
+<span class="w">        </span><span class="n">exp</span><span class="p">.</span><span class="na">triggerOnColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">   </span><span class="c1">// output 0 follows it</span>
+
+<span class="w">        </span><span class="n">telemetry</span><span class="p">.</span><span class="na">addLine</span><span class="p">(</span><span class="s">"Saved. This OpMode never needs to run again."</span><span class="p">);</span>
+<span class="w">        </span><span class="n">telemetry</span><span class="p">.</span><span class="na">update</span><span class="p">();</span>
+<span class="w">        </span><span class="n">sleep</span><span class="p">(</span><span class="mi">3000</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Then your match code:</p>
+<div class="highlight"><pre><span></span><code><span class="n">DigitalChannel</span><span class="w"> </span><span class="n">overTarget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hardwareMap</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">DigitalChannel</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="s">"over_target"</span><span class="p">);</span>
+
+<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">opModeIsActive</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">overTarget</span><span class="p">.</span><span class="na">getState</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// do the thing</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>That match OpMode does not import anything from <code>com.botbuilders</code>. It doesn&rsquo;t know the Expander exists.</p>
+<h2 id="the-four-helpers">The four helpers<a class="headerlink" href="#the-four-helpers" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">triggerOnColor</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">sensorPort</span><span class="p">,</span><span class="w"> </span><span class="n">classSlot</span><span class="p">);</span><span class="w">      </span><span class="c1">// while a taught colour is seen</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">triggerWhenNear</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">sensorPort</span><span class="p">,</span><span class="w"> </span><span class="n">maxMm</span><span class="p">);</span><span class="w">         </span><span class="c1">// while something is within range</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">triggerWhenEncoderPast</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">channel</span><span class="p">,</span><span class="w"> </span><span class="n">counts</span><span class="p">);</span><span class="w">    </span><span class="c1">// once an encoder passes a threshold</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">triggerWhenFacing</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">headingDeg</span><span class="p">,</span><span class="w"> </span><span class="n">toleranceDeg</span><span class="p">);</span><span class="w"> </span><span class="c1">// while facing a heading (odometry variant)</span>
+</code></pre></div>
+
+<p>All four take an output number 0–3, apply sensible debounce and hysteresis for you, and <strong>save to flash automatically</strong>. See <a href="heading.html">Heading (IMU)</a> for what <code>triggerWhenFacing</code> does at the ±180 seam.</p>
+<h2 id="latching">Latching<a class="headerlink" href="#latching" title="Permanent link">#</a></h2>
+<p>By default an output follows its condition — high while true, low while false. Sometimes you want the opposite: catch a brief event and hold it until you&rsquo;re ready to deal with it.</p>
+<p>That is <code>LATCHED</code> mode, from the advanced tier:</p>
+<div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputConfig</span><span class="w"> </span><span class="n">out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputConfig</span><span class="p">();</span>
+<span class="n">out</span><span class="p">.</span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputSource</span><span class="p">.</span><span class="na">SENSOR_CLASS</span><span class="p">;</span>
+<span class="n">out</span><span class="p">.</span><span class="na">srcIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">      </span><span class="c1">// sensor port</span>
+<span class="n">out</span><span class="p">.</span><span class="na">classIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">    </span><span class="c1">// colour slot</span>
+<span class="n">out</span><span class="p">.</span><span class="na">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputMode</span><span class="p">.</span><span class="na">LATCHED</span><span class="p">;</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">configureOutput</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">);</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">saveConfigToFlash</span><span class="p">();</span>
+</code></pre></div>
+
+<p>Once latched, the output stays high until you clear it:</p>
+<div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">clearOutputLatch</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">clearAllOutputLatches</span><span class="p">();</span>
+</code></pre></div>
+
+<p>This catches things your loop would otherwise miss — a line of tape flashing past under the robot at speed, for instance, which might be true for less than one loop iteration.</p>
+<p><code>BBRColorLatchExample</code> shows this working.</p>
+<h2 id="one-pin-per-colour">One pin per colour<a class="headerlink" href="#one-pin-per-colour" title="Permanent link">#</a></h2>
+<p>With four outputs you can watch four conditions at once. The usual pattern for a three-colour season is one pin per colour:</p>
+<div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span>
+
+<span class="n">exp</span><span class="p">.</span><span class="na">triggerOnColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">   </span><span class="c1">// output 0 = colour 1</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">triggerOnColor</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w">   </span><span class="c1">// output 1 = colour 2</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">triggerOnColor</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span><span class="w">   </span><span class="c1">// output 2 = colour 3</span>
+</code></pre></div>
+
+<p>Your code then reads three digital inputs and knows exactly which colour is underneath, with no I2C at all. <code>BBRThreeColorExample</code> walks through the whole thing.</p>
+<h2 id="advanced-options">Advanced options<a class="headerlink" href="#advanced-options" title="Permanent link">#</a></h2>
+<p><code>OutputConfig</code> exposes the rest: <code>activeLow</code> to invert the pin, <code>pulseMs</code> for a fixed-length pulse rather than a level, <code>debounceAssert</code> / <code>debounceRelease</code> to tune how many consistent readings are needed before the pin moves, and <code>threshMin</code> / <code>threshMax</code> for two-sided encoder or heading windows (heading in degrees × 100).</p>
+<div class="hint hint-danger">
+<p>Nothing in the advanced tier auto-saves. Call <code>saveConfigToFlash()</code> or lose it at power-off.</p>
+</div>
+    </article>
+    <nav class="pager-row"><a class="pager prev" href="../guides/distance.html"><span class="pager-label">Previous</span><span class="pager-title">Distance sensors</span></a><a class="pager next" href="../guides/heading.html"><span class="pager-label">Next</span><span class="pager-title">Heading (IMU)</span></a></nav>
+    <footer class="page-footer">
+      <a href="https://github.com/LearnWeaver/BBRDigitalExpander/edit/main/docs/gitbook/guides/digital-outputs.md" rel="noopener">Edit this page on GitHub</a>
+    </footer>
+  </main>
+
+  <aside class="onpage" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+<ul class="toc-list">
+<li><a href="#the-idea">The idea</a>
+</li>
+<li><a href="#setting-one-up">Setting one up</a>
+</li>
+<li><a href="#the-four-helpers">The four helpers</a>
+</li>
+<li><a href="#latching">Latching</a>
+</li>
+<li><a href="#one-pin-per-colour">One pin per colour</a>
+</li>
+<li><a href="#advanced-options">Advanced options</a>
+</li>
+</ul>
+  </aside>
+</div>
+
+<div class="scrim" hidden></div>
+<script src="../app.js" defer></script>
+</body>
+</html>

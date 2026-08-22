@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What you have · BBR Digital Expander</title>
+<meta name="description" content="What you have The two variants There are two versions of the board, and it matters which one you have because one of them cannot do heading or pose. Base Odometry 4 encoder inputs ">
+<link rel="canonical" href="https://learnweaver.github.io/bbr-docs/getting-started/hardware.html">
+<link rel="stylesheet" href="../style.css">
+<script>
+  // Set the theme before first paint so the page never flashes the wrong one.
+  try {
+    var t = localStorage.getItem('bbr-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
+</head>
+<body class="page">
+
+<a class="skip" href="#content">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-btn" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <a class="brand" href="../index.html">
+    <span class="brand-name">BBR Digital Expander</span>
+    <span class="brand-tagline">Documentation</span>
+  </a>
+  <div class="search" role="search">
+    <input type="search" id="search-input" placeholder="Search"
+           autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <kbd class="search-key">/</kbd>
+    <div id="search-results" class="search-results" hidden></div>
+  </div>
+  <button class="theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.5"/>
+      <g class="rays"><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.4 4.4l2.1 2.1M17.5 17.5l2.1 2.1M19.6 4.4l-2.1 2.1M6.5 17.5l-2.1 2.1"/></g>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>
+    </svg>
+  </button>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <nav aria-label="Documentation">
+      <ul class="nav-list">
+<li><a href="../index.html">BBR Digital Expander</a></li>
+</ul>
+<p class="nav-group">Getting started</p>
+<ul class="nav-list">
+<li><a href="../getting-started/hardware.html" class="active">What you have</a></li>
+<li><a href="../getting-started/wiring.html">Wiring it up</a></li>
+<li><a href="../getting-started/configuration.html">Robot configuration</a></li>
+<li><a href="../getting-started/first-opmode.html">Your first OpMode</a></li>
+</ul>
+<p class="nav-group">Guides</p>
+<ul class="nav-list">
+<li><a href="../guides/encoders.html">Encoders</a></li>
+<li><a href="../guides/colour.html">Colour sensors</a></li>
+<li><a href="../guides/distance.html">Distance sensors</a></li>
+<li><a href="../guides/digital-outputs.html">Digital outputs and triggers</a></li>
+<li><a href="../guides/heading.html">Heading (IMU)</a></li>
+<li><a href="../guides/odometry.html">Odometry and pose</a></li>
+</ul>
+<p class="nav-group">Reference</p>
+<ul class="nav-list">
+<li><a href="../reference/api.html">Java API summary</a></li>
+<li><a href="../reference/examples.html">Example OpModes</a></li>
+<li><a href="../reference/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+    </nav>
+  </aside>
+
+  <main id="content" class="content">
+    <article class="prose">
+      <h1 id="what-you-have">What you have<a class="headerlink" href="#what-you-have" title="Permanent link">#</a></h1>
+<h2 id="the-two-variants">The two variants<a class="headerlink" href="#the-two-variants" title="Permanent link">#</a></h2>
+<p>There are two versions of the board, and it matters which one you have because one of them cannot do heading or pose.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Base</th>
+<th>Odometry</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4 encoder inputs</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>4 sensor ports</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>4 digital outputs</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Gyro / heading</td>
+<td><strong>No</strong></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Field pose (x, y, heading)</td>
+<td><strong>No</strong></td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<p>The odometry variant has an onboard gyro fitted; the base variant leaves that footprint unpopulated. Everything else is identical, including the firmware.</p>
+<p>Your code can ask which one it is talking to:</p>
+<div class="highlight"><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">exp</span><span class="p">.</span><span class="na">isOdometryVariant</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">telemetry</span><span class="p">.</span><span class="na">addData</span><span class="p">(</span><span class="s">"heading"</span><span class="p">,</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">getHeading</span><span class="p">());</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<div class="hint hint-info">
+<p>Calling a heading or pose method on a base board <strong>throws an exception</strong> rather than returning zero. This is deliberate. A heading of <code>0.00</code> that never changes looks exactly like working software right up until the match, whereas an exception tells you the truth immediately.</p>
+</div>
+<h2 id="ports-and-numbering">Ports and numbering<a class="headerlink" href="#ports-and-numbering" title="Permanent link">#</a></h2>
+<p>Everything is numbered <strong>0 to 3</strong>, and each group is numbered independently:</p>
+<ul>
+<li><strong>Encoder channels 0–3</strong> — quadrature by default; each can be switched to read a pulse-width (PWM) absolute encoder instead.</li>
+<li><strong>Sensor ports 0–3</strong> — each takes a colour <em>or</em> a distance sensor. Any mix is fine, including four of the same kind.</li>
+<li><strong>Digital outputs 0–3</strong> — driven by the board, read by the Hub as ordinary digital inputs.</li>
+</ul>
+<p>Sensor port 2 has nothing to do with encoder channel 2 or digital output 2. They are separate things that happen to share a numbering scheme.</p>
+<h2 id="supported-sensors">Supported sensors<a class="headerlink" href="#supported-sensors" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Sensor</th>
+<th>Kind</th>
+<th>What you get</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>APDS-9151</td>
+<td>Colour</td>
+<td>Colour classification, raw R/G/B/IR, proximity</td>
+</tr>
+<tr>
+<td>VL53L0X</td>
+<td>Distance</td>
+<td>Range in millimetres, signal quality</td>
+</tr>
+</tbody>
+</table>
+<p>The board detects which kind of sensor is on each port by itself — there is nothing to configure. Ask it what it found:</p>
+<div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">getSensorType</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w">        </span><span class="c1">// COLOR, DISTANCE, or EMPTY</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">isSensorConnected</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w">    </span><span class="c1">// true while a sensor is detected</span>
+</code></pre></div>
+
+<h2 id="colour-slots">Colour slots<a class="headerlink" href="#colour-slots" title="Permanent link">#</a></h2>
+<p>Each sensor port can remember up to <strong>7 colours</strong>, numbered 1 to 7. You teach them by example — hold something in front of the sensor and tell the board &ldquo;that is colour 1&rdquo;.</p>
+<div class="hint hint-warning">
+<p>Slot 7 is used internally by the <code>triggerWhenNear()</code> helper on distance ports. If you use that helper, keep your taught colours in slots 1–6 on that port so nothing collides.</p>
+</div>
+<h2 id="what-the-board-needs-from-you">What the board needs from you<a class="headerlink" href="#what-the-board-needs-from-you" title="Permanent link">#</a></h2>
+<ul>
+<li>An <strong>I2C port</strong> on the Control Hub or Expansion Hub. The board appears at 7-bit address <code>0x38</code>.</li>
+<li><strong>Power</strong>, supplied over the same connection.</li>
+<li>A <strong>digital input port</strong> on the Hub for each digital output you want to read — only if you use the standalone trigger feature.</li>
+</ul>
+<p>All four sensor ports share the one I2C connection to the Hub. The board handles the switching internally, so four sensors cost you one Hub port, not four.</p>
+    </article>
+    <nav class="pager-row"><a class="pager prev" href="../index.html"><span class="pager-label">Previous</span><span class="pager-title">BBR Digital Expander</span></a><a class="pager next" href="../getting-started/wiring.html"><span class="pager-label">Next</span><span class="pager-title">Wiring it up</span></a></nav>
+    <footer class="page-footer">
+      <a href="https://github.com/LearnWeaver/BBRDigitalExpander/edit/main/docs/gitbook/getting-started/hardware.md" rel="noopener">Edit this page on GitHub</a>
+    </footer>
+  </main>
+
+  <aside class="onpage" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+<ul class="toc-list">
+<li><a href="#the-two-variants">The two variants</a>
+</li>
+<li><a href="#ports-and-numbering">Ports and numbering</a>
+</li>
+<li><a href="#supported-sensors">Supported sensors</a>
+</li>
+<li><a href="#colour-slots">Colour slots</a>
+</li>
+<li><a href="#what-the-board-needs-from-you">What the board needs from you</a>
+</li>
+</ul>
+  </aside>
+</div>
+
+<div class="scrim" hidden></div>
+<script src="../app.js" defer></script>
+</body>
+</html>

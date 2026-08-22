@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Distance sensors · BBR Digital Expander</title>
+<meta name="description" content="Distance sensors A VL53L0X on any sensor port gives you range in millimetres. Reading distance double mm = exp.getDistanceMm(1); The board detects the sensor type by itself, so the">
+<link rel="canonical" href="https://learnweaver.github.io/bbr-docs/guides/distance.html">
+<link rel="stylesheet" href="../style.css">
+<script>
+  // Set the theme before first paint so the page never flashes the wrong one.
+  try {
+    var t = localStorage.getItem('bbr-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
+</head>
+<body class="page">
+
+<a class="skip" href="#content">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-btn" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <a class="brand" href="../index.html">
+    <span class="brand-name">BBR Digital Expander</span>
+    <span class="brand-tagline">Documentation</span>
+  </a>
+  <div class="search" role="search">
+    <input type="search" id="search-input" placeholder="Search"
+           autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <kbd class="search-key">/</kbd>
+    <div id="search-results" class="search-results" hidden></div>
+  </div>
+  <button class="theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.5"/>
+      <g class="rays"><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.4 4.4l2.1 2.1M17.5 17.5l2.1 2.1M19.6 4.4l-2.1 2.1M6.5 17.5l-2.1 2.1"/></g>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>
+    </svg>
+  </button>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <nav aria-label="Documentation">
+      <ul class="nav-list">
+<li><a href="../index.html">BBR Digital Expander</a></li>
+</ul>
+<p class="nav-group">Getting started</p>
+<ul class="nav-list">
+<li><a href="../getting-started/hardware.html">What you have</a></li>
+<li><a href="../getting-started/wiring.html">Wiring it up</a></li>
+<li><a href="../getting-started/configuration.html">Robot configuration</a></li>
+<li><a href="../getting-started/first-opmode.html">Your first OpMode</a></li>
+</ul>
+<p class="nav-group">Guides</p>
+<ul class="nav-list">
+<li><a href="../guides/encoders.html">Encoders</a></li>
+<li><a href="../guides/colour.html">Colour sensors</a></li>
+<li><a href="../guides/distance.html" class="active">Distance sensors</a></li>
+<li><a href="../guides/digital-outputs.html">Digital outputs and triggers</a></li>
+<li><a href="../guides/heading.html">Heading (IMU)</a></li>
+<li><a href="../guides/odometry.html">Odometry and pose</a></li>
+</ul>
+<p class="nav-group">Reference</p>
+<ul class="nav-list">
+<li><a href="../reference/api.html">Java API summary</a></li>
+<li><a href="../reference/examples.html">Example OpModes</a></li>
+<li><a href="../reference/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+    </nav>
+  </aside>
+
+  <main id="content" class="content">
+    <article class="prose">
+      <h1 id="distance-sensors">Distance sensors<a class="headerlink" href="#distance-sensors" title="Permanent link">#</a></h1>
+<p>A VL53L0X on any sensor port gives you range in millimetres.</p>
+<h2 id="reading-distance">Reading distance<a class="headerlink" href="#reading-distance" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code><span class="kt">double</span><span class="w"> </span><span class="n">mm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">getDistanceMm</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</code></pre></div>
+
+<p>The board detects the sensor type by itself, so there is nothing to configure. Asking for a distance from a port holding a colour sensor throws rather than returning nonsense.</p>
+<h2 id="invalid-readings">Invalid readings<a class="headerlink" href="#invalid-readings" title="Permanent link">#</a></h2>
+<p>A distance sensor cannot always produce an answer. Nothing in range, a surface too dark to bounce enough light back, bright sunlight washing out the return — all of these give you a reading that means &ldquo;I don&rsquo;t know&rdquo; rather than a distance.</p>
+<p>Check validity before trusting a number:</p>
+<div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">TelemetryBlock</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">readTelemetry</span><span class="p">();</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="na">isDistanceValid</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">mm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="na">distanceMm</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<div class="hint hint-warning">
+<p>Treating an invalid reading as a real distance is the single most common way distance-sensor code goes wrong. The failure looks like the robot confidently doing the wrong thing, because as far as your code is concerned it got a number.</p>
+</div>
+<p>The telemetry block also carries <code>signalRate</code> and <code>ambientRate</code>, which tell you <em>why</em> a reading is weak — low signal means not enough light coming back, high ambient means too much light overall.</p>
+<h2 id="triggering-on-proximity">Triggering on proximity<a class="headerlink" href="#triggering-on-proximity" title="Permanent link">#</a></h2>
+<p>The board can watch the distance for you and drive a digital output when something comes within range:</p>
+<div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">triggerWhenNear</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">300</span><span class="p">);</span><span class="w">   </span><span class="c1">// output 0 high when port 1 sees something within 300 mm</span>
+</code></pre></div>
+
+<p>Saved automatically. Your match code reads a <code>DigitalChannel</code> and does no I2C at all.</p>
+<p>This helper sets a <strong>signal-rate floor</strong> for you, so weak edge-of-range returns don&rsquo;t cause the output to chatter. That is exactly the kind of tuning value the everyday tier exists to hide.</p>
+<div class="hint hint-info">
+<p><code>triggerWhenNear()</code> stores its range window in <strong>class slot 7</strong> of that port. Keep any taught colours on that port in slots 1–6 so they can&rsquo;t collide.</p>
+</div>
+<h2 id="full-control">Full control<a class="headerlink" href="#full-control" title="Permanent link">#</a></h2>
+<p>If you need a two-sided window — &ldquo;between 100 mm and 300 mm&rdquo; rather than &ldquo;closer than 300 mm&rdquo; — use the advanced tier:</p>
+<div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">DistanceClass</span><span class="w"> </span><span class="n">cls</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">DistanceClass</span><span class="p">();</span>
+<span class="n">cls</span><span class="p">.</span><span class="na">distMin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
+<span class="n">cls</span><span class="p">.</span><span class="na">distMax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">300</span><span class="p">;</span>
+<span class="n">cls</span><span class="p">.</span><span class="na">hysteresisMm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">      </span><span class="c1">// stops chatter at the boundary</span>
+<span class="n">cls</span><span class="p">.</span><span class="na">minSignalRate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span><span class="w">    </span><span class="c1">// reject weak returns</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">writeDistanceClass</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="n">cls</span><span class="p">);</span><span class="w">   </span><span class="c1">// port 1, class slot 5</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">saveConfigToFlash</span><span class="p">();</span><span class="w">             </span><span class="c1">// advanced tier does NOT auto-save</span>
+</code></pre></div>
+
+<p><code>hysteresisMm</code> is what stops the output flickering when the robot sits exactly on the threshold. Leave it at the default unless you have a reason.</p>
+<div class="hint hint-danger">
+<p>Advanced-tier calls do not save to flash. If you don&rsquo;t call <code>saveConfigToFlash()</code>, your configuration is lost at power-off. <code>exp.isConfigDirty()</code> tells you whether there are unsaved changes.</p>
+</div>
+<h2 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">#</a></h2>
+<p><code>BBRDistanceTriggerSetup</code> is the canonical setup-once OpMode, and <code>BBRDistanceTriggerRuntime</code> is the match half that reads a plain digital input. See <a href="../reference/examples.html">Example OpModes</a>.</p>
+    </article>
+    <nav class="pager-row"><a class="pager prev" href="../guides/colour.html"><span class="pager-label">Previous</span><span class="pager-title">Colour sensors</span></a><a class="pager next" href="../guides/digital-outputs.html"><span class="pager-label">Next</span><span class="pager-title">Digital outputs and triggers</span></a></nav>
+    <footer class="page-footer">
+      <a href="https://github.com/LearnWeaver/BBRDigitalExpander/edit/main/docs/gitbook/guides/distance.md" rel="noopener">Edit this page on GitHub</a>
+    </footer>
+  </main>
+
+  <aside class="onpage" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+<ul class="toc-list">
+<li><a href="#reading-distance">Reading distance</a>
+</li>
+<li><a href="#invalid-readings">Invalid readings</a>
+</li>
+<li><a href="#triggering-on-proximity">Triggering on proximity</a>
+</li>
+<li><a href="#full-control">Full control</a>
+</li>
+<li><a href="#worked-example">Worked example</a>
+</li>
+</ul>
+  </aside>
+</div>
+
+<div class="scrim" hidden></div>
+<script src="../app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Colour sensors · BBR Digital Expander</title>
+<meta name="description" content="Colour sensors The board doesn’t just hand you raw red, green, and blue numbers and leave you to work out what they mean. You teach it the colours you care about, and then ask it a">
+<link rel="canonical" href="https://learnweaver.github.io/bbr-docs/guides/colour.html">
+<link rel="stylesheet" href="../style.css">
+<script>
+  // Set the theme before first paint so the page never flashes the wrong one.
+  try {
+    var t = localStorage.getItem('bbr-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
+</head>
+<body class="page">
+
+<a class="skip" href="#content">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-btn" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <a class="brand" href="../index.html">
+    <span class="brand-name">BBR Digital Expander</span>
+    <span class="brand-tagline">Documentation</span>
+  </a>
+  <div class="search" role="search">
+    <input type="search" id="search-input" placeholder="Search"
+           autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <kbd class="search-key">/</kbd>
+    <div id="search-results" class="search-results" hidden></div>
+  </div>
+  <button class="theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.5"/>
+      <g class="rays"><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.4 4.4l2.1 2.1M17.5 17.5l2.1 2.1M19.6 4.4l-2.1 2.1M6.5 17.5l-2.1 2.1"/></g>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>
+    </svg>
+  </button>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <nav aria-label="Documentation">
+      <ul class="nav-list">
+<li><a href="../index.html">BBR Digital Expander</a></li>
+</ul>
+<p class="nav-group">Getting started</p>
+<ul class="nav-list">
+<li><a href="../getting-started/hardware.html">What you have</a></li>
+<li><a href="../getting-started/wiring.html">Wiring it up</a></li>
+<li><a href="../getting-started/configuration.html">Robot configuration</a></li>
+<li><a href="../getting-started/first-opmode.html">Your first OpMode</a></li>
+</ul>
+<p class="nav-group">Guides</p>
+<ul class="nav-list">
+<li><a href="../guides/encoders.html">Encoders</a></li>
+<li><a href="../guides/colour.html" class="active">Colour sensors</a></li>
+<li><a href="../guides/distance.html">Distance sensors</a></li>
+<li><a href="../guides/digital-outputs.html">Digital outputs and triggers</a></li>
+<li><a href="../guides/heading.html">Heading (IMU)</a></li>
+<li><a href="../guides/odometry.html">Odometry and pose</a></li>
+</ul>
+<p class="nav-group">Reference</p>
+<ul class="nav-list">
+<li><a href="../reference/api.html">Java API summary</a></li>
+<li><a href="../reference/examples.html">Example OpModes</a></li>
+<li><a href="../reference/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+    </nav>
+  </aside>
+
+  <main id="content" class="content">
+    <article class="prose">
+      <h1 id="colour-sensors">Colour sensors<a class="headerlink" href="#colour-sensors" title="Permanent link">#</a></h1>
+<p>The board doesn&rsquo;t just hand you raw red, green, and blue numbers and leave you to work out what they mean. You <strong>teach</strong> it the colours you care about, and then ask it a direct question: <em>am I looking at colour 1?</em></p>
+<h2 id="teaching-a-colour">Teaching a colour<a class="headerlink" href="#teaching-a-colour" title="Permanent link">#</a></h2>
+<p>Hold the target in front of the sensor and call <code>teachColor</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">   </span><span class="c1">// sensor port 0, this is now "colour 1"</span>
+</code></pre></div>
+
+<p>That takes a moment, and it saves to the board&rsquo;s flash automatically. You do <strong>not</strong> need to call <code>saveConfigToFlash()</code> afterwards — the teach helpers do it for you.</p>
+<p>Each port remembers up to <strong>7 colours</strong>, numbered 1 to 7.</p>
+<div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">   </span><span class="c1">// hold red   → colour 1</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w">   </span><span class="c1">// hold blue  → colour 2</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span><span class="w">   </span><span class="c1">// hold yellow → colour 3</span>
+</code></pre></div>
+
+<div class="hint hint-success">
+<p>Because it is stored in flash, teaching survives power cycles and applies in every OpMode. Teach at the start of the day, use all day.</p>
+</div>
+<h2 id="when-teaching-refuses">When teaching refuses<a class="headerlink" href="#when-teaching-refuses" title="Permanent link">#</a></h2>
+<p><code>teachColor()</code> <strong>throws</strong> rather than storing a colour it doesn&rsquo;t believe in — if the target is too dark, if the sensor is saturated, or if there is no sensor on that port.</p>
+<p>This is on purpose. A badly taught colour is worse than no colour at all: it either never fires or always fires, and both look like a code bug rather than a calibration problem. Better to find out while you&rsquo;re standing at the robot holding the target.</p>
+<p>If it throws, the usual fixes are more light, less light, or holding the target closer.</p>
+<h2 id="reading-colours">Reading colours<a class="headerlink" href="#reading-colours" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">getColorClass</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w">       </span><span class="c1">// 0 = no match, 1-7 = which colour</span>
+<span class="kt">boolean</span><span class="w"> </span><span class="n">isRed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">seesColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">    </span><span class="c1">// just asking about colour 1</span>
+</code></pre></div>
+
+<p><code>seesColor()</code> is usually the one you want — it reads as the question you are actually asking:</p>
+<div class="highlight"><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">exp</span><span class="p">.</span><span class="na">seesColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">telemetry</span><span class="p">.</span><span class="na">addLine</span><span class="p">(</span><span class="s">"over red"</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="teaching-from-the-gamepad">Teaching from the gamepad<a class="headerlink" href="#teaching-from-the-gamepad" title="Permanent link">#</a></h2>
+<p>Rather than hard-coding a teach call, let a driver do it at the field with a button:</p>
+<div class="highlight"><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">gamepad1</span><span class="p">.</span><span class="na">a</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">prevA</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">exp</span><span class="p">.</span><span class="na">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">        </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"learned colour 1"</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">BBRException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"teach failed: "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="na">getMessage</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="n">prevA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gamepad1</span><span class="p">.</span><span class="na">a</span><span class="p">;</span>
+</code></pre></div>
+
+<p>Catching the exception and showing it in telemetry turns a failed teach into something the driver can immediately react to, instead of a stack trace.</p>
+<p><code>BBRTeachColorExample</code> and <code>BBRThreeColorExample</code> both do this properly.</p>
+<h2 id="letting-the-board-watch-for-you">Letting the board watch for you<a class="headerlink" href="#letting-the-board-watch-for-you" title="Permanent link">#</a></h2>
+<p>Once a colour is taught, the board can drive a digital output whenever it sees it — with no I2C traffic and no code in your loop at all:</p>
+<div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">triggerOnColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">   </span><span class="c1">// output 0 high while port 0 sees colour 1</span>
+</code></pre></div>
+
+<p>This also saves automatically. Your match code then reads a stock <code>DigitalChannel</code>. See <a href="digital-outputs.html">Digital outputs and triggers</a>.</p>
+<h2 id="raw-values">Raw values<a class="headerlink" href="#raw-values" title="Permanent link">#</a></h2>
+<p>If you need the underlying numbers — for tuning, or for a classifier of your own — they are in the telemetry block:</p>
+<div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">TelemetryBlock</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">readTelemetry</span><span class="p">();</span>
+<span class="kt">int</span><span class="o">[]</span><span class="w"> </span><span class="n">rgbip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="na">rawColor</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">;</span><span class="w">    </span><span class="c1">// r, g, b, ir, proximity</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">confidence</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="na">classConfidence</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">;</span><span class="w">   </span><span class="c1">// 0-255</span>
+</code></pre></div>
+
+<p>Classification uses normalized chromaticity rather than raw brightness, which is why a taught colour keeps working as the lighting changes between your workshop and the competition venue.</p>
+    </article>
+    <nav class="pager-row"><a class="pager prev" href="../guides/encoders.html"><span class="pager-label">Previous</span><span class="pager-title">Encoders</span></a><a class="pager next" href="../guides/distance.html"><span class="pager-label">Next</span><span class="pager-title">Distance sensors</span></a></nav>
+    <footer class="page-footer">
+      <a href="https://github.com/LearnWeaver/BBRDigitalExpander/edit/main/docs/gitbook/guides/colour.md" rel="noopener">Edit this page on GitHub</a>
+    </footer>
+  </main>
+
+  <aside class="onpage" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+<ul class="toc-list">
+<li><a href="#teaching-a-colour">Teaching a colour</a>
+</li>
+<li><a href="#when-teaching-refuses">When teaching refuses</a>
+</li>
+<li><a href="#reading-colours">Reading colours</a>
+</li>
+<li><a href="#teaching-from-the-gamepad">Teaching from the gamepad</a>
+</li>
+<li><a href="#letting-the-board-watch-for-you">Letting the board watch for you</a>
+</li>
+<li><a href="#raw-values">Raw values</a>
+</li>
+</ul>
+  </aside>
+</div>
+
+<div class="scrim" hidden></div>
+<script src="../app.js" defer></script>
+</body>
+</html>

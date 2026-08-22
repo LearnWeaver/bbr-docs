@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Example OpModes · BBR Digital Expander</title>
+<meta name="description" content="Example OpModes These ship with the driver, in org/firstinspires/ftc/teamcode/. Copy the ones you want into your project. They all expect the device to be named expander in the rob">
+<link rel="canonical" href="https://learnweaver.github.io/bbr-docs/reference/examples.html">
+<link rel="stylesheet" href="../style.css">
+<script>
+  // Set the theme before first paint so the page never flashes the wrong one.
+  try {
+    var t = localStorage.getItem('bbr-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
+</head>
+<body class="page">
+
+<a class="skip" href="#content">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-btn" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <a class="brand" href="../index.html">
+    <span class="brand-name">BBR Digital Expander</span>
+    <span class="brand-tagline">Documentation</span>
+  </a>
+  <div class="search" role="search">
+    <input type="search" id="search-input" placeholder="Search"
+           autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <kbd class="search-key">/</kbd>
+    <div id="search-results" class="search-results" hidden></div>
+  </div>
+  <button class="theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.5"/>
+      <g class="rays"><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.4 4.4l2.1 2.1M17.5 17.5l2.1 2.1M19.6 4.4l-2.1 2.1M6.5 17.5l-2.1 2.1"/></g>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>
+    </svg>
+  </button>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <nav aria-label="Documentation">
+      <ul class="nav-list">
+<li><a href="../index.html">BBR Digital Expander</a></li>
+</ul>
+<p class="nav-group">Getting started</p>
+<ul class="nav-list">
+<li><a href="../getting-started/hardware.html">What you have</a></li>
+<li><a href="../getting-started/wiring.html">Wiring it up</a></li>
+<li><a href="../getting-started/configuration.html">Robot configuration</a></li>
+<li><a href="../getting-started/first-opmode.html">Your first OpMode</a></li>
+</ul>
+<p class="nav-group">Guides</p>
+<ul class="nav-list">
+<li><a href="../guides/encoders.html">Encoders</a></li>
+<li><a href="../guides/colour.html">Colour sensors</a></li>
+<li><a href="../guides/distance.html">Distance sensors</a></li>
+<li><a href="../guides/digital-outputs.html">Digital outputs and triggers</a></li>
+<li><a href="../guides/heading.html">Heading (IMU)</a></li>
+<li><a href="../guides/odometry.html">Odometry and pose</a></li>
+</ul>
+<p class="nav-group">Reference</p>
+<ul class="nav-list">
+<li><a href="../reference/api.html">Java API summary</a></li>
+<li><a href="../reference/examples.html" class="active">Example OpModes</a></li>
+<li><a href="../reference/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+    </nav>
+  </aside>
+
+  <main id="content" class="content">
+    <article class="prose">
+      <h1 id="example-opmodes">Example OpModes<a class="headerlink" href="#example-opmodes" title="Permanent link">#</a></h1>
+<p>These ship with the driver, in <code>org/firstinspires/ftc/teamcode/</code>. Copy the ones you want into your project.</p>
+<p>They all expect the device to be named <code>expander</code> in the robot configuration. If you named yours something else, change that string.</p>
+<h2 id="start-here">Start here<a class="headerlink" href="#start-here" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>OpMode</th>
+<th>What it shows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BBRSensorDumpTest</code></td>
+<td>Every live value in one transaction — the fastest way to check your wiring</td>
+</tr>
+<tr>
+<td><code>BBRColorClassExample</code></td>
+<td>Reading colour classes and confidence, the primary sensor interface</td>
+</tr>
+<tr>
+<td><code>BBREncoderExample</code></td>
+<td>Counts, firmware velocities, idempotent resets</td>
+</tr>
+</tbody>
+</table>
+<h2 id="colour">Colour<a class="headerlink" href="#colour" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>OpMode</th>
+<th>What it shows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BBRTeachColorExample</code></td>
+<td>Teach-by-example from a gamepad button, saving to flash</td>
+</tr>
+<tr>
+<td><code>BBRThreeColorExample</code></td>
+<td>The full three-colour season pattern, one pin per colour</td>
+</tr>
+<tr>
+<td><code>BBRColorTriggerSetup</code></td>
+<td>Setting up a colour-driven digital output</td>
+</tr>
+<tr>
+<td><code>BBRColorLatchExample</code></td>
+<td>Latched outputs — catching an event too brief for your loop</td>
+</tr>
+</tbody>
+</table>
+<h2 id="distance">Distance<a class="headerlink" href="#distance" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>OpMode</th>
+<th>What it shows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BBRDistanceTriggerSetup</code></td>
+<td>The canonical setup-once trigger configuration</td>
+</tr>
+<tr>
+<td><code>BBRDistanceTriggerRuntime</code></td>
+<td>The match half: a stock <code>DigitalChannel</code>, zero I2C</td>
+</tr>
+</tbody>
+</table>
+<p>Read these two together. They are the clearest demonstration of what the board is for — the setup OpMode runs once and is then never needed again, and the runtime OpMode has no idea the Expander exists.</p>
+<h2 id="encoders">Encoders<a class="headerlink" href="#encoders" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>OpMode</th>
+<th>What it shows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BBRPwmEncoderExample</code></td>
+<td>Absolute pulse-width encoders, wrap tracking</td>
+</tr>
+<tr>
+<td><code>BBREncoderTriggerExample</code></td>
+<td>Driving an output from an encoder threshold</td>
+</tr>
+</tbody>
+</table>
+<h2 id="odometry-variant">Odometry variant<a class="headerlink" href="#odometry-variant" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>OpMode</th>
+<th>What it shows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BBRImuHeadingExample</code></td>
+<td>Heading, gyro calibration, failing loudly on a base board</td>
+</tr>
+<tr>
+<td><code>BBRHeadingTriggerExample</code></td>
+<td>Driving an output from heading, including the ±180 wrap</td>
+</tr>
+<tr>
+<td><code>BBRLocalizerExample</code></td>
+<td>Full pose tracking: params, calibration, live pose, re-zeroing</td>
+</tr>
+</tbody>
+</table>
+<h2 id="diagnostics">Diagnostics<a class="headerlink" href="#diagnostics" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>OpMode</th>
+<th>What it shows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BBRLineProbeTest</code></td>
+<td>Bench-testing a sensor against a line</td>
+</tr>
+<tr>
+<td><code>BBRSensorDumpTest</code></td>
+<td>Complete state dump, useful whenever something is unclear</td>
+</tr>
+</tbody>
+</table>
+<h2 id="a-note-on-the-examples">A note on the examples<a class="headerlink" href="#a-note-on-the-examples" title="Permanent link">#</a></h2>
+<p>They are written to be read as much as run. Where an example catches an exception or checks a status flag, that is showing you something worth copying — particularly the <code>BBRTransportException</code> handling in the IMU and localizer examples, which is what keeps a normal OpMode shutdown from looking like a hardware fault.</p>
+    </article>
+    <nav class="pager-row"><a class="pager prev" href="../reference/api.html"><span class="pager-label">Previous</span><span class="pager-title">Java API summary</span></a><a class="pager next" href="../reference/troubleshooting.html"><span class="pager-label">Next</span><span class="pager-title">Troubleshooting</span></a></nav>
+    <footer class="page-footer">
+      <a href="https://github.com/LearnWeaver/BBRDigitalExpander/edit/main/docs/gitbook/reference/examples.md" rel="noopener">Edit this page on GitHub</a>
+    </footer>
+  </main>
+
+  <aside class="onpage" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+<ul class="toc-list">
+<li><a href="#start-here">Start here</a>
+</li>
+<li><a href="#colour">Colour</a>
+</li>
+<li><a href="#distance">Distance</a>
+</li>
+<li><a href="#encoders">Encoders</a>
+</li>
+<li><a href="#odometry-variant">Odometry variant</a>
+</li>
+<li><a href="#diagnostics">Diagnostics</a>
+</li>
+<li><a href="#a-note-on-the-examples">A note on the examples</a>
+</li>
+</ul>
+  </aside>
+</div>
+
+<div class="scrim" hidden></div>
+<script src="../app.js" defer></script>
+</body>
+</html>

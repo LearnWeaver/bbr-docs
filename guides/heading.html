@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Heading (IMU) · BBR Digital Expander</title>
+<meta name="description" content="Heading (IMU) Odometry variant only. On a base board every method on this page throws — see What you have. Reading heading double deg = exp.getHeading(); // degrees, CCW positive T">
+<link rel="canonical" href="https://learnweaver.github.io/bbr-docs/guides/heading.html">
+<link rel="stylesheet" href="../style.css">
+<script>
+  // Set the theme before first paint so the page never flashes the wrong one.
+  try {
+    var t = localStorage.getItem('bbr-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
+</head>
+<body class="page">
+
+<a class="skip" href="#content">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-btn" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <a class="brand" href="../index.html">
+    <span class="brand-name">BBR Digital Expander</span>
+    <span class="brand-tagline">Documentation</span>
+  </a>
+  <div class="search" role="search">
+    <input type="search" id="search-input" placeholder="Search"
+           autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <kbd class="search-key">/</kbd>
+    <div id="search-results" class="search-results" hidden></div>
+  </div>
+  <button class="theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.5"/>
+      <g class="rays"><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.4 4.4l2.1 2.1M17.5 17.5l2.1 2.1M19.6 4.4l-2.1 2.1M6.5 17.5l-2.1 2.1"/></g>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>
+    </svg>
+  </button>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <nav aria-label="Documentation">
+      <ul class="nav-list">
+<li><a href="../index.html">BBR Digital Expander</a></li>
+</ul>
+<p class="nav-group">Getting started</p>
+<ul class="nav-list">
+<li><a href="../getting-started/hardware.html">What you have</a></li>
+<li><a href="../getting-started/wiring.html">Wiring it up</a></li>
+<li><a href="../getting-started/configuration.html">Robot configuration</a></li>
+<li><a href="../getting-started/first-opmode.html">Your first OpMode</a></li>
+</ul>
+<p class="nav-group">Guides</p>
+<ul class="nav-list">
+<li><a href="../guides/encoders.html">Encoders</a></li>
+<li><a href="../guides/colour.html">Colour sensors</a></li>
+<li><a href="../guides/distance.html">Distance sensors</a></li>
+<li><a href="../guides/digital-outputs.html">Digital outputs and triggers</a></li>
+<li><a href="../guides/heading.html" class="active">Heading (IMU)</a></li>
+<li><a href="../guides/odometry.html">Odometry and pose</a></li>
+</ul>
+<p class="nav-group">Reference</p>
+<ul class="nav-list">
+<li><a href="../reference/api.html">Java API summary</a></li>
+<li><a href="../reference/examples.html">Example OpModes</a></li>
+<li><a href="../reference/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+    </nav>
+  </aside>
+
+  <main id="content" class="content">
+    <article class="prose">
+      <h1 id="heading-imu">Heading (IMU)<a class="headerlink" href="#heading-imu" title="Permanent link">#</a></h1>
+<div class="hint hint-warning">
+<p>Odometry variant only. On a base board every method on this page throws — see <a href="../getting-started/hardware.html">What you have</a>.</p>
+</div>
+<h2 id="reading-heading">Reading heading<a class="headerlink" href="#reading-heading" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code><span class="kt">double</span><span class="w"> </span><span class="n">deg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">getHeading</span><span class="p">();</span><span class="w">   </span><span class="c1">// degrees, CCW positive</span>
+</code></pre></div>
+
+<p>The board fuses gyro and accelerometer data continuously at high rate, so the heading you read is already filtered. You are not integrating anything yourself.</p>
+<h2 id="zero-it-at-match-start">Zero it at match start<a class="headerlink" href="#zero-it-at-match-start" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">resetHeading</span><span class="p">();</span>
+</code></pre></div>
+
+<p>Heading is measured from wherever the robot was when you last called this. Call it at match start, once the robot is in its starting position.</p>
+<p><code>resetHeading()</code> is per-match and is <strong>not</strong> saved to flash — it will not disturb any mounting calibration.</p>
+<h2 id="calibrate-the-gyro">Calibrate the gyro<a class="headerlink" href="#calibrate-the-gyro" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">calibrateGyro</span><span class="p">();</span><span class="w">   </span><span class="c1">// ~1 second, robot must be COMPLETELY still</span>
+</code></pre></div>
+
+<p>This measures the gyro&rsquo;s bias — the small non-zero reading it produces while sitting still, which would otherwise accumulate into heading drift.</p>
+<div class="hint hint-danger">
+<p>The robot must be genuinely still. Not &ldquo;mostly still&rdquo;, not &ldquo;someone is holding it&rdquo;. If the board detects movement it refuses rather than storing a bad bias, because a wrong bias is worse than an old one.</p>
+</div>
+<p>Calibrating during init, while the robot sits on the field waiting for the match to start, is the natural place for it.</p>
+<h2 id="checking-the-state">Checking the state<a class="headerlink" href="#checking-the-state" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">ImuState</span><span class="w"> </span><span class="n">imu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">readImu</span><span class="p">();</span>
+
+<span class="n">imu</span><span class="p">.</span><span class="na">yawDeg</span><span class="p">;</span><span class="w">              </span><span class="c1">// heading</span>
+<span class="n">imu</span><span class="p">.</span><span class="na">pitchDeg</span><span class="p">;</span>
+<span class="n">imu</span><span class="p">.</span><span class="na">rollDeg</span><span class="p">;</span>
+<span class="n">imu</span><span class="p">.</span><span class="na">gyroDps</span><span class="p">;</span><span class="w">             </span><span class="c1">// rates, robot frame</span>
+<span class="n">imu</span><span class="p">.</span><span class="na">linearAccel</span><span class="p">;</span><span class="w">         </span><span class="c1">// m/s^2, gravity removed</span>
+<span class="n">imu</span><span class="p">.</span><span class="na">isFusionValid</span><span class="p">();</span><span class="w">     </span><span class="c1">// is the attitude output usable right now</span>
+<span class="n">imu</span><span class="p">.</span><span class="na">isBiasValid</span><span class="p">();</span><span class="w">       </span><span class="c1">// has it been still long enough to trust the bias</span>
+<span class="n">imu</span><span class="p">.</span><span class="na">isGyroSaturated</span><span class="p">();</span><span class="w">   </span><span class="c1">// did a rate exceed what the gyro can measure</span>
+</code></pre></div>
+
+<p><code>isFusionValid()</code> is the one to check before trusting a heading. It drops briefly after a mounting change or a reset while the filter re-converges — around 100 ms — and comes back on its own.</p>
+<p><code>isGyroSaturated()</code> matters if your robot spins hard. Past the gyro&rsquo;s maximum rate the heading estimate is no longer trustworthy, and this flag is how you find out that happened rather than wondering why the heading is off afterwards.</p>
+<h2 id="mounting">Mounting<a class="headerlink" href="#mounting" title="Permanent link">#</a></h2>
+<p>The board knows its own IMU orientation — that is handled in firmware and is not your problem.</p>
+<p>What it cannot know is how <em>you</em> bolted the board to <em>your</em> robot.</p>
+<div class="hint hint-warning">
+<p><strong>Mount the board square to the robot&rsquo;s forward direction.</strong> The firmware supports a mounting yaw <em>offset</em> (<code>IMU_YAW_OFFSET</code>), and it applies live without a reboot — but the Java driver does not currently expose a method to set it. Until it does, a board mounted at an angle in the horizontal plane will report headings rotated by that angle, with nothing to correct it from your OpMode.</p>
+</div>
+<p>Square and flat is the default and needs no configuration at all.</p>
+<p>If you had to mount the board on its edge rather than flat — bolted to a side rail, say — tell it which way is up, so it integrates yaw about the true vertical instead of about whatever axis happens to be pointing sideways:</p>
+<div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">setImuAxisUp</span><span class="p">(</span><span class="n">BBRRegMap</span><span class="p">.</span><span class="na">AXIS_POS_Z</span><span class="p">);</span><span class="w">   </span><span class="c1">// AXIS_POS_Z is flat, the default</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">saveConfigToFlash</span><span class="p">();</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">resetLocalizerAndCalibrateImu</span><span class="p">();</span><span class="w">      </span><span class="c1">// re-calibrate on the new axis</span>
+</code></pre></div>
+
+<p>The six <code>AXIS_*</code> values cover ±X, ±Y and ±Z. Re-calibrate after changing it, or the gyro bias will still belong to the old axis.</p>
+<h2 id="heading-triggers">Heading triggers<a class="headerlink" href="#heading-triggers" title="Permanent link">#</a></h2>
+<p>The board can drive a digital output from heading, the same way it does for colours and distances. A &ldquo;robot is pointing roughly downfield&rdquo; pin costs you no loop time and no I2C traffic:</p>
+<div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">triggerWhenFacing</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">90</span><span class="p">,</span><span class="w"> </span><span class="mi">15</span><span class="p">);</span><span class="w">   </span><span class="c1">// output 0 high while heading is 90° ±15°</span>
+</code></pre></div>
+
+<p>Degrees, not centidegrees, and the same headings <code>getHeading()</code> reports. Tolerance is either side of the target, so that example is a 30° window. Like the other everyday helpers it saves to flash automatically.</p>
+<p>The window is allowed to straddle the ±180 seam — <code>triggerWhenFacing(0, 180, 20)</code> covers 160° to −160°. The board does that arithmetic; you do not.</p>
+<div class="hint hint-info">
+<p>The pin stays low until the gyro has settled after power-on, and goes low again if the IMU faults. A heading trigger never reports a confident answer the board doesn&rsquo;t have.</p>
+</div>
+<p>If you need an asymmetric window rather than a target-and-tolerance, the advanced tier takes the raw edges in degrees × 100:</p>
+<div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputConfig</span><span class="w"> </span><span class="n">out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputConfig</span><span class="p">();</span>
+<span class="n">out</span><span class="p">.</span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputSource</span><span class="p">.</span><span class="na">IMU_HEADING</span><span class="p">;</span>
+<span class="n">out</span><span class="p">.</span><span class="na">threshMin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4500</span><span class="p">;</span><span class="w">    </span><span class="c1">// 45.00°</span>
+<span class="n">out</span><span class="p">.</span><span class="na">threshMax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">13500</span><span class="p">;</span><span class="w">   </span><span class="c1">// 135.00°</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">configureOutput</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">);</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">saveConfigToFlash</span><span class="p">();</span>
+</code></pre></div>
+
+<p>Setting <code>threshMin</code> above <code>threshMax</code> is not an error there either: it is how you ask for a window that wraps through ±180.</p>
+<h2 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">#</a></h2>
+<p><code>BBRImuHeadingExample</code> covers heading, calibration, and failing loudly on a base board. <code>BBRHeadingTriggerExample</code> arms a heading trigger from the current heading and shows the pin following it. See <a href="../reference/examples.html">Example OpModes</a>.</p>
+    </article>
+    <nav class="pager-row"><a class="pager prev" href="../guides/digital-outputs.html"><span class="pager-label">Previous</span><span class="pager-title">Digital outputs and triggers</span></a><a class="pager next" href="../guides/odometry.html"><span class="pager-label">Next</span><span class="pager-title">Odometry and pose</span></a></nav>
+    <footer class="page-footer">
+      <a href="https://github.com/LearnWeaver/BBRDigitalExpander/edit/main/docs/gitbook/guides/heading.md" rel="noopener">Edit this page on GitHub</a>
+    </footer>
+  </main>
+
+  <aside class="onpage" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+<ul class="toc-list">
+<li><a href="#reading-heading">Reading heading</a>
+</li>
+<li><a href="#zero-it-at-match-start">Zero it at match start</a>
+</li>
+<li><a href="#calibrate-the-gyro">Calibrate the gyro</a>
+</li>
+<li><a href="#checking-the-state">Checking the state</a>
+</li>
+<li><a href="#mounting">Mounting</a>
+</li>
+<li><a href="#heading-triggers">Heading triggers</a>
+</li>
+<li><a href="#worked-example">Worked example</a>
+</li>
+</ul>
+  </aside>
+</div>
+
+<div class="scrim" hidden></div>
+<script src="../app.js" defer></script>
+</body>
+</html>

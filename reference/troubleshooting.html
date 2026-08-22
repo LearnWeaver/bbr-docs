@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Troubleshooting · BBR Digital Expander</title>
+<meta name="description" content="Troubleshooting The OpMode throws at init “Not a BBR Digital Expander: DEVICE_ID …” — something answered at the address, but it wasn’t an Expander. Check you picked the right I2C b">
+<link rel="canonical" href="https://learnweaver.github.io/bbr-docs/reference/troubleshooting.html">
+<link rel="stylesheet" href="../style.css">
+<script>
+  // Set the theme before first paint so the page never flashes the wrong one.
+  try {
+    var t = localStorage.getItem('bbr-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
+</head>
+<body class="page">
+
+<a class="skip" href="#content">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-btn" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <a class="brand" href="../index.html">
+    <span class="brand-name">BBR Digital Expander</span>
+    <span class="brand-tagline">Documentation</span>
+  </a>
+  <div class="search" role="search">
+    <input type="search" id="search-input" placeholder="Search"
+           autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <kbd class="search-key">/</kbd>
+    <div id="search-results" class="search-results" hidden></div>
+  </div>
+  <button class="theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.5"/>
+      <g class="rays"><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.4 4.4l2.1 2.1M17.5 17.5l2.1 2.1M19.6 4.4l-2.1 2.1M6.5 17.5l-2.1 2.1"/></g>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>
+    </svg>
+  </button>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <nav aria-label="Documentation">
+      <ul class="nav-list">
+<li><a href="../index.html">BBR Digital Expander</a></li>
+</ul>
+<p class="nav-group">Getting started</p>
+<ul class="nav-list">
+<li><a href="../getting-started/hardware.html">What you have</a></li>
+<li><a href="../getting-started/wiring.html">Wiring it up</a></li>
+<li><a href="../getting-started/configuration.html">Robot configuration</a></li>
+<li><a href="../getting-started/first-opmode.html">Your first OpMode</a></li>
+</ul>
+<p class="nav-group">Guides</p>
+<ul class="nav-list">
+<li><a href="../guides/encoders.html">Encoders</a></li>
+<li><a href="../guides/colour.html">Colour sensors</a></li>
+<li><a href="../guides/distance.html">Distance sensors</a></li>
+<li><a href="../guides/digital-outputs.html">Digital outputs and triggers</a></li>
+<li><a href="../guides/heading.html">Heading (IMU)</a></li>
+<li><a href="../guides/odometry.html">Odometry and pose</a></li>
+</ul>
+<p class="nav-group">Reference</p>
+<ul class="nav-list">
+<li><a href="../reference/api.html">Java API summary</a></li>
+<li><a href="../reference/examples.html">Example OpModes</a></li>
+<li><a href="../reference/troubleshooting.html" class="active">Troubleshooting</a></li>
+</ul>
+    </nav>
+  </aside>
+
+  <main id="content" class="content">
+    <article class="prose">
+      <h1 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">#</a></h1>
+<h2 id="the-opmode-throws-at-init">The OpMode throws at init<a class="headerlink" href="#the-opmode-throws-at-init" title="Permanent link">#</a></h2>
+<p><strong>&ldquo;Not a BBR Digital Expander: DEVICE_ID &hellip;&rdquo;</strong> — something answered at the address, but it wasn&rsquo;t an Expander. Check you picked the right I2C bus in the robot configuration, and that nothing else on the bus is at address <code>0x38</code>.</p>
+<p><strong>Device not found in hardwareMap</strong> — the name in your code doesn&rsquo;t match the name in the robot configuration. The examples use <code>expander</code>.</p>
+<p><strong>Configuration doesn&rsquo;t list &ldquo;BBR Digital Expander&rdquo;</strong> — the driver folder isn&rsquo;t in your project, or the project didn&rsquo;t rebuild. Confirm <code>com/botbuilders/bbr/</code> is under <code>TeamCode/src/main/java/</code> and rebuild.</p>
+<div class="hint hint-info">
+<p>If you used this board before it was renamed, your old robot configuration entry will no longer resolve. Delete it and add <strong>&ldquo;BBR Digital Expander&rdquo;</strong> fresh.</p>
+</div>
+<h2 id="a-sensor-reads-empty">A sensor reads EMPTY<a class="headerlink" href="#a-sensor-reads-empty" title="Permanent link">#</a></h2>
+<p><code>getSensorType(port)</code> returning <code>EMPTY</code> means the board genuinely cannot see a sensor on that port.</p>
+<ul>
+<li>Check the cable at both ends.</li>
+<li>Try the sensor on a different port — that separates a bad sensor from a bad port.</li>
+<li>Run <code>BBRSensorDumpTest</code>, which shows all four ports at once.</li>
+</ul>
+<h2 id="teachcolor-throws">teachColor() throws<a class="headerlink" href="#teachcolor-throws" title="Permanent link">#</a></h2>
+<p>Working as intended. It refuses to store a colour that would never fire or always fire — too dark, saturated, or no sensor on the port.</p>
+<ul>
+<li><strong>Too dark</strong> — more light, or hold the target closer.</li>
+<li><strong>Saturated</strong> — less light, or move the target back.</li>
+<li>Then teach again.</li>
+</ul>
+<p>A stored bad colour is much harder to debug than a refused teach, which is why it fails at the point where you&rsquo;re standing there holding the target.</p>
+<h2 id="a-digital-output-never-goes-high">A digital output never goes high<a class="headerlink" href="#a-digital-output-never-goes-high" title="Permanent link">#</a></h2>
+<ol>
+<li><strong>Was the colour taught?</strong> <code>triggerOnColor()</code> refers to a slot that <code>teachColor()</code> has to have filled first.</li>
+<li><strong>Is the sensor seeing it?</strong> Check <code>getColorClass(port)</code> returns the slot number you expect.</li>
+<li><strong>Is it saved?</strong> The trigger helpers auto-save, but advanced-tier <code>configureOutput()</code> does not. Check <code>isConfigDirty()</code>.</li>
+<li><strong>Is the Hub input configured?</strong> The digital input needs its own entry in the robot configuration.</li>
+<li><strong>Is it wired to the pin you think?</strong> Output 0 is not necessarily the first pin on the connector.</li>
+</ol>
+<h2 id="a-digital-output-flickers">A digital output flickers<a class="headerlink" href="#a-digital-output-flickers" title="Permanent link">#</a></h2>
+<p>The condition is sitting right on the threshold. Use hysteresis rather than trying to be more precise:</p>
+<ul>
+<li>Distance: raise <code>hysteresisMm</code> in a <code>DistanceClass</code>.</li>
+<li>Any output: raise <code>debounceAssert</code> / <code>debounceRelease</code> in an <code>OutputConfig</code>.</li>
+</ul>
+<p>Both are set to sensible defaults by the everyday helpers, so if you are seeing chatter you are probably on the advanced tier.</p>
+<h2 id="heading-throws-on-a-base-board">Heading throws on a base board<a class="headerlink" href="#heading-throws-on-a-base-board" title="Permanent link">#</a></h2>
+<p>Correct behaviour. Base boards have no gyro. Guard with <code>isOdometryVariant()</code> if you share code across both.</p>
+<h2 id="heading-drifts">Heading drifts<a class="headerlink" href="#heading-drifts" title="Permanent link">#</a></h2>
+<ul>
+<li>Run <code>calibrateGyro()</code> with the robot <strong>completely</strong> still.</li>
+<li>Check <code>isBiasValid()</code> — false means it hasn&rsquo;t had a good calibration.</li>
+<li>Check <code>isGyroSaturated()</code> — if the robot spun faster than the gyro can measure, the estimate is no longer trustworthy and needs a re-zero.</li>
+</ul>
+<h2 id="the-pose-is-wrong">The pose is wrong<a class="headerlink" href="#the-pose-is-wrong" title="Permanent link">#</a></h2>
+<ul>
+<li><code>getPose()</code> throws unless the localizer is <code>RUNNING</code> — check the status first.</li>
+<li>Verify pod geometry and ticks-per-mm. The board cannot detect a wrong measurement; it just accumulates error.</li>
+<li>Check the pods stay in contact with the floor. Skipping loses counts permanently.</li>
+<li>Calibrate with the robot still.</li>
+</ul>
+<h2 id="readings-freeze-mid-match">Readings freeze mid-match<a class="headerlink" href="#readings-freeze-mid-match" title="Permanent link">#</a></h2>
+<p>Check <code>isDataFresh()</code>. When a read can&rsquo;t reach the device the driver serves the last known good value rather than throwing, so a stale reading looks like a working one that stopped changing.</p>
+<p>A genuine wiring fault — a sustained streak of failures — throws a <code>BBRException</code> naming it. A brief blip does not.</p>
+<h2 id="everything-breaks-when-the-opmode-stops">Everything breaks when the OpMode stops<a class="headerlink" href="#everything-breaks-when-the-opmode-stops" title="Permanent link">#</a></h2>
+<p>Expected, and already handled. The SDK tears the I2C device down at stop, so a read already in flight comes back empty. The driver raises <code>BBRTransportException</code> for that case.</p>
+<p>If you have a polling loop, catch it and <code>break</code> — the IMU and localizer examples show the pattern. It means &ldquo;the read never reached the device&rdquo;, not &ldquo;something is broken&rdquo;.</p>
+<h2 id="configuration-lost-after-power-off">Configuration lost after power-off<a class="headerlink" href="#configuration-lost-after-power-off" title="Permanent link">#</a></h2>
+<p>Advanced-tier calls don&rsquo;t auto-save. Call <code>saveConfigToFlash()</code>. <code>isConfigDirty()</code> tells you whether you have unsaved changes.</p>
+<p>The everyday teach and trigger helpers save for you.</p>
+    </article>
+    <nav class="pager-row"><a class="pager prev" href="../reference/examples.html"><span class="pager-label">Previous</span><span class="pager-title">Example OpModes</span></a></nav>
+    <footer class="page-footer">
+      <a href="https://github.com/LearnWeaver/BBRDigitalExpander/edit/main/docs/gitbook/reference/troubleshooting.md" rel="noopener">Edit this page on GitHub</a>
+    </footer>
+  </main>
+
+  <aside class="onpage" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+<ul class="toc-list">
+<li><a href="#the-opmode-throws-at-init">The OpMode throws at init</a>
+</li>
+<li><a href="#a-sensor-reads-empty">A sensor reads EMPTY</a>
+</li>
+<li><a href="#teachcolor-throws">teachColor() throws</a>
+</li>
+<li><a href="#a-digital-output-never-goes-high">A digital output never goes high</a>
+</li>
+<li><a href="#a-digital-output-flickers">A digital output flickers</a>
+</li>
+<li><a href="#heading-throws-on-a-base-board">Heading throws on a base board</a>
+</li>
+<li><a href="#heading-drifts">Heading drifts</a>
+</li>
+<li><a href="#the-pose-is-wrong">The pose is wrong</a>
+</li>
+<li><a href="#readings-freeze-mid-match">Readings freeze mid-match</a>
+</li>
+<li><a href="#everything-breaks-when-the-opmode-stops">Everything breaks when the OpMode stops</a>
+</li>
+<li><a href="#configuration-lost-after-power-off">Configuration lost after power-off</a>
+</li>
+</ul>
+  </aside>
+</div>
+
+<div class="scrim" hidden></div>
+<script src="../app.js" defer></script>
+</body>
+</html>

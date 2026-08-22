@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Odometry and pose · BBR Digital Expander</title>
+<meta name="description" content="Odometry and pose Odometry variant only. On a base board these methods throw. The board can track where your robot is on the field — x, y, and heading — by combining two dead-wheel">
+<link rel="canonical" href="https://learnweaver.github.io/bbr-docs/guides/odometry.html">
+<link rel="stylesheet" href="../style.css">
+<script>
+  // Set the theme before first paint so the page never flashes the wrong one.
+  try {
+    var t = localStorage.getItem('bbr-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
+</head>
+<body class="page">
+
+<a class="skip" href="#content">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-btn" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <a class="brand" href="../index.html">
+    <span class="brand-name">BBR Digital Expander</span>
+    <span class="brand-tagline">Documentation</span>
+  </a>
+  <div class="search" role="search">
+    <input type="search" id="search-input" placeholder="Search"
+           autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <kbd class="search-key">/</kbd>
+    <div id="search-results" class="search-results" hidden></div>
+  </div>
+  <button class="theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.5"/>
+      <g class="rays"><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.4 4.4l2.1 2.1M17.5 17.5l2.1 2.1M19.6 4.4l-2.1 2.1M6.5 17.5l-2.1 2.1"/></g>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>
+    </svg>
+  </button>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <nav aria-label="Documentation">
+      <ul class="nav-list">
+<li><a href="../index.html">BBR Digital Expander</a></li>
+</ul>
+<p class="nav-group">Getting started</p>
+<ul class="nav-list">
+<li><a href="../getting-started/hardware.html">What you have</a></li>
+<li><a href="../getting-started/wiring.html">Wiring it up</a></li>
+<li><a href="../getting-started/configuration.html">Robot configuration</a></li>
+<li><a href="../getting-started/first-opmode.html">Your first OpMode</a></li>
+</ul>
+<p class="nav-group">Guides</p>
+<ul class="nav-list">
+<li><a href="../guides/encoders.html">Encoders</a></li>
+<li><a href="../guides/colour.html">Colour sensors</a></li>
+<li><a href="../guides/distance.html">Distance sensors</a></li>
+<li><a href="../guides/digital-outputs.html">Digital outputs and triggers</a></li>
+<li><a href="../guides/heading.html">Heading (IMU)</a></li>
+<li><a href="../guides/odometry.html" class="active">Odometry and pose</a></li>
+</ul>
+<p class="nav-group">Reference</p>
+<ul class="nav-list">
+<li><a href="../reference/api.html">Java API summary</a></li>
+<li><a href="../reference/examples.html">Example OpModes</a></li>
+<li><a href="../reference/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+    </nav>
+  </aside>
+
+  <main id="content" class="content">
+    <article class="prose">
+      <h1 id="odometry-and-pose">Odometry and pose<a class="headerlink" href="#odometry-and-pose" title="Permanent link">#</a></h1>
+<div class="hint hint-warning">
+<p>Odometry variant only. On a base board these methods throw.</p>
+</div>
+<p>The board can track where your robot is on the field — x, y, and heading — by combining two dead-wheel encoders with the onboard gyro. The integration runs on the board at 1 kHz, and your OpMode reads the answer in a single I2C transaction.</p>
+<h2 id="setting-it-up">Setting it up<a class="headerlink" href="#setting-it-up" title="Permanent link">#</a></h2>
+<p>Tell the board about your odometry pods once:</p>
+<div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">LocalizerParams</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">LocalizerParams</span><span class="p">();</span>
+<span class="n">p</span><span class="p">.</span><span class="na">portX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">              </span><span class="c1">// encoder channel for the X (forward) pod</span>
+<span class="n">p</span><span class="p">.</span><span class="na">portY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">              </span><span class="c1">// encoder channel for the Y (lateral) pod</span>
+<span class="n">p</span><span class="p">.</span><span class="na">ticksPerMmX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">13.26</span><span class="p">;</span><span class="w">    </span><span class="c1">// measure these, see below</span>
+<span class="n">p</span><span class="p">.</span><span class="na">ticksPerMmY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">13.26</span><span class="p">;</span>
+<span class="n">p</span><span class="p">.</span><span class="na">tcpOffsetXMm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">       </span><span class="c1">// tracking point offset from robot centre, mm</span>
+<span class="n">p</span><span class="p">.</span><span class="na">tcpOffsetYMm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="n">p</span><span class="p">.</span><span class="na">imuScalar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="p">;</span><span class="w">        </span><span class="c1">// gyro scale correction</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">setLocalizerParams</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+</code></pre></div>
+
+<div class="hint hint-info">
+<p>Stored parameters take effect on the <strong>next</strong> <code>resetLocalizerAndCalibrateImu()</code>, not immediately. Set them first, then start the localizer.</p>
+</div>
+<p><strong>Measuring <code>ticksPerMm</code>:</strong> push the robot a couple of metres along one axis, then divide the counts by the distance travelled. Do it for each axis separately. This is the number that decides whether your pose is right, so measure it properly rather than calculating it from the wheel diameter on the datasheet.</p>
+<p><strong>Measuring <code>imuScalar</code>:</strong> spin the robot ten full turns and compare the reported heading change against 3600°. The ratio is your scalar, and it should land near <code>1.0</code>.</p>
+<p><strong>Getting the directions right:</strong> the localizer expects forward travel and left travel to both count <em>positive</em>. A pod mounted the other way round counts backwards, and the pose will drift in a way that looks like a <code>ticksPerMm</code> problem but isn&rsquo;t. Fix it on the board rather than negating numbers in your OpMode:</p>
+<div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">setEncoderInvertMask</span><span class="p">(</span><span class="mb">0b0010</span><span class="p">);</span><span class="w">   </span><span class="c1">// invert channel 1 only</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">saveConfigToFlash</span><span class="p">();</span>
+</code></pre></div>
+
+<p>One bit per encoder channel, set means inverted. Push the robot forward and check the counts climb before you trust any pose.</p>
+<p>Then start it, which zeroes the pose and calibrates the gyro in one step:</p>
+<div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">resetLocalizerAndCalibrateImu</span><span class="p">();</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">exp</span><span class="p">.</span><span class="na">waitForLocalizerReady</span><span class="p">(</span><span class="mi">5000</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">telemetry</span><span class="p">.</span><span class="na">addLine</span><span class="p">(</span><span class="s">"Localizer never reached RUNNING — is the robot moving?"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">telemetry</span><span class="p">.</span><span class="na">update</span><span class="p">();</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The robot must be <strong>still</strong> for this. It takes one to two seconds.</p>
+<h2 id="reading-the-pose">Reading the pose<a class="headerlink" href="#reading-the-pose" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">Pose2D</span><span class="w"> </span><span class="n">pose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">getPose</span><span class="p">();</span>
+<span class="n">pose</span><span class="p">.</span><span class="na">xMm</span><span class="p">;</span><span class="w">             </span><span class="c1">// millimetres</span>
+<span class="n">pose</span><span class="p">.</span><span class="na">yMm</span><span class="p">;</span><span class="w">             </span><span class="c1">// millimetres</span>
+<span class="n">pose</span><span class="p">.</span><span class="na">headingRad</span><span class="p">;</span><span class="w">      </span><span class="c1">// radians</span>
+<span class="n">pose</span><span class="p">.</span><span class="na">headingDeg</span><span class="p">();</span><span class="w">    </span><span class="c1">// degrees, for telemetry</span>
+</code></pre></div>
+
+<p>Conventions: millimetres and radians, <strong>+X forward, +Y left, counter-clockwise positive</strong>. This is the standard FTC field convention, so it lines up with the rest of your code.</p>
+<p>The field names say their units — <code>xMm</code>, <code>headingRad</code> — so a unit mix-up has to survive you typing the wrong name. Use <code>headingDeg()</code> for telemetry rather than converting by hand.</p>
+<p><code>getPose()</code> throws unless the localizer is actually <code>RUNNING</code> — you never get a stale or made-up position.</p>
+<h2 id="setting-the-pose">Setting the pose<a class="headerlink" href="#setting-the-pose" title="Permanent link">#</a></h2>
+<p>Zero it, or place the robot at a known point:</p>
+<div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">setPose</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">Pose2D</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">));</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">setPose</span><span class="p">(</span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">Pose2D</span><span class="p">.</span><span class="na">fromDegrees</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="mi">90</span><span class="p">));</span>
+</code></pre></div>
+
+<p><code>fromDegrees()</code> exists because everything else in your code is in degrees and converting by hand is an easy place to get a factor of 57.3 wrong.</p>
+<p>Setting the pose is how you tell the robot where autonomous started, or correct it mid-match from a known feature.</p>
+<h2 id="checking-status">Checking status<a class="headerlink" href="#checking-status" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">LocalizerState</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">readLocalizerRaw</span><span class="p">();</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="na">status</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">LocalizerStatus</span><span class="p">.</span><span class="na">RUNNING</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// pose is good</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Worth watching in telemetry during development. If the localizer drops out of <code>RUNNING</code>, you want to know that rather than to keep driving on a pose that stopped updating.</p>
+<h2 id="getting-good-results">Getting good results<a class="headerlink" href="#getting-good-results" title="Permanent link">#</a></h2>
+<ul>
+<li><strong>Pod geometry has to be right.</strong> The board cannot detect that you measured the wheelbase wrong; it will just accumulate error confidently.</li>
+<li><strong>Calibrate with the robot still.</strong> A bad gyro bias turns into heading drift, and heading drift turns into position error that grows the further you drive.</li>
+<li><strong>Dead wheels need contact.</strong> A pod that skips over a field seam loses counts permanently — odometry has no way to notice or recover.</li>
+<li><strong>Re-zero when you can.</strong> If autonomous ends at a known position, <code>setPose()</code> at the start of teleop beats inheriting accumulated error.</li>
+</ul>
+<h2 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">#</a></h2>
+<p><code>BBRLocalizerExample</code> covers the whole flow: params, calibration, waiting for RUNNING, live pose, re-zeroing, and teleporting. See <a href="../reference/examples.html">Example OpModes</a>.</p>
+    </article>
+    <nav class="pager-row"><a class="pager prev" href="../guides/heading.html"><span class="pager-label">Previous</span><span class="pager-title">Heading (IMU)</span></a><a class="pager next" href="../reference/api.html"><span class="pager-label">Next</span><span class="pager-title">Java API summary</span></a></nav>
+    <footer class="page-footer">
+      <a href="https://github.com/LearnWeaver/BBRDigitalExpander/edit/main/docs/gitbook/guides/odometry.md" rel="noopener">Edit this page on GitHub</a>
+    </footer>
+  </main>
+
+  <aside class="onpage" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+<ul class="toc-list">
+<li><a href="#setting-it-up">Setting it up</a>
+</li>
+<li><a href="#reading-the-pose">Reading the pose</a>
+</li>
+<li><a href="#setting-the-pose">Setting the pose</a>
+</li>
+<li><a href="#checking-status">Checking status</a>
+</li>
+<li><a href="#getting-good-results">Getting good results</a>
+</li>
+<li><a href="#worked-example">Worked example</a>
+</li>
+</ul>
+  </aside>
+</div>
+
+<div class="scrim" hidden></div>
+<script src="../app.js" defer></script>
+</body>
+</html>
