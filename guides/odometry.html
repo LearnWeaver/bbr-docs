@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Odometry and pose · BBR Digital Expander</title>
-<meta name="description" content="Odometry and pose Odometry variant only. On a base board these methods throw. The board can track where your robot is on the field — x, y, and heading — by combining two dead-wheel">
+<meta name="description" content="Odometry and pose These methods throw if the gyro cannot be trusted, rather than reporting a pose they cannot stand behind. See Troubleshooting. The board can track where your robo">
 <link rel="canonical" href="https://expander.buildingblockrobotics.com/guides/odometry.html">
 <link rel="stylesheet" href="../style.css">
 <script>
@@ -79,7 +79,7 @@
     <article class="prose">
       <h1 id="odometry-and-pose">Odometry and pose<a class="headerlink" href="#odometry-and-pose" title="Permanent link">#</a></h1>
 <div class="hint hint-warning">
-<p>Odometry variant only. On a base board these methods throw.</p>
+<p>These methods throw if the gyro cannot be trusted, rather than reporting a pose they cannot stand behind. See <a href="../reference/troubleshooting.html">Troubleshooting</a>.</p>
 </div>
 <p>The board can track where your robot is on the field — x, y, and heading — by combining two dead-wheel encoders with the onboard gyro. The integration runs on the board at 1 kHz, and your OpMode reads the answer in a single I2C transaction.</p>
 <h2 id="setting-it-up">Setting it up<a class="headerlink" href="#setting-it-up" title="Permanent link">#</a></h2>

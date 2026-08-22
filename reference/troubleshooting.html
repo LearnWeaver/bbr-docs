@@ -115,8 +115,14 @@
 <li>Any output: raise <code>debounceAssert</code> / <code>debounceRelease</code> in an <code>OutputConfig</code>.</li>
 </ul>
 <p>Both are set to sensible defaults by the everyday helpers, so if you are seeing chatter you are probably on the advanced tier.</p>
-<h2 id="heading-throws-on-a-base-board">Heading throws on a base board<a class="headerlink" href="#heading-throws-on-a-base-board" title="Permanent link">#</a></h2>
-<p>Correct behaviour. Base boards have no gyro. Guard with <code>isOdometryVariant()</code> if you share code across both.</p>
+<h2 id="heading-or-pose-throws">Heading or pose throws<a class="headerlink" href="#heading-or-pose-throws" title="Permanent link">#</a></h2>
+<p>The board refuses to hand you a heading it cannot stand behind, rather than returning a plausible-looking <code>0.00</code>. Read the message — it names which case you are in:</p>
+<ul>
+<li><strong>The gyro is not responding.</strong> A hardware fault, or a board that lost power mid-transaction. Power-cycle the robot; if it persists on every boot, the board needs looking at.</li>
+<li><strong>The board stopped answering entirely.</strong> Check the I2C cable, then see <a href="#the-opmode-throws-at-init">The OpMode throws at init</a>.</li>
+<li><strong>The localizer was never started.</strong> Pose methods need <code>resetLocalizerAndCalibrateImu()</code> first — heading alone does not.</li>
+</ul>
+<p>An exception here is the driver working correctly. A heading of <code>0.00</code> that never changes is indistinguishable from working software right up until the match.</p>
 <h2 id="heading-drifts">Heading drifts<a class="headerlink" href="#heading-drifts" title="Permanent link">#</a></h2>
 <ul>
 <li>Run <code>calibrateGyro()</code> with the robot <strong>completely</strong> still.</li>
@@ -168,7 +174,7 @@
 </li>
 <li><a href="#a-digital-output-flickers">A digital output flickers</a>
 </li>
-<li><a href="#heading-throws-on-a-base-board">Heading throws on a base board</a>
+<li><a href="#heading-or-pose-throws">Heading or pose throws</a>
 </li>
 <li><a href="#heading-drifts">Heading drifts</a>
 </li>

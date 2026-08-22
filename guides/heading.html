@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Heading (IMU) · BBR Digital Expander</title>
-<meta name="description" content="Heading (IMU) Odometry variant only. On a base board every method on this page throws — see What you have. Reading heading double deg = exp.getHeading(); // degrees, CCW positive T">
+<meta name="description" content="Heading (IMU) Every method on this page throws if the gyro cannot be trusted — see Troubleshooting. That is deliberate, and better than a heading of 0.00 that never changes. Readin">
 <link rel="canonical" href="https://expander.buildingblockrobotics.com/guides/heading.html">
 <link rel="stylesheet" href="../style.css">
 <script>
@@ -79,7 +79,7 @@
     <article class="prose">
       <h1 id="heading-imu">Heading (IMU)<a class="headerlink" href="#heading-imu" title="Permanent link">#</a></h1>
 <div class="hint hint-warning">
-<p>Odometry variant only. On a base board every method on this page throws — see <a href="../getting-started/hardware.html">What you have</a>.</p>
+<p>Every method on this page throws if the gyro cannot be trusted — see <a href="../reference/troubleshooting.html">Troubleshooting</a>. That is deliberate, and better than a heading of <code>0.00</code> that never changes.</p>
 </div>
 <h2 id="reading-heading">Reading heading<a class="headerlink" href="#reading-heading" title="Permanent link">#</a></h2>
 <div class="highlight"><pre><span></span><code><span class="kt">double</span><span class="w"> </span><span class="n">deg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">getHeading</span><span class="p">();</span><span class="w">   </span><span class="c1">// degrees, CCW positive</span>
@@ -151,7 +151,7 @@
 
 <p>Setting <code>threshMin</code> above <code>threshMax</code> is not an error there either: it is how you ask for a window that wraps through ±180.</p>
 <h2 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">#</a></h2>
-<p><code>BBRImuHeadingExample</code> covers heading, calibration, and failing loudly on a base board. <code>BBRHeadingTriggerExample</code> arms a heading trigger from the current heading and shows the pin following it. See <a href="../reference/examples.html">Example OpModes</a>.</p>
+<p><code>BBRImuHeadingExample</code> covers heading, calibration, and failing loudly when the gyro cannot be trusted. <code>BBRHeadingTriggerExample</code> arms a heading trigger from the current heading and shows the pin following it. See <a href="../reference/examples.html">Example OpModes</a>.</p>
     </article>
     <nav class="pager-row"><a class="pager prev" href="../guides/digital-outputs.html"><span class="pager-label">Previous</span><span class="pager-title">Digital outputs and triggers</span></a><a class="pager next" href="../guides/odometry.html"><span class="pager-label">Next</span><span class="pager-title">Odometry and pose</span></a></nav>
     <footer class="page-footer">

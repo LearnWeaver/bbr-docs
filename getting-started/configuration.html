@@ -122,7 +122,7 @@
 </code></pre></div>
 
 <h2 id="what-happens-at-init">What happens at init<a class="headerlink" href="#what-happens-at-init" title="Permanent link">#</a></h2>
-<p>When your OpMode gets the device from <code>hardwareMap</code>, the driver checks that it is really talking to an Expander: device ID, protocol version, and hardware variant.</p>
+<p>When your OpMode gets the device from <code>hardwareMap</code>, the driver checks that it is really talking to an Expander: device ID, protocol version, and reported capabilities.</p>
 <p>If any of those are wrong it <strong>throws immediately</strong>, with a message saying which check failed. That is intentional — a clear exception during init is much easier to deal with than corrupt data halfway through a match.</p>
 <p>This means a wiring mistake or a bad address shows up the moment you press INIT, not later.</p>
     </article>

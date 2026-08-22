@@ -188,7 +188,7 @@ once, or on a button press, never in a match loop. See
 </tbody>
 </table>
 <h2 id="heading-and-pose">Heading and pose<a class="headerlink" href="#heading-and-pose" title="Permanent link">#</a></h2>
-<p>Odometry variant only; these throw on a base board.</p>
+<p>These throw rather than return a heading or pose the board cannot stand behind.</p>
 <table>
 <thead>
 <tr>
@@ -265,10 +265,6 @@ once, or on a button press, never in a match loop. See
 </thead>
 <tbody>
 <tr>
-<td><code>isOdometryVariant()</code></td>
-<td><code>boolean</code></td>
-</tr>
-<tr>
 <td><code>getCapabilities()</code></td>
 <td>Capability bits</td>
 </tr>
@@ -288,11 +284,11 @@ once, or on a button press, never in a match loop. See
 <p><strong>Nothing in the advanced tier saves automatically.</strong> Call <code>saveConfigToFlash()</code>, or the configuration is gone at power-off. <code>isConfigDirty()</code> tells you whether you have unsaved changes.</p>
 </div>
 <h2 id="behaviour-worth-knowing">Behaviour worth knowing<a class="headerlink" href="#behaviour-worth-knowing" title="Permanent link">#</a></h2>
-<p><strong>Init refuses loudly.</strong> A wrong device ID, an unsupported protocol version, or an unknown hardware variant throws at init rather than producing corrupt data later.</p>
+<p><strong>Init refuses loudly.</strong> A wrong device ID or an unsupported protocol version throws at init rather than producing corrupt data later.</p>
 <p><strong>One transaction per snapshot.</strong> The everyday getters share a snapshot refreshed roughly every 10 ms, so four questions in one loop iteration cost one transaction and the answers are mutually consistent.</p>
 <p><strong>Commands are idempotent.</strong> Every command carries a token, so an I2C retry cannot execute it twice.</p>
 <p><strong>Config writes are verified by readback.</strong> The bus layer never NAKs, so an out-of-range value would otherwise be silently ignored.</p>
-<p><strong>IMU access throws on a base board</strong> rather than returning zeros, because a heading of <code>0.00</code> that never changes is indistinguishable from working software.</p>
+<p><strong>IMU access throws when the gyro cannot be trusted</strong> rather than returning zeros, because a heading of <code>0.00</code> that never changes is indistinguishable from working software.</p>
 <p><strong>Failed reads serve the last known good value.</strong> When a read cannot reach the device the driver returns the previous snapshot and <code>isDataFresh()</code> goes false, rather than throwing. This is what stops a normal OpMode shutdown from detonating your loop. A genuine wiring fault — a long streak of failures — still throws.</p>
 <p><strong><code>BBRTransportException</code> means the read never reached the device</strong>, not that anything is broken. The SDK tears the I2C device down when an OpMode stops, so a read already in flight comes back empty. A polling loop should catch it and <code>break</code>.</p>
     </article>

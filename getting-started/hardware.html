@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>What you have · BBR Digital Expander</title>
-<meta name="description" content="What you have The two variants There are two versions of the board, and it matters which one you have because one of them cannot do heading or pose. Base Odometry 4 encoder inputs ">
+<meta name="description" content="What you have What’s on the board Every board is the same. There is one version, and it has everything: 4 encoder inputs Quadrature, or pulse-width absolute 4 sensor ports Colour o">
 <link rel="canonical" href="https://expander.buildingblockrobotics.com/getting-started/hardware.html">
 <link rel="stylesheet" href="../style.css">
 <script>
@@ -78,53 +78,40 @@
   <main id="content" class="content">
     <article class="prose">
       <h1 id="what-you-have">What you have<a class="headerlink" href="#what-you-have" title="Permanent link">#</a></h1>
-<h2 id="the-two-variants">The two variants<a class="headerlink" href="#the-two-variants" title="Permanent link">#</a></h2>
-<p>There are two versions of the board, and it matters which one you have because one of them cannot do heading or pose.</p>
+<h2 id="whats-on-the-board">What&rsquo;s on the board<a class="headerlink" href="#whats-on-the-board" title="Permanent link">#</a></h2>
+<p>Every board is the same. There is one version, and it has everything:</p>
 <table>
 <thead>
 <tr>
 <th></th>
-<th>Base</th>
-<th>Odometry</th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>4 encoder inputs</td>
-<td>Yes</td>
-<td>Yes</td>
+<td>Quadrature, or pulse-width absolute</td>
 </tr>
 <tr>
 <td>4 sensor ports</td>
-<td>Yes</td>
-<td>Yes</td>
+<td>Colour or distance, any mix</td>
 </tr>
 <tr>
 <td>4 digital outputs</td>
-<td>Yes</td>
-<td>Yes</td>
+<td>Driven by the board itself</td>
 </tr>
 <tr>
 <td>Gyro / heading</td>
-<td><strong>No</strong></td>
-<td>Yes</td>
+<td>Onboard, six-axis</td>
 </tr>
 <tr>
 <td>Field pose (x, y, heading)</td>
-<td><strong>No</strong></td>
-<td>Yes</td>
+<td>With two dead-wheel encoders</td>
 </tr>
 </tbody>
 </table>
-<p>The odometry variant has an onboard gyro fitted; the base variant leaves that footprint unpopulated. Everything else is identical, including the firmware.</p>
-<p>Your code can ask which one it is talking to:</p>
-<div class="highlight"><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">exp</span><span class="p">.</span><span class="na">isOdometryVariant</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">telemetry</span><span class="p">.</span><span class="na">addData</span><span class="p">(</span><span class="s">"heading"</span><span class="p">,</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">getHeading</span><span class="p">());</span>
-<span class="p">}</span>
-</code></pre></div>
-
 <div class="hint hint-info">
-<p>Calling a heading or pose method on a base board <strong>throws an exception</strong> rather than returning zero. This is deliberate. A heading of <code>0.00</code> that never changes looks exactly like working software right up until the match, whereas an exception tells you the truth immediately.</p>
+<p>If a heading or pose call <strong>throws an exception</strong>, that means the board cannot give you a trustworthy answer — a gyro that isn&rsquo;t responding, or one that hasn&rsquo;t settled yet. It throws rather than returning zero on purpose: a heading of <code>0.00</code> that never changes looks exactly like working software right up until the match, whereas an exception tells you the truth immediately. See <a href="../reference/troubleshooting.html">Troubleshooting</a>.</p>
 </div>
 <h2 id="ports-and-numbering">Ports and numbering<a class="headerlink" href="#ports-and-numbering" title="Permanent link">#</a></h2>
 <p>Everything is numbered <strong>0 to 3</strong>, and each group is numbered independently:</p>
@@ -183,7 +170,7 @@
   <aside class="onpage" aria-label="On this page">
     <p class="toc-title">On this page</p>
 <ul class="toc-list">
-<li><a href="#the-two-variants">The two variants</a>
+<li><a href="#whats-on-the-board">What’s on the board</a>
 </li>
 <li><a href="#ports-and-numbering">Ports and numbering</a>
 </li>

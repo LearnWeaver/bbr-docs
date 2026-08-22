@@ -84,13 +84,13 @@
 <li><strong>Four extra quadrature encoder inputs</strong> — with velocity calculated on the board, so you don&rsquo;t have to differentiate counts yourself.</li>
 <li><strong>Four sensor ports</strong> — colour or distance sensors, four of each kind if you want, all sharing the one I2C port you plugged into.</li>
 <li><strong>Four digital outputs</strong> — which the board drives on its own, without your code in the loop.</li>
-<li><strong>Heading and pose</strong> — on the odometry variant, from an onboard gyro and two dead-wheel encoders.</li>
+<li><strong>Heading and pose</strong> — from an onboard gyro and two dead-wheel encoders.</li>
 </ul>
 <h2 id="why-youd-want-one">Why you&rsquo;d want one<a class="headerlink" href="#why-youd-want-one" title="Permanent link">#</a></h2>
 <p><strong>You ran out of ports.</strong> Every FTC team hits this. The Control Hub has four motor encoders and a handful of I2C buses, and by the time you have a drivetrain, a lift and an intake, the arm encoder and the colour sensor are fighting over what&rsquo;s left. The Expander gives you back four encoders and four sensors for the cost of one port — and if you need more, add a second board.</p>
 <p><strong>Your loop got slow.</strong> Four I2C sensors read individually is four round trips to the Hub every cycle. The Expander reads all of them on its own, in parallel, and hands you the answers in one transaction. Reading four sensors costs about what reading one used to.</p>
 <p><strong>You stopped writing the same code over and over.</strong> Every season someone rewrites &ldquo;read the colour sensor, compare it to a number, decide if it&rsquo;s the right sample.&rdquo; The Expander does that comparison on the board, continuously, at a speed your OpMode loop cannot match — and tells you the answer as a plain true/false.</p>
-<p><strong>Your autonomous knows where it is.</strong> The odometry variant fuses a gyro with two dead-wheel encoders and gives you field position in millimetres, no maths homework required.</p>
+<p><strong>Your autonomous knows where it is.</strong> The board fuses its gyro with two dead-wheel encoders and gives you field position in millimetres, no maths homework required.</p>
 <h2 id="the-idea">The idea<a class="headerlink" href="#the-idea" title="Permanent link">#</a></h2>
 <p>Most sensor code on an FTC robot follows the same shape: read a sensor every loop, compare it to a number, act on the answer. That costs you I2C traffic, loop time, and a surprising amount of code for what is usually one decision.</p>
 <p>The Expander lets you move that decision onto the board. You teach it what to look for <strong>once</strong>, during setup, and it watches for that condition continuously at high speed. Your match code reads the answer as a plain digital input:</p>
