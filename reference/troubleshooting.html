@@ -130,6 +130,15 @@
 <li>Check the pods stay in contact with the floor. Skipping loses counts permanently.</li>
 <li>Calibrate with the robot still.</li>
 </ul>
+<h2 id="the-opmode-crawls-roughly-one-loop-per-second">The OpMode crawls, roughly one loop per second<a class="headerlink" href="#the-opmode-crawls-roughly-one-loop-per-second" title="Permanent link">#</a></h2>
+<p>A setup helper is being called inside your match loop with values that keep changing.</p>
+<p><code>teachColor()</code> and the <code>triggerOn…</code> / <code>triggerWhen…</code> helpers save to flash, and the board accepts only one save per second. The driver waits that limit out rather than throwing, so each call costs your loop up to a full second.</p>
+<ul>
+<li>Move the call into a setup OpMode, or behind a button press with edge detection (<code>if (gamepad1.a &amp;&amp; !prevA)</code>), so holding the button doesn&rsquo;t re-fire it every loop.</li>
+<li>If the value genuinely has to change during a match, use advanced-tier <code>configureOutput()</code>, which changes the trigger in RAM without touching flash, and call <code>saveConfigToFlash()</code> only when you want it to persist.</li>
+</ul>
+<p>Repeating a call with <strong>unchanged</strong> values is not the cause — the board recognises there is nothing new to store and skips the write. It is changing values every loop that costs you.</p>
+<p>See <a href="../guides/digital-outputs.html#set-up-once-never-every-loop">Set up once</a> for what this also does to your triggers while the board is writing.</p>
 <h2 id="readings-freeze-mid-match">Readings freeze mid-match<a class="headerlink" href="#readings-freeze-mid-match" title="Permanent link">#</a></h2>
 <p>Check <code>isDataFresh()</code>. When a read can&rsquo;t reach the device the driver serves the last known good value rather than throwing, so a stale reading looks like a working one that stopped changing.</p>
 <p>A genuine wiring fault — a sustained streak of failures — throws a <code>BBRException</code> naming it. A brief blip does not.</p>
@@ -164,6 +173,8 @@
 <li><a href="#heading-drifts">Heading drifts</a>
 </li>
 <li><a href="#the-pose-is-wrong">The pose is wrong</a>
+</li>
+<li><a href="#the-opmode-crawls-roughly-one-loop-per-second">The OpMode crawls, roughly one loop per second</a>
 </li>
 <li><a href="#readings-freeze-mid-match">Readings freeze mid-match</a>
 </li>

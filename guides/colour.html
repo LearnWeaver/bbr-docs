@@ -123,6 +123,7 @@
 </code></pre></div>
 
 <p>Catching the exception and showing it in telemetry turns a failed teach into something the driver can immediately react to, instead of a stack trace.</p>
+<p>The <code>!prevA</code> matters as much as the <code>try</code>. <code>teachColor()</code> writes to flash, and the board takes at most one save per second — so a held button, teaching on every loop, would stall your OpMode to a crawl. Edge detection makes one press mean one teach. See <a href="digital-outputs.html#set-up-once-never-every-loop">Set up once</a>.</p>
 <p><code>BBRTeachColorExample</code> and <code>BBRThreeColorExample</code> both do this properly.</p>
 <h2 id="letting-the-board-watch-for-you">Letting the board watch for you<a class="headerlink" href="#letting-the-board-watch-for-you" title="Permanent link">#</a></h2>
 <p>Once a colour is taught, the board can drive a digital output whenever it sees it — with no I2C traffic and no code in your loop at all:</p>

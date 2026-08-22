@@ -120,6 +120,27 @@
 </code></pre></div>
 
 <p>All four take an output number 0–3, apply sensible debounce and hysteresis for you, and <strong>save to flash automatically</strong>. See <a href="heading.html">Heading (IMU)</a> for what <code>triggerWhenFacing</code> does at the ±180 seam.</p>
+<h2 id="set-up-once-never-every-loop">Set up once — never every loop<a class="headerlink" href="#set-up-once-never-every-loop" title="Permanent link">#</a></h2>
+<p>Saving to flash is what makes a trigger survive power-off. It is also why these helpers belong in a setup OpMode you run once, or behind a button press, and <strong>never in your match loop</strong>.</p>
+<p>Calling one repeatedly with the <em>same</em> values is harmless. The board compares the new configuration against what it already holds and, finding no difference, does nothing at all — no write, no delay.</p>
+<p>Calling one repeatedly with <em>changing</em> values — a threshold following a stick, a heading re-armed every loop — is a different story. Three things go wrong, in the order you will notice them:</p>
+<p><strong>Your OpMode slows to a crawl.</strong> The board accepts at most one real save per second and rejects anything sooner. The driver waits that limit out rather than failing, so every call blocks your loop for up to a full second. A loop that should run at 50 Hz runs at 1 Hz.</p>
+<p><strong>The board stops sensing while it writes.</strong> A save halts sampling for up to 500 ms. During that window outputs hold their last state, debounce counters stop, and anything that passes a sensor is never seen — including in <code>LATCHED</code> mode, which is exactly the case you chose latching to catch. Nothing on the pin indicates this happened.</p>
+<p><strong>Eventually the flash wears out.</strong> Endurance is roughly 100,000 erase cycles per sector, and the board alternates two sectors, so about 200,000 saves. At the one-per-second ceiling that is around 55 hours of continuous saving. Not a number you hit by accident, but well within a season of a robot left enabled on the bench with a save in the loop.</p>
+<div class="hint hint-danger">
+<p>Keep <code>teachColor()</code> and every <code>triggerOn…</code> / <code>triggerWhen…</code> helper out of your match loop. Run them in a setup OpMode, or on a button press with edge detection so holding the button doesn&rsquo;t re-fire them.</p>
+</div>
+<h3 id="changing-a-trigger-during-a-match">Changing a trigger during a match<a class="headerlink" href="#changing-a-trigger-during-a-match" title="Permanent link">#</a></h3>
+<p>If a threshold genuinely has to move at runtime, use the advanced tier, which does <strong>not</strong> auto-save:</p>
+<div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputConfig</span><span class="w"> </span><span class="n">out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputConfig</span><span class="p">();</span>
+<span class="n">out</span><span class="p">.</span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputSource</span><span class="p">.</span><span class="na">ENCODER</span><span class="p">;</span>
+<span class="n">out</span><span class="p">.</span><span class="na">srcIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="n">out</span><span class="p">.</span><span class="na">threshMin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">liftTarget</span><span class="p">;</span>
+<span class="n">out</span><span class="p">.</span><span class="na">threshMax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Integer</span><span class="p">.</span><span class="na">MAX_VALUE</span><span class="p">;</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">configureOutput</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">);</span><span class="w">     </span><span class="c1">// RAM only: no flash write, no stall</span>
+</code></pre></div>
+
+<p><code>configureOutput()</code> changes what the board is watching for immediately, costs one I2C transaction, and touches flash not at all. Call <code>saveConfigToFlash()</code> separately, once, when you actually want the value to outlive the power cycle — at the end of a tuning session, not every loop.</p>
 <h2 id="latching">Latching<a class="headerlink" href="#latching" title="Permanent link">#</a></h2>
 <p>By default an output follows its condition — high while true, low while false. Sometimes you want the opposite: catch a brief event and hold it until you&rsquo;re ready to deal with it.</p>
 <p>That is <code>LATCHED</code> mode, from the advanced tier:</p>
@@ -171,6 +192,11 @@
 <li><a href="#setting-one-up">Setting one up</a>
 </li>
 <li><a href="#the-four-helpers">The four helpers</a>
+</li>
+<li><a href="#set-up-once-never-every-loop">Set up once — never every loop</a>
+<ul class="toc-sub">
+<li><a href="#changing-a-trigger-during-a-match">Changing a trigger during a match</a></li>
+</ul>
 </li>
 <li><a href="#latching">Latching</a>
 </li>
