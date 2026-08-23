@@ -81,7 +81,7 @@
 <h2 id="the-opmode-throws-at-init">The OpMode throws at init<a class="headerlink" href="#the-opmode-throws-at-init" title="Permanent link">#</a></h2>
 <p><strong>&ldquo;Not a BBR Digital Expander: DEVICE_ID &hellip;&rdquo;</strong> — something answered at the address, but it wasn&rsquo;t an Expander. Check you picked the right I2C bus in the robot configuration, and that nothing else on the bus is at address <code>0x38</code>.</p>
 <p><strong>Device not found in hardwareMap</strong> — the name in your code doesn&rsquo;t match the name in the robot configuration. The examples use <code>expander</code>.</p>
-<p><strong>Configuration doesn&rsquo;t list &ldquo;BBR Digital Expander&rdquo;</strong> — the driver folder isn&rsquo;t in your project, or the project didn&rsquo;t rebuild. Confirm <code>com/botbuilders/bbr/</code> is under <code>TeamCode/src/main/java/</code> and rebuild.</p>
+<p><strong>Configuration doesn&rsquo;t list &ldquo;BBR Digital Expander&rdquo;</strong> — the driver folder isn&rsquo;t in your project, or the project didn&rsquo;t rebuild. Confirm <code>com/buildingblockrobotics/expander/</code> is under <code>TeamCode/src/main/java/</code> and rebuild.</p>
 <div class="hint hint-info">
 <p>If you used this board before it was renamed, your old robot configuration entry will no longer resolve. Delete it and add <strong>&ldquo;BBR Digital Expander&rdquo;</strong> fresh.</p>
 </div>
