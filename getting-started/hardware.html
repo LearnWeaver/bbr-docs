@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>What you have · BBR Digital Expander</title>
-<meta name="description" content="What you have What’s on the board Every board is the same. There is one version, and it has everything: 4 encoder inputs Quadrature, or pulse-width absolute 4 sensor ports Colour o">
+<meta name="description" content="What you have What’s on the board 4 encoder inputs Quadrature, or pulse-width absolute 4 sensor ports Colour or distance, any mix 4 digital outputs Driven by the board itself Gyro ">
 <link rel="canonical" href="https://expander.buildingblockrobotics.com/getting-started/hardware.html">
 <link rel="stylesheet" href="../style.css">
 <script>
@@ -79,7 +79,6 @@
     <article class="prose">
       <h1 id="what-you-have">What you have<a class="headerlink" href="#what-you-have" title="Permanent link">#</a></h1>
 <h2 id="whats-on-the-board">What&rsquo;s on the board<a class="headerlink" href="#whats-on-the-board" title="Permanent link">#</a></h2>
-<p>Every board is the same. There is one version, and it has everything:</p>
 <table>
 <thead>
 <tr>
@@ -111,7 +110,7 @@
 </tbody>
 </table>
 <div class="hint hint-info">
-<p>If a heading or pose call <strong>throws an exception</strong>, that means the board cannot give you a trustworthy answer — a gyro that isn&rsquo;t responding, or one that hasn&rsquo;t settled yet. It throws rather than returning zero on purpose: a heading of <code>0.00</code> that never changes looks exactly like working software right up until the match, whereas an exception tells you the truth immediately. See <a href="../reference/troubleshooting.html">Troubleshooting</a>.</p>
+<p>If a heading or pose call <strong>throws an exception</strong>, that means the board cannot give you a trustworthy answer — a gyro that isn&rsquo;t responding, or one that hasn&rsquo;t settled yet. It throws rather than returning zero on purpose. See <a href="../reference/troubleshooting.html">Troubleshooting</a>.</p>
 </div>
 <h2 id="ports-and-numbering">Ports and numbering<a class="headerlink" href="#ports-and-numbering" title="Permanent link">#</a></h2>
 <p>Everything is numbered <strong>0 to 3</strong>, and each group is numbered independently:</p>
