@@ -83,7 +83,7 @@
 </div>
 <h2 id="the-one-connection-that-matters">The one connection that matters<a class="headerlink" href="#the-one-connection-that-matters" title="Permanent link">#</a></h2>
 <p>The Expander connects to a <strong>single I2C port</strong> on the Control Hub or Expansion Hub. That one cable carries power and data for the whole board — all four sensors included.</p>
-<p>The board answers at 7-bit I2C address <code>0x38</code>. Nothing else on a standard FTC robot uses that address, so it can share a bus, though giving it a port of its own keeps bus traffic simpler to reason about.</p>
+<p>The board answers at 7-bit I2C address <code>0x38</code>.</p>
 <h2 id="sensors">Sensors<a class="headerlink" href="#sensors" title="Permanent link">#</a></h2>
 <p>Each of the four sensor ports takes a colour or distance sensor. Plug them in before powering up — the board detects what is attached during startup and while running, but starting from a known state makes bring-up easier to debug.</p>
 <p>You do not tell the board what kind of sensor you plugged in. It works that out.</p>
