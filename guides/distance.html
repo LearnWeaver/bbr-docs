@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Distance sensors · BBR Digital Expander</title>
-<meta name="description" content="Distance sensors A VL53L0X on any sensor port gives you range in millimetres. Reading distance double mm = exp.getDistanceMm(1); The board detects the sensor type by itself, so the">
+<meta name="description" content="Distance sensors A VL53L0X on any sensor port gives you range in millimetres. Reading distance FTC (Java) Arduino (C++) double mm = exp.getDistanceMm(1); Returns Double.POSITIVE_IN">
 <link rel="canonical" href="https://expander.buildingblockrobotics.com/guides/distance.html">
 <link rel="stylesheet" href="../style.css">
 <script>
@@ -54,8 +54,21 @@
 <ul class="nav-list">
 <li><a href="../getting-started/hardware.html">What you have</a></li>
 <li><a href="../getting-started/wiring.html">Wiring it up</a></li>
-<li><a href="../getting-started/configuration.html">Robot configuration</a></li>
-<li><a href="../getting-started/first-opmode.html">Your first OpMode</a></li>
+<li><a href="../getting-started/platforms.html">Choose your platform</a></li>
+</ul>
+<p class="nav-group">FTC (Java)</p>
+<ul class="nav-list">
+<li><a href="../ftc/install.html">Install the driver</a></li>
+<li><a href="../ftc/first-opmode.html">Your first OpMode</a></li>
+<li><a href="../ftc/api.html">Java API summary</a></li>
+<li><a href="../ftc/examples.html">Example OpModes</a></li>
+</ul>
+<p class="nav-group">Arduino (C++)</p>
+<ul class="nav-list">
+<li><a href="../arduino/install.html">Install the library</a></li>
+<li><a href="../arduino/first-sketch.html">Your first sketch</a></li>
+<li><a href="../arduino/api.html">Arduino API summary</a></li>
+<li><a href="../arduino/examples.html">Example sketches</a></li>
 </ul>
 <p class="nav-group">Guides</p>
 <ul class="nav-list">
@@ -68,8 +81,6 @@
 </ul>
 <p class="nav-group">Reference</p>
 <ul class="nav-list">
-<li><a href="../reference/api.html">Java API summary</a></li>
-<li><a href="../reference/examples.html">Example OpModes</a></li>
 <li><a href="../reference/troubleshooting.html">Troubleshooting</a></li>
 </ul>
     </nav>
@@ -80,35 +91,75 @@
       <h1 id="distance-sensors">Distance sensors<a class="headerlink" href="#distance-sensors" title="Permanent link">#</a></h1>
 <p>A VL53L0X on any sensor port gives you range in millimetres.</p>
 <h2 id="reading-distance">Reading distance<a class="headerlink" href="#reading-distance" title="Permanent link">#</a></h2>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="kt">double</span><span class="w"> </span><span class="n">mm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">getDistanceMm</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 </code></pre></div>
 
-<p>The board detects the sensor type by itself, so there is nothing to configure. Asking for a distance from a port holding a colour sensor throws rather than returning nonsense.</p>
+<p>Returns <code>Double.POSITIVE_INFINITY</code> when nothing is in range.</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="kt">float</span><span class="w"> </span><span class="n">mm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expander</span><span class="p">.</span><span class="n">distanceMm</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</code></pre></div>
+
+<p>Returns <code>INFINITY</code> when nothing is in range.</p>
+</div>
+</div>
+<p>The board detects the sensor type by itself, so there is nothing to configure. Asking for a distance from a port holding a colour sensor fails rather than returning nonsense — that is a wiring mix-up, not a reading.</p>
+<p>&ldquo;Nothing in range&rdquo; being infinity rather than a special case is deliberate: <code>distance &lt; 300</code> is simply false when there is nothing there, which is what you meant. You never have to remember to test for the sentinel before comparing.</p>
 <h2 id="invalid-readings">Invalid readings<a class="headerlink" href="#invalid-readings" title="Permanent link">#</a></h2>
 <p>A distance sensor cannot always produce an answer. Nothing in range, a surface too dark to bounce enough light back, bright sunlight washing out the return — all of these give you a reading that means &ldquo;I don&rsquo;t know&rdquo; rather than a distance.</p>
-<p>Check validity before trusting a number:</p>
+<p>If you are reading the telemetry block directly rather than using the everyday getter, check validity before trusting a number:</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">TelemetryBlock</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">readTelemetry</span><span class="p">();</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="na">isDistanceValid</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">mm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="na">distanceMm</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>
 
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">BBRTelemetry</span><span class="w"> </span><span class="n">t</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">expander</span><span class="p">.</span><span class="n">readTelemetry</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">distanceValid</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">mm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">sensor</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">distance</span><span class="p">.</span><span class="n">distanceMm</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+</div>
+</div>
 <div class="hint hint-warning">
 <p>Treating an invalid reading as a real distance is the single most common way distance-sensor code goes wrong. The failure looks like the robot confidently doing the wrong thing, because as far as your code is concerned it got a number.</p>
 </div>
 <p>The telemetry block also carries <code>signalRate</code> and <code>ambientRate</code>, which tell you <em>why</em> a reading is weak — low signal means not enough light coming back, high ambient means too much light overall.</p>
 <h2 id="triggering-on-proximity">Triggering on proximity<a class="headerlink" href="#triggering-on-proximity" title="Permanent link">#</a></h2>
 <p>The board can watch the distance for you and drive a digital output when something comes within range:</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">triggerWhenNear</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">300</span><span class="p">);</span><span class="w">   </span><span class="c1">// output 0 high when port 1 sees something within 300 mm</span>
 </code></pre></div>
 
 <p>Saved automatically. Your match code reads a <code>DigitalChannel</code> and does no I2C at all.</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="p">.</span><span class="n">triggerWhenNear</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">300</span><span class="p">);</span><span class="w">   </span><span class="c1">// output 0 high when port 1 sees something within 300 mm</span>
+</code></pre></div>
+
+<p>Saved automatically. Your runtime sketch reads the pin with <code>digitalRead()</code> and does no I2C at all.</p>
+</div>
+</div>
 <p>This helper sets a <strong>signal-rate floor</strong> for you, so weak edge-of-range returns don&rsquo;t cause the output to chatter. That is exactly the kind of tuning value the everyday tier exists to hide.</p>
 <div class="hint hint-info">
 <p><code>triggerWhenNear()</code> stores its range window in <strong>class slot 7</strong> of that port. Keep any taught colours on that port in slots 1–6 so they can&rsquo;t collide.</p>
 </div>
 <h2 id="full-control">Full control<a class="headerlink" href="#full-control" title="Permanent link">#</a></h2>
 <p>If you need a two-sided window — &ldquo;between 100 mm and 300 mm&rdquo; rather than &ldquo;closer than 300 mm&rdquo; — use the advanced tier:</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">DistanceClass</span><span class="w"> </span><span class="n">cls</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">DistanceClass</span><span class="p">();</span>
 <span class="n">cls</span><span class="p">.</span><span class="na">distMin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
 <span class="n">cls</span><span class="p">.</span><span class="na">distMax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">300</span><span class="p">;</span>
@@ -118,12 +169,33 @@
 <span class="n">exp</span><span class="p">.</span><span class="na">saveConfigToFlash</span><span class="p">();</span><span class="w">             </span><span class="c1">// advanced tier does NOT auto-save</span>
 </code></pre></div>
 
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">BBRDistanceClass</span><span class="w"> </span><span class="n">cls</span><span class="p">;</span>
+<span class="n">cls</span><span class="p">.</span><span class="n">distMin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
+<span class="n">cls</span><span class="p">.</span><span class="n">distMax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">300</span><span class="p">;</span>
+<span class="n">cls</span><span class="p">.</span><span class="n">hysteresisMm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">      </span><span class="c1">// stops chatter at the boundary</span>
+<span class="n">cls</span><span class="p">.</span><span class="n">minSignalRate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span><span class="w">    </span><span class="c1">// reject weak returns</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">writeDistanceClass</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="n">cls</span><span class="p">);</span><span class="w">   </span><span class="c1">// port 1, class slot 5</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">saveConfigToFlash</span><span class="p">();</span><span class="w">             </span><span class="c1">// advanced tier does NOT auto-save</span>
+</code></pre></div>
+
+</div>
+</div>
 <p><code>hysteresisMm</code> is what stops the output flickering when the robot sits exactly on the threshold. Leave it at the default unless you have a reason.</p>
 <div class="hint hint-danger">
-<p>Advanced-tier calls do not save to flash. If you don&rsquo;t call <code>saveConfigToFlash()</code>, your configuration is lost at power-off. <code>exp.isConfigDirty()</code> tells you whether there are unsaved changes.</p>
+<p>Advanced-tier calls do not save to flash. Without <code>saveConfigToFlash()</code>, your configuration is lost at power-off. <code>isConfigDirty()</code> tells you whether there are unsaved changes.</p>
 </div>
 <h2 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">#</a></h2>
-<p><code>BBRDistanceTriggerSetup</code> is the canonical setup-once OpMode, and <code>BBRDistanceTriggerRuntime</code> is the match half that reads a plain digital input. See <a href="../reference/examples.html">Example OpModes</a>.</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
+<p><code>BBRDistanceTriggerSetup</code> is the canonical setup-once OpMode, and <code>BBRDistanceTriggerRuntime</code> is the match half that reads a plain digital input. See <a href="../ftc/examples.html">Example OpModes</a>.</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<p><code>DistanceRead</code> covers reading, and the <code>TriggerSetup</code> / <code>TriggerRuntime</code> pair is the setup-once configuration plus the runtime sketch that reads a plain pin. See <a href="../arduino/examples.html">Example sketches</a>.</p>
+</div>
+</div>
     </article>
     <nav class="pager-row"><a class="pager prev" href="../guides/colour.html"><span class="pager-label">Previous</span><span class="pager-title">Colour sensors</span></a><a class="pager next" href="../guides/digital-outputs.html"><span class="pager-label">Next</span><span class="pager-title">Digital outputs and triggers</span></a></nav>
     <footer class="page-footer">

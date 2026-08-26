@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Odometry and pose · BBR Digital Expander</title>
-<meta name="description" content="Odometry and pose These methods throw if the gyro cannot be trusted, rather than reporting a pose they cannot stand behind. See Troubleshooting. The board can track where your robo">
+<meta name="description" content="Odometry and pose These calls fail if the gyro cannot be trusted, rather than reporting a pose the board cannot stand behind. See Troubleshooting. The board can track where your ro">
 <link rel="canonical" href="https://expander.buildingblockrobotics.com/guides/odometry.html">
 <link rel="stylesheet" href="../style.css">
 <script>
@@ -54,8 +54,21 @@
 <ul class="nav-list">
 <li><a href="../getting-started/hardware.html">What you have</a></li>
 <li><a href="../getting-started/wiring.html">Wiring it up</a></li>
-<li><a href="../getting-started/configuration.html">Robot configuration</a></li>
-<li><a href="../getting-started/first-opmode.html">Your first OpMode</a></li>
+<li><a href="../getting-started/platforms.html">Choose your platform</a></li>
+</ul>
+<p class="nav-group">FTC (Java)</p>
+<ul class="nav-list">
+<li><a href="../ftc/install.html">Install the driver</a></li>
+<li><a href="../ftc/first-opmode.html">Your first OpMode</a></li>
+<li><a href="../ftc/api.html">Java API summary</a></li>
+<li><a href="../ftc/examples.html">Example OpModes</a></li>
+</ul>
+<p class="nav-group">Arduino (C++)</p>
+<ul class="nav-list">
+<li><a href="../arduino/install.html">Install the library</a></li>
+<li><a href="../arduino/first-sketch.html">Your first sketch</a></li>
+<li><a href="../arduino/api.html">Arduino API summary</a></li>
+<li><a href="../arduino/examples.html">Example sketches</a></li>
 </ul>
 <p class="nav-group">Guides</p>
 <ul class="nav-list">
@@ -68,8 +81,6 @@
 </ul>
 <p class="nav-group">Reference</p>
 <ul class="nav-list">
-<li><a href="../reference/api.html">Java API summary</a></li>
-<li><a href="../reference/examples.html">Example OpModes</a></li>
 <li><a href="../reference/troubleshooting.html">Troubleshooting</a></li>
 </ul>
     </nav>
@@ -79,11 +90,14 @@
     <article class="prose">
       <h1 id="odometry-and-pose">Odometry and pose<a class="headerlink" href="#odometry-and-pose" title="Permanent link">#</a></h1>
 <div class="hint hint-warning">
-<p>These methods throw if the gyro cannot be trusted, rather than reporting a pose they cannot stand behind. See <a href="../reference/troubleshooting.html">Troubleshooting</a>.</p>
+<p>These calls <strong>fail</strong> if the gyro cannot be trusted, rather than reporting a pose the board cannot stand behind. See <a href="../reference/troubleshooting.html">Troubleshooting</a>.</p>
 </div>
-<p>The board can track where your robot is on the field — x, y, and heading — by combining two dead-wheel encoders with the onboard gyro. The integration runs on the board at 1 kHz, and your OpMode reads the answer in a single I2C transaction.</p>
+<p>The board can track where your robot is — x, y, and heading — by combining two dead-wheel encoders with the onboard gyro. The integration runs on the board at 1 kHz, and you read the answer in a single I2C transaction. Needs the <strong>odometry variant</strong>.</p>
 <h2 id="setting-it-up">Setting it up<a class="headerlink" href="#setting-it-up" title="Permanent link">#</a></h2>
 <p>Tell the board about your odometry pods once:</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">LocalizerParams</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">LocalizerParams</span><span class="p">();</span>
 <span class="n">p</span><span class="p">.</span><span class="na">portX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">              </span><span class="c1">// encoder channel for the X (forward) pod</span>
 <span class="n">p</span><span class="p">.</span><span class="na">portY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">              </span><span class="c1">// encoder channel for the Y (lateral) pod</span>
@@ -95,18 +109,31 @@
 <span class="n">exp</span><span class="p">.</span><span class="na">setLocalizerParams</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
 </code></pre></div>
 
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">BBRLocalizerParams</span><span class="w"> </span><span class="n">p</span><span class="p">;</span>
+<span class="n">p</span><span class="p">.</span><span class="n">portX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">                </span><span class="c1">// encoder channel for the X (forward) pod</span>
+<span class="n">p</span><span class="p">.</span><span class="n">portY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">                </span><span class="c1">// encoder channel for the Y (lateral) pod</span>
+<span class="n">p</span><span class="p">.</span><span class="n">ticksPerMmX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">13.26f</span><span class="p">;</span><span class="w">     </span><span class="c1">// measure these, see below</span>
+<span class="n">p</span><span class="p">.</span><span class="n">ticksPerMmY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">13.26f</span><span class="p">;</span>
+<span class="n">p</span><span class="p">.</span><span class="n">tcpOffsetXMm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">;</span><span class="w">      </span><span class="c1">// tracking point offset from robot centre, mm</span>
+<span class="n">p</span><span class="p">.</span><span class="n">tcpOffsetYMm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">;</span>
+<span class="n">p</span><span class="p">.</span><span class="n">imuScalar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span><span class="w">         </span><span class="c1">// gyro scale correction</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">setLocalizerParams</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+</code></pre></div>
+
+</div>
+</div>
 <div class="hint hint-info">
-<p>Stored parameters take effect on the <strong>next</strong> <code>resetLocalizerAndCalibrateImu()</code>, not immediately. Set them first, then start the localizer.</p>
+<p>Stored parameters take effect on the <strong>next</strong> localizer reset, not immediately. Set them first, then start the localizer.</p>
 </div>
 <p><strong>Measuring <code>ticksPerMm</code>:</strong> push the robot a couple of metres along one axis, then divide the counts by the distance travelled. Do it for each axis separately. This is the number that decides whether your pose is right, so measure it properly rather than calculating it from the wheel diameter on the datasheet.</p>
 <p><strong>Measuring <code>imuScalar</code>:</strong> spin the robot ten full turns and compare the reported heading change against 3600°. The ratio is your scalar, and it should land near <code>1.0</code>.</p>
-<p><strong>Getting the directions right:</strong> the localizer expects forward travel and left travel to both count <em>positive</em>. A pod mounted the other way round counts backwards, and the pose will drift in a way that looks like a <code>ticksPerMm</code> problem but isn&rsquo;t. Fix it on the board rather than negating numbers in your OpMode:</p>
-<div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">setEncoderInvertMask</span><span class="p">(</span><span class="mb">0b0010</span><span class="p">);</span><span class="w">   </span><span class="c1">// invert channel 1 only</span>
-<span class="n">exp</span><span class="p">.</span><span class="na">saveConfigToFlash</span><span class="p">();</span>
-</code></pre></div>
-
-<p>One bit per encoder channel, set means inverted. Push the robot forward and check the counts climb before you trust any pose.</p>
+<p><strong>Getting the directions right:</strong> the localizer expects forward travel and left travel to both count <em>positive</em>. A pod mounted the other way round counts backwards, and the pose will drift in a way that looks like a <code>ticksPerMm</code> problem but isn&rsquo;t. Fix it on the board rather than negating numbers in your code — see <a href="encoders.html#direction">Direction</a>.</p>
 <p>Then start it, which zeroes the pose and calibrates the gyro in one step:</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">resetLocalizerAndCalibrateImu</span><span class="p">();</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">exp</span><span class="p">.</span><span class="na">waitForLocalizerReady</span><span class="p">(</span><span class="mi">5000</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
@@ -116,8 +143,23 @@
 <span class="p">}</span>
 </code></pre></div>
 
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="p">.</span><span class="n">resetLocalizerAndCalibrateImu</span><span class="p">();</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">expander</span><span class="p">.</span><span class="n">waitForLocalizerReady</span><span class="p">(</span><span class="mi">5000</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"Localizer never became ready: "</span><span class="p">));</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">expander</span><span class="p">.</span><span class="n">lastErrorText</span><span class="p">());</span>
+<span class="p">}</span>
+</code></pre></div>
+
+</div>
+</div>
 <p>The robot must be <strong>still</strong> for this. It takes one to two seconds.</p>
 <h2 id="reading-the-pose">Reading the pose<a class="headerlink" href="#reading-the-pose" title="Permanent link">#</a></h2>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">Pose2D</span><span class="w"> </span><span class="n">pose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">getPose</span><span class="p">();</span>
 <span class="n">pose</span><span class="p">.</span><span class="na">xMm</span><span class="p">;</span><span class="w">             </span><span class="c1">// millimetres</span>
 <span class="n">pose</span><span class="p">.</span><span class="na">yMm</span><span class="p">;</span><span class="w">             </span><span class="c1">// millimetres</span>
@@ -125,36 +167,90 @@
 <span class="n">pose</span><span class="p">.</span><span class="na">headingDeg</span><span class="p">();</span><span class="w">    </span><span class="c1">// degrees, for telemetry</span>
 </code></pre></div>
 
-<p>Conventions: millimetres and radians, <strong>+X forward, +Y left, counter-clockwise positive</strong>. This is the standard FTC field convention, so it lines up with the rest of your code.</p>
-<p>The field names say their units — <code>xMm</code>, <code>headingRad</code> — so a unit mix-up has to survive you typing the wrong name. Use <code>headingDeg()</code> for telemetry rather than converting by hand.</p>
 <p><code>getPose()</code> throws unless the localizer is actually <code>RUNNING</code> — you never get a stale or made-up position.</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">BBRPose</span><span class="w"> </span><span class="n">pose</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">expander</span><span class="p">.</span><span class="n">getPose</span><span class="p">(</span><span class="n">pose</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">pose</span><span class="p">.</span><span class="n">xMm</span><span class="p">;</span><span class="w">             </span><span class="c1">// millimetres</span>
+<span class="w">  </span><span class="n">pose</span><span class="p">.</span><span class="n">yMm</span><span class="p">;</span><span class="w">             </span><span class="c1">// millimetres</span>
+<span class="w">  </span><span class="n">pose</span><span class="p">.</span><span class="n">headingRad</span><span class="p">;</span><span class="w">      </span><span class="c1">// radians</span>
+<span class="w">  </span><span class="n">pose</span><span class="p">.</span><span class="n">headingDeg</span><span class="p">();</span><span class="w">    </span><span class="c1">// degrees, for printing</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>getPose()</code> returns <code>false</code> unless the localizer is actually running — you never get a stale or made-up position. For velocities as well as position, read the whole block with <code>readLocalizer()</code>.</p>
+</div>
+</div>
+<p>Conventions: millimetres and radians, <strong>+X forward, +Y left, counter-clockwise positive</strong>. This is the standard FTC field convention, so it lines up with the rest of your code there, and it is the usual robotics convention everywhere else.</p>
+<p>The field names say their units — <code>xMm</code>, <code>headingRad</code> — so a unit mix-up has to survive you typing the wrong name. Use <code>headingDeg()</code> for display rather than converting by hand.</p>
 <h2 id="setting-the-pose">Setting the pose<a class="headerlink" href="#setting-the-pose" title="Permanent link">#</a></h2>
 <p>Zero it, or place the robot at a known point:</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">setPose</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">Pose2D</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">));</span>
 <span class="n">exp</span><span class="p">.</span><span class="na">setPose</span><span class="p">(</span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">Pose2D</span><span class="p">.</span><span class="na">fromDegrees</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="mi">90</span><span class="p">));</span>
 </code></pre></div>
 
 <p><code>fromDegrees()</code> exists because everything else in your code is in degrees and converting by hand is an easy place to get a factor of 57.3 wrong.</p>
-<p>Setting the pose is how you tell the robot where autonomous started, or correct it mid-match from a known feature.</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="p">.</span><span class="n">setPose</span><span class="p">(</span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">);</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">setPose</span><span class="p">(</span><span class="mf">500.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">-200.0f</span><span class="p">,</span><span class="w"> </span><span class="n">radians</span><span class="p">(</span><span class="mf">90.0f</span><span class="p">));</span>
+</code></pre></div>
+
+<p>The heading is in radians and is normalized into [−π, π) for you, so <code>radians(90)</code> from a degree-based calculation is fine to pass straight in.</p>
+</div>
+</div>
+<p>Setting the pose is how you tell the robot where it started, or correct it mid-run from a known feature — a vision fix, or driving into a wall at a known place.</p>
 <h2 id="checking-status">Checking status<a class="headerlink" href="#checking-status" title="Permanent link">#</a></h2>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">LocalizerState</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">readLocalizerRaw</span><span class="p">();</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="na">status</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">LocalizerStatus</span><span class="p">.</span><span class="na">RUNNING</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// pose is good</span>
 <span class="p">}</span>
+<span class="n">s</span><span class="p">.</span><span class="na">hasGyroEverSaturated</span><span class="p">();</span><span class="w">   </span><span class="c1">// latched: a collision hard enough to lose heading</span>
+<span class="n">s</span><span class="p">.</span><span class="na">hasPortConflict</span><span class="p">();</span><span class="w">        </span><span class="c1">// a pod's channel is claimed by another feature</span>
+<span class="n">s</span><span class="p">.</span><span class="na">isPoseClipped</span><span class="p">();</span><span class="w">          </span><span class="c1">// the pose ran outside ±32.7 m</span>
 </code></pre></div>
 
-<p>Worth watching in telemetry during development. If the localizer drops out of <code>RUNNING</code>, you want to know that rather than to keep driving on a pose that stopped updating.</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">BBRLocalizerState</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">expander</span><span class="p">.</span><span class="n">readLocalizerRaw</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">status</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">BBRLocalizerStatus</span><span class="o">::</span><span class="n">Running</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// pose is good</span>
+<span class="p">}</span>
+<span class="n">s</span><span class="p">.</span><span class="n">gyroEverSaturated</span><span class="p">();</span><span class="w">   </span><span class="c1">// latched: a collision hard enough to lose heading</span>
+<span class="n">s</span><span class="p">.</span><span class="n">portConflict</span><span class="p">();</span><span class="w">        </span><span class="c1">// a pod's channel is claimed by another feature</span>
+<span class="n">s</span><span class="p">.</span><span class="n">poseClipped</span><span class="p">();</span><span class="w">         </span><span class="c1">// the pose ran outside ±32.7 m</span>
+</code></pre></div>
+
+</div>
+</div>
+<p>Worth watching during development. If the localizer drops out of running, you want to know that rather than to keep driving on a pose that stopped updating.</p>
+<p><code>gyroEverSaturated</code> is latched since the last reset. Once it is true, the heading — and everything integrated from it — has lost an unknown amount of turn, and the fix is a fresh fix from outside, not a smaller loop time.</p>
 <h2 id="getting-good-results">Getting good results<a class="headerlink" href="#getting-good-results" title="Permanent link">#</a></h2>
 <ul>
 <li><strong>Pod geometry has to be right.</strong> The board cannot detect that you measured the wheelbase wrong; it will just accumulate error confidently.</li>
 <li><strong>Calibrate with the robot still.</strong> A bad gyro bias turns into heading drift, and heading drift turns into position error that grows the further you drive.</li>
-<li><strong>Dead wheels need contact.</strong> A pod that skips over a field seam loses counts permanently — odometry has no way to notice or recover.</li>
-<li><strong>Re-zero when you can.</strong> If autonomous ends at a known position, <code>setPose()</code> at the start of teleop beats inheriting accumulated error.</li>
+<li><strong>Dead wheels need contact.</strong> A pod that skips over a seam loses counts permanently — odometry has no way to notice or recover.</li>
+<li><strong>Re-zero when you can.</strong> If one phase ends at a known position, setting the pose at the start of the next beats inheriting accumulated error.</li>
 </ul>
 <h2 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">#</a></h2>
-<p><code>BBRLocalizerExample</code> covers the whole flow: params, calibration, waiting for RUNNING, live pose, re-zeroing, and teleporting. See <a href="../reference/examples.html">Example OpModes</a>.</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
+<p><code>BBRLocalizerExample</code> covers the whole flow: params, calibration, waiting for RUNNING, live pose, re-zeroing and teleporting. See <a href="../ftc/examples.html">Example OpModes</a>.</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<p><code>Localizer</code> covers the whole flow: params, calibration, waiting for ready, live pose, re-zeroing and teleporting. See <a href="../arduino/examples.html">Example sketches</a>.</p>
+</div>
+</div>
     </article>
-    <nav class="pager-row"><a class="pager prev" href="../guides/heading.html"><span class="pager-label">Previous</span><span class="pager-title">Heading (IMU)</span></a><a class="pager next" href="../reference/api.html"><span class="pager-label">Next</span><span class="pager-title">Java API summary</span></a></nav>
+    <nav class="pager-row"><a class="pager prev" href="../guides/heading.html"><span class="pager-label">Previous</span><span class="pager-title">Heading (IMU)</span></a><a class="pager next" href="../reference/troubleshooting.html"><span class="pager-label">Next</span><span class="pager-title">Troubleshooting</span></a></nav>
     <footer class="page-footer">
       <a href="https://github.com/LearnWeaver/BBRDigitalExpander/edit/main/docs/gitbook/guides/odometry.md" rel="noopener">Edit this page on GitHub</a>
     </footer>

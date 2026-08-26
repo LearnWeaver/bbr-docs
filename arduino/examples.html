@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Example sketches · BBR Digital Expander</title>
+<meta name="description" content="Example sketches Every example below ships with the library. In the Arduino IDE they are under File → Examples → BBR Digital Expander; in PlatformIO they are in the library’s examp">
+<link rel="canonical" href="https://expander.buildingblockrobotics.com/arduino/examples.html">
+<link rel="stylesheet" href="../style.css">
+<script>
+  // Set the theme before first paint so the page never flashes the wrong one.
+  try {
+    var t = localStorage.getItem('bbr-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
+</head>
+<body class="page">
+
+<a class="skip" href="#content">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-btn" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <a class="brand" href="../index.html">
+    <span class="brand-name">BBR Digital Expander</span>
+    <span class="brand-tagline">Documentation</span>
+  </a>
+  <div class="search" role="search">
+    <input type="search" id="search-input" placeholder="Search"
+           autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <kbd class="search-key">/</kbd>
+    <div id="search-results" class="search-results" hidden></div>
+  </div>
+  <button class="theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.5"/>
+      <g class="rays"><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.4 4.4l2.1 2.1M17.5 17.5l2.1 2.1M19.6 4.4l-2.1 2.1M6.5 17.5l-2.1 2.1"/></g>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>
+    </svg>
+  </button>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <nav aria-label="Documentation">
+      <ul class="nav-list">
+<li><a href="../index.html">BBR Digital Expander</a></li>
+</ul>
+<p class="nav-group">Getting started</p>
+<ul class="nav-list">
+<li><a href="../getting-started/hardware.html">What you have</a></li>
+<li><a href="../getting-started/wiring.html">Wiring it up</a></li>
+<li><a href="../getting-started/platforms.html">Choose your platform</a></li>
+</ul>
+<p class="nav-group">FTC (Java)</p>
+<ul class="nav-list">
+<li><a href="../ftc/install.html">Install the driver</a></li>
+<li><a href="../ftc/first-opmode.html">Your first OpMode</a></li>
+<li><a href="../ftc/api.html">Java API summary</a></li>
+<li><a href="../ftc/examples.html">Example OpModes</a></li>
+</ul>
+<p class="nav-group">Arduino (C++)</p>
+<ul class="nav-list">
+<li><a href="../arduino/install.html">Install the library</a></li>
+<li><a href="../arduino/first-sketch.html">Your first sketch</a></li>
+<li><a href="../arduino/api.html">Arduino API summary</a></li>
+<li><a href="../arduino/examples.html" class="active">Example sketches</a></li>
+</ul>
+<p class="nav-group">Guides</p>
+<ul class="nav-list">
+<li><a href="../guides/encoders.html">Encoders</a></li>
+<li><a href="../guides/colour.html">Colour sensors</a></li>
+<li><a href="../guides/distance.html">Distance sensors</a></li>
+<li><a href="../guides/digital-outputs.html">Digital outputs and triggers</a></li>
+<li><a href="../guides/heading.html">Heading (IMU)</a></li>
+<li><a href="../guides/odometry.html">Odometry and pose</a></li>
+</ul>
+<p class="nav-group">Reference</p>
+<ul class="nav-list">
+<li><a href="../reference/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+    </nav>
+  </aside>
+
+  <main id="content" class="content">
+    <article class="prose">
+      <h1 id="example-sketches">Example sketches<a class="headerlink" href="#example-sketches" title="Permanent link">#</a></h1>
+<p>Every example below ships with the library. In the Arduino IDE they are under <strong>File → Examples → BBR Digital Expander</strong>; in PlatformIO they are in the library&rsquo;s <code>examples/</code> folder.</p>
+<p>They all assume the board is at the default address <code>0x38</code> on <code>Wire</code>. If you jumpered a different address, change the constructor.</p>
+<h2 id="start-here">Start here<a class="headerlink" href="#start-here" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Sketch</th>
+<th>What it shows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DeviceInfo</code></td>
+<td>Identity, firmware version, variant, capabilities, and what is on each port</td>
+</tr>
+<tr>
+<td><code>SensorDump</code></td>
+<td>Every live value in one transaction — the fastest way to check your wiring</td>
+</tr>
+<tr>
+<td><code>EncoderRead</code></td>
+<td>Counts, firmware velocities, idempotent resets</td>
+</tr>
+</tbody>
+</table>
+<p>Run <code>DeviceInfo</code> before anything else. If it prints a device report, your wiring, pull-ups, logic levels and address jumpers are all correct, and everything else will work.</p>
+<h2 id="colour">Colour<a class="headerlink" href="#colour" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Sketch</th>
+<th>What it shows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ColorTeach</code></td>
+<td>Teach-by-example from the serial monitor, saved to flash</td>
+</tr>
+<tr>
+<td><code>ColorRead</code></td>
+<td>Reading colour classes, confidence and raw channels</td>
+</tr>
+<tr>
+<td><code>LatchedOutput</code></td>
+<td>Latched outputs — catching an event too brief for your loop</td>
+</tr>
+</tbody>
+</table>
+<h2 id="distance">Distance<a class="headerlink" href="#distance" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Sketch</th>
+<th>What it shows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DistanceRead</code></td>
+<td>Millimetres, and what &ldquo;nothing in range&rdquo; looks like</td>
+</tr>
+</tbody>
+</table>
+<h2 id="triggers">Triggers<a class="headerlink" href="#triggers" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Sketch</th>
+<th>What it shows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TriggerSetup</code></td>
+<td>The canonical setup-once configuration: colour, distance, encoder and heading</td>
+</tr>
+<tr>
+<td><code>TriggerRuntime</code></td>
+<td>The runtime half: one <code>digitalRead()</code>, zero I2C, no library at all</td>
+</tr>
+</tbody>
+</table>
+<p>Read these two together. They are the clearest demonstration of what the board is for — the setup sketch runs once and is then never needed again, and the runtime sketch is 23 lines that do not even <code>#include</code> the library.</p>
+<h2 id="encoders">Encoders<a class="headerlink" href="#encoders" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Sketch</th>
+<th>What it shows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PwmEncoder</code></td>
+<td>Absolute pulse-width encoders, calibration, wrap tracking</td>
+</tr>
+</tbody>
+</table>
+<h2 id="heading-and-odometry">Heading and odometry<a class="headerlink" href="#heading-and-odometry" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Sketch</th>
+<th>What it shows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>HeadingIMU</code></td>
+<td>Heading, gyro calibration, failing loudly on an untrustworthy gyro</td>
+</tr>
+<tr>
+<td><code>Localizer</code></td>
+<td>Full pose tracking: parameters, calibration, live pose, re-zeroing</td>
+</tr>
+</tbody>
+</table>
+<p>Both need the odometry variant of the board. On a base board they say so and stop, rather than reporting a heading of <code>0.00</code> forever.</p>
+<h2 id="a-note-on-the-examples">A note on the examples<a class="headerlink" href="#a-note-on-the-examples" title="Permanent link">#</a></h2>
+<p>They are written to be read as much as run. Where an example checks <code>ok()</code> or a status flag rather than trusting a return value, that is showing you something worth copying — particularly <code>HeadingIMU</code> and <code>Localizer</code>, where the check is the difference between &ldquo;the gyro is not answering&rdquo; and a heading that looks fine and is wrong.</p>
+<p>The interactive ones take single-character commands from the serial monitor at 115200 — <code>r</code> to reset, <code>c</code> to calibrate, <code>1</code>–<code>7</code> to teach a colour. Each sketch&rsquo;s header comment says which.</p>
+    </article>
+    <nav class="pager-row"><a class="pager prev" href="../arduino/api.html"><span class="pager-label">Previous</span><span class="pager-title">Arduino API summary</span></a><a class="pager next" href="../guides/encoders.html"><span class="pager-label">Next</span><span class="pager-title">Encoders</span></a></nav>
+    <footer class="page-footer">
+      <a href="https://github.com/LearnWeaver/BBRDigitalExpander/edit/main/docs/gitbook/arduino/examples.md" rel="noopener">Edit this page on GitHub</a>
+    </footer>
+  </main>
+
+  <aside class="onpage" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+<ul class="toc-list">
+<li><a href="#start-here">Start here</a>
+</li>
+<li><a href="#colour">Colour</a>
+</li>
+<li><a href="#distance">Distance</a>
+</li>
+<li><a href="#triggers">Triggers</a>
+</li>
+<li><a href="#encoders">Encoders</a>
+</li>
+<li><a href="#heading-and-odometry">Heading and odometry</a>
+</li>
+<li><a href="#a-note-on-the-examples">A note on the examples</a>
+</li>
+</ul>
+  </aside>
+</div>
+
+<div class="scrim" hidden></div>
+<script src="../app.js" defer></script>
+</body>
+</html>

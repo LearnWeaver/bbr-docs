@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Troubleshooting · BBR Digital Expander</title>
-<meta name="description" content="Troubleshooting The OpMode throws at init “Not a BBR Digital Expander: DEVICE_ID …” — something answered at the address, but it wasn’t an Expander. Check you picked the right I2C b">
+<meta name="description" content="Troubleshooting The board isn’t found at all FTC (Java) Arduino (C++) “Not a BBR Digital Expander: DEVICE_ID …” — something answered at the address, but it wasn’t an Expander. Chec">
 <link rel="canonical" href="https://expander.buildingblockrobotics.com/reference/troubleshooting.html">
 <link rel="stylesheet" href="../style.css">
 <script>
@@ -54,8 +54,21 @@
 <ul class="nav-list">
 <li><a href="../getting-started/hardware.html">What you have</a></li>
 <li><a href="../getting-started/wiring.html">Wiring it up</a></li>
-<li><a href="../getting-started/configuration.html">Robot configuration</a></li>
-<li><a href="../getting-started/first-opmode.html">Your first OpMode</a></li>
+<li><a href="../getting-started/platforms.html">Choose your platform</a></li>
+</ul>
+<p class="nav-group">FTC (Java)</p>
+<ul class="nav-list">
+<li><a href="../ftc/install.html">Install the driver</a></li>
+<li><a href="../ftc/first-opmode.html">Your first OpMode</a></li>
+<li><a href="../ftc/api.html">Java API summary</a></li>
+<li><a href="../ftc/examples.html">Example OpModes</a></li>
+</ul>
+<p class="nav-group">Arduino (C++)</p>
+<ul class="nav-list">
+<li><a href="../arduino/install.html">Install the library</a></li>
+<li><a href="../arduino/first-sketch.html">Your first sketch</a></li>
+<li><a href="../arduino/api.html">Arduino API summary</a></li>
+<li><a href="../arduino/examples.html">Example sketches</a></li>
 </ul>
 <p class="nav-group">Guides</p>
 <ul class="nav-list">
@@ -68,8 +81,6 @@
 </ul>
 <p class="nav-group">Reference</p>
 <ul class="nav-list">
-<li><a href="../reference/api.html">Java API summary</a></li>
-<li><a href="../reference/examples.html">Example OpModes</a></li>
 <li><a href="../reference/troubleshooting.html" class="active">Troubleshooting</a></li>
 </ul>
     </nav>
@@ -78,21 +89,49 @@
   <main id="content" class="content">
     <article class="prose">
       <h1 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">#</a></h1>
-<h2 id="the-opmode-throws-at-init">The OpMode throws at init<a class="headerlink" href="#the-opmode-throws-at-init" title="Permanent link">#</a></h2>
+<h2 id="the-board-isnt-found-at-all">The board isn&rsquo;t found at all<a class="headerlink" href="#the-board-isnt-found-at-all" title="Permanent link">#</a></h2>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <p><strong>&ldquo;Not a BBR Digital Expander: DEVICE_ID &hellip;&rdquo;</strong> — something answered at the address, but it wasn&rsquo;t an Expander. Check you picked the right I2C bus in the robot configuration, and that nothing else on the bus is at address <code>0x38</code>.</p>
 <p><strong>Device not found in hardwareMap</strong> — the name in your code doesn&rsquo;t match the name in the robot configuration. The examples use <code>expander</code>.</p>
 <p><strong>Configuration doesn&rsquo;t list &ldquo;BBR Digital Expander&rdquo;</strong> — the driver folder isn&rsquo;t in your project, or the project didn&rsquo;t rebuild. Confirm <code>com/buildingblockrobotics/expander/</code> is under <code>TeamCode/src/main/java/</code> and rebuild.</p>
 <div class="hint hint-info">
 <p>If you used this board before it was renamed, your old robot configuration entry will no longer resolve. Delete it and add <strong>&ldquo;BBR Digital Expander&rdquo;</strong> fresh.</p>
 </div>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<p><code>begin()</code> returning <code>false</code> prints a reason through <code>lastErrorText()</code>. The three you will actually see:</p>
+<p><strong>&ldquo;the expander did not acknowledge&rdquo;</strong> — nothing answered at that address. In order of likelihood:</p>
+<ol>
+<li><strong>No bus pull-ups.</strong> The board has none, and neither does your Arduino unless you fitted them. See <a href="../getting-started/wiring.html#bus-pull-ups">Wiring it up</a>. This is the single most common cause on a non-Hub host.</li>
+<li><strong>Wrong address.</strong> The jumpers select <code>0x38</code>–<code>0x3B</code>; the constructor defaults to <code>0x38</code>.</li>
+<li><strong>No power, or not enough of it.</strong> The board needs 3.3 V at about 55 mA.</li>
+<li><strong>SDA and SCL swapped.</strong></li>
+</ol>
+<p><strong>&ldquo;not a BBR Digital Expander&rdquo;</strong> — something answered, but it isn&rsquo;t this board. Check for an address clash with another device on the same bus.</p>
+<p><strong>&ldquo;firmware speaks a protocol major this driver does not&rdquo;</strong> — update whichever of the two is older.</p>
+<div class="hint hint-info">
+<p>An I2C scanner sketch is a good next step: it separates &ldquo;nothing on the bus at all&rdquo; (pull-ups, power, wiring) from &ldquo;something is there at an address I didn&rsquo;t expect&rdquo; (jumpers, clash).</p>
+</div>
+</div>
+</div>
+<h2 id="reads-work-sometimes-then-stop">Reads work sometimes, then stop<a class="headerlink" href="#reads-work-sometimes-then-stop" title="Permanent link">#</a></h2>
+<p>Almost always electrical rather than software.</p>
+<ul>
+<li><strong>Pull-ups too weak.</strong> Internal microcontroller pull-ups are tens of kilohms — fine on a short jumper at 100 kHz, marginal at 400 kHz, and worse the longer the cable. Fit 2.2 kΩ–4.7 kΩ to 3.3 V.</li>
+<li><strong>Try 100 kHz.</strong> If dropping <code>Wire.setClock()</code> to <code>100000</code> fixes it, the problem is signal integrity, not the board.</li>
+<li><strong>Cable routing.</strong> Keep the I2C cable away from motor leads. This is the failure that shows up only when the robot is driving.</li>
+<li><strong>Shared ground.</strong> The board and the host need one, and it needs to carry current back without a long thin wire in the way.</li>
+</ul>
 <h2 id="a-sensor-reads-empty">A sensor reads EMPTY<a class="headerlink" href="#a-sensor-reads-empty" title="Permanent link">#</a></h2>
-<p><code>getSensorType(port)</code> returning <code>EMPTY</code> means the board genuinely cannot see a sensor on that port.</p>
+<p>The board genuinely cannot see a sensor on that port.</p>
 <ul>
 <li>Check the cable at both ends.</li>
 <li>Try the sensor on a different port — that separates a bad sensor from a bad port.</li>
-<li>Run <code>BBRSensorDumpTest</code>, which shows all four ports at once.</li>
+<li>Dump all four ports at once: <code>BBRSensorDumpTest</code> on FTC, the <code>SensorDump</code> example on Arduino.</li>
 </ul>
-<h2 id="teachcolor-throws">teachColor() throws<a class="headerlink" href="#teachcolor-throws" title="Permanent link">#</a></h2>
+<h2 id="teaching-a-colour-refuses">Teaching a colour refuses<a class="headerlink" href="#teaching-a-colour-refuses" title="Permanent link">#</a></h2>
 <p>Working as intended. It refuses to store a colour that would never fire or always fire — too dark, saturated, or no sensor on the port.</p>
 <ul>
 <li><strong>Too dark</strong> — more light, or hold the target closer.</li>
@@ -102,60 +141,77 @@
 <p>A stored bad colour is much harder to debug than a refused teach, which is why it fails at the point where you&rsquo;re standing there holding the target.</p>
 <h2 id="a-digital-output-never-goes-high">A digital output never goes high<a class="headerlink" href="#a-digital-output-never-goes-high" title="Permanent link">#</a></h2>
 <ol>
-<li><strong>Was the colour taught?</strong> <code>triggerOnColor()</code> refers to a slot that <code>teachColor()</code> has to have filled first.</li>
-<li><strong>Is the sensor seeing it?</strong> Check <code>getColorClass(port)</code> returns the slot number you expect.</li>
+<li><strong>Was the colour taught?</strong> A colour trigger refers to a slot that teaching has to have filled first.</li>
+<li><strong>Is the sensor seeing it?</strong> Check the colour class returns the slot number you expect.</li>
 <li><strong>Is it saved?</strong> The trigger helpers auto-save, but advanced-tier <code>configureOutput()</code> does not. Check <code>isConfigDirty()</code>.</li>
-<li><strong>Is the Hub input configured?</strong> The digital input needs its own entry in the robot configuration.</li>
+<li><strong>Is the input side set up?</strong> On FTC the digital input needs its own entry in the robot configuration; on Arduino it needs <code>pinMode(pin, INPUT)</code>.</li>
 <li><strong>Is it wired to the pin you think?</strong> Output 0 is not necessarily the first pin on the connector.</li>
 </ol>
 <h2 id="a-digital-output-flickers">A digital output flickers<a class="headerlink" href="#a-digital-output-flickers" title="Permanent link">#</a></h2>
 <p>The condition is sitting right on the threshold. Use hysteresis rather than trying to be more precise:</p>
 <ul>
-<li>Distance: raise <code>hysteresisMm</code> in a <code>DistanceClass</code>.</li>
-<li>Any output: raise <code>debounceAssert</code> / <code>debounceRelease</code> in an <code>OutputConfig</code>.</li>
+<li>Distance: raise <code>hysteresisMm</code> in a distance class.</li>
+<li>Any output: raise <code>debounceAssert</code> / <code>debounceRelease</code> in an output config.</li>
 </ul>
 <p>Both are set to sensible defaults by the everyday helpers, so if you are seeing chatter you are probably on the advanced tier.</p>
-<h2 id="heading-or-pose-throws">Heading or pose throws<a class="headerlink" href="#heading-or-pose-throws" title="Permanent link">#</a></h2>
+<h2 id="heading-or-pose-fails">Heading or pose fails<a class="headerlink" href="#heading-or-pose-fails" title="Permanent link">#</a></h2>
 <p>The board refuses to hand you a heading it cannot stand behind, rather than returning a plausible-looking <code>0.00</code>. Read the message — it names which case you are in:</p>
 <ul>
-<li><strong>The gyro is not responding.</strong> A hardware fault, or a board that lost power mid-transaction. Power-cycle the robot; if it persists on every boot, the board needs looking at.</li>
-<li><strong>The board stopped answering entirely.</strong> Check the I2C cable, then see <a href="#the-opmode-throws-at-init">The OpMode throws at init</a>.</li>
-<li><strong>The localizer was never started.</strong> Pose methods need <code>resetLocalizerAndCalibrateImu()</code> first — heading alone does not.</li>
+<li><strong>This board has no IMU.</strong> It is the base variant. Heading and odometry need the odometry variant.</li>
+<li><strong>The gyro is fitted but not responding.</strong> A hardware fault, or a board that lost power mid-transaction. Power-cycle; if it persists on every boot, the board needs looking at.</li>
+<li><strong>The board stopped answering entirely.</strong> Check the I2C cable, then see <a href="#the-board-isnt-found-at-all">The board isn&rsquo;t found at all</a>.</li>
+<li><strong>The localizer was never started.</strong> Pose calls need the localizer reset first — heading alone does not.</li>
 </ul>
-<p>An exception here is the driver working correctly. A heading of <code>0.00</code> that never changes is indistinguishable from working software right up until the match.</p>
+<p>A failure here is the driver working correctly. A heading of <code>0.00</code> that never changes is indistinguishable from working software right up until it matters.</p>
 <h2 id="heading-drifts">Heading drifts<a class="headerlink" href="#heading-drifts" title="Permanent link">#</a></h2>
 <ul>
-<li>Run <code>calibrateGyro()</code> with the robot <strong>completely</strong> still.</li>
-<li>Check <code>isBiasValid()</code> — false means it hasn&rsquo;t had a good calibration.</li>
-<li>Check <code>isGyroSaturated()</code> — if the robot spun faster than the gyro can measure, the estimate is no longer trustworthy and needs a re-zero.</li>
+<li>Calibrate the gyro with the robot <strong>completely</strong> still.</li>
+<li>Check the bias-valid flag — false means it hasn&rsquo;t had a good calibration.</li>
+<li>Check the gyro-saturated flag — if the robot spun faster than the gyro can measure, the estimate is no longer trustworthy and needs a re-zero.</li>
 </ul>
 <h2 id="the-pose-is-wrong">The pose is wrong<a class="headerlink" href="#the-pose-is-wrong" title="Permanent link">#</a></h2>
 <ul>
-<li><code>getPose()</code> throws unless the localizer is <code>RUNNING</code> — check the status first.</li>
+<li>Pose calls fail unless the localizer is running — check the status first.</li>
 <li>Verify pod geometry and ticks-per-mm. The board cannot detect a wrong measurement; it just accumulates error.</li>
 <li>Check the pods stay in contact with the floor. Skipping loses counts permanently.</li>
 <li>Calibrate with the robot still.</li>
 </ul>
-<h2 id="the-opmode-crawls-roughly-one-loop-per-second">The OpMode crawls, roughly one loop per second<a class="headerlink" href="#the-opmode-crawls-roughly-one-loop-per-second" title="Permanent link">#</a></h2>
-<p>A setup helper is being called inside your match loop with values that keep changing.</p>
-<p><code>teachColor()</code> and the <code>triggerOn…</code> / <code>triggerWhen…</code> helpers save to flash, and the board accepts only one save per second. The driver waits that limit out rather than throwing, so each call costs your loop up to a full second.</p>
+<h2 id="the-loop-crawls-roughly-one-iteration-per-second">The loop crawls, roughly one iteration per second<a class="headerlink" href="#the-loop-crawls-roughly-one-iteration-per-second" title="Permanent link">#</a></h2>
+<p>A setup helper is being called inside your main loop with values that keep changing.</p>
+<p>Teaching and the trigger helpers save to flash, and the board accepts only one save per second. Both drivers wait that limit out rather than failing, so each call costs up to a full second.</p>
 <ul>
-<li>Move the call into a setup OpMode, or behind a button press with edge detection (<code>if (gamepad1.a &amp;&amp; !prevA)</code>), so holding the button doesn&rsquo;t re-fire it every loop.</li>
-<li>If the value genuinely has to change during a match, use advanced-tier <code>configureOutput()</code>, which changes the trigger in RAM without touching flash, and call <code>saveConfigToFlash()</code> only when you want it to persist.</li>
+<li>Move the call into a setup program, or behind a button press with edge detection so holding the button doesn&rsquo;t re-fire it every loop.</li>
+<li>If the value genuinely has to change at runtime, use advanced-tier <code>configureOutput()</code>, which changes the trigger in RAM without touching flash, and save only when you want it to persist.</li>
 </ul>
 <p>Repeating a call with <strong>unchanged</strong> values is not the cause — the board recognises there is nothing new to store and skips the write. It is changing values every loop that costs you.</p>
 <p>See <a href="../guides/digital-outputs.html#set-up-once-never-every-loop">Set up once</a> for what this also does to your triggers while the board is writing.</p>
-<h2 id="readings-freeze-mid-match">Readings freeze mid-match<a class="headerlink" href="#readings-freeze-mid-match" title="Permanent link">#</a></h2>
-<p>Check <code>isDataFresh()</code>. When a read can&rsquo;t reach the device the driver serves the last known good value rather than throwing, so a stale reading looks like a working one that stopped changing.</p>
-<p>A genuine wiring fault — a sustained streak of failures — throws a <code>BBRException</code> naming it. A brief blip does not.</p>
-<h2 id="everything-breaks-when-the-opmode-stops">Everything breaks when the OpMode stops<a class="headerlink" href="#everything-breaks-when-the-opmode-stops" title="Permanent link">#</a></h2>
-<p>Expected, and already handled. The SDK tears the I2C device down at stop, so a read already in flight comes back empty. The driver raises <code>BBRTransportException</code> for that case.</p>
-<p>If you have a polling loop, catch it and <code>break</code> — the IMU and localizer examples show the pattern. It means &ldquo;the read never reached the device&rdquo;, not &ldquo;something is broken&rdquo;.</p>
 <h2 id="configuration-lost-after-power-off">Configuration lost after power-off<a class="headerlink" href="#configuration-lost-after-power-off" title="Permanent link">#</a></h2>
 <p>Advanced-tier calls don&rsquo;t auto-save. Call <code>saveConfigToFlash()</code>. <code>isConfigDirty()</code> tells you whether you have unsaved changes.</p>
 <p>The everyday teach and trigger helpers save for you.</p>
+<h2 id="platform-specific">Platform-specific<a class="headerlink" href="#platform-specific" title="Permanent link">#</a></h2>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
+<h3 id="readings-freeze-mid-match">Readings freeze mid-match<a class="headerlink" href="#readings-freeze-mid-match" title="Permanent link">#</a></h3>
+<p>Check <code>isDataFresh()</code>. When a read can&rsquo;t reach the device the driver serves the last known good value rather than throwing, so a stale reading looks like a working one that stopped changing.</p>
+<p>A genuine wiring fault — a sustained streak of failures — throws a <code>BBRException</code> naming it. A brief blip does not.</p>
+<h3 id="everything-breaks-when-the-opmode-stops">Everything breaks when the OpMode stops<a class="headerlink" href="#everything-breaks-when-the-opmode-stops" title="Permanent link">#</a></h3>
+<p>Expected, and already handled. The SDK tears the I2C device down at stop, so a read already in flight comes back empty. The driver raises <code>BBRTransportException</code> for that case.</p>
+<p>If you have a polling loop, catch it and <code>break</code> — the IMU and localizer examples show the pattern. It means &ldquo;the read never reached the device&rdquo;, not &ldquo;something is broken&rdquo;.</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<h3 id="every-call-returns-false-after-one-failure">Every call returns false after one failure<a class="headerlink" href="#every-call-returns-false-after-one-failure" title="Permanent link">#</a></h3>
+<p>The library does not latch a failure — each call sets its own status. But if <code>begin()</code> failed, calls that need the device to have been identified fail with <code>BBRStatus::NotInitialized</code> until <code>begin()</code> succeeds. Check <code>begin()</code>&rsquo;s return value and stop there rather than looping on it.</p>
+<h3 id="the-sketch-compiles-but-does-nothing">The sketch compiles but does nothing<a class="headerlink" href="#the-sketch-compiles-but-does-nothing" title="Permanent link">#</a></h3>
+<p><code>begin()</code> needs <code>Wire.begin()</code> to have run first. Nothing enforces the order, and the symptom is a clean compile followed by a failed identity read.</p>
+<h3 id="not-enough-ram-on-an-uno">Not enough RAM on an Uno<a class="headerlink" href="#not-enough-ram-on-an-uno" title="Permanent link">#</a></h3>
+<p><code>BBRTelemetry</code> is about 100 bytes and the block read uses a 96-byte buffer while it decodes, so a <code>readTelemetry()</code> call needs roughly 200 bytes of stack. On a 2 KB part that is affordable but not free — if you are already close to the limit, use the everyday getters, which keep one cached block rather than one per call site, and avoid keeping several <code>BBRTelemetry</code> copies alive at once.</p>
+<h3 id="error-text-prints-as-garbage">Error text prints as garbage<a class="headerlink" href="#error-text-prints-as-garbage" title="Permanent link">#</a></h3>
+<p><code>lastErrorText()</code> returns a <code>const __FlashStringHelper *</code>, which <code>Serial.println()</code> handles correctly. Passing it somewhere expecting a <code>char *</code> prints the flash address instead of the string.</p>
+</div>
+</div>
     </article>
-    <nav class="pager-row"><a class="pager prev" href="../reference/examples.html"><span class="pager-label">Previous</span><span class="pager-title">Example OpModes</span></a></nav>
+    <nav class="pager-row"><a class="pager prev" href="../guides/odometry.html"><span class="pager-label">Previous</span><span class="pager-title">Odometry and pose</span></a></nav>
     <footer class="page-footer">
       <a href="https://github.com/LearnWeaver/BBRDigitalExpander/edit/main/docs/gitbook/reference/troubleshooting.md" rel="noopener">Edit this page on GitHub</a>
     </footer>
@@ -164,29 +220,37 @@
   <aside class="onpage" aria-label="On this page">
     <p class="toc-title">On this page</p>
 <ul class="toc-list">
-<li><a href="#the-opmode-throws-at-init">The OpMode throws at init</a>
+<li><a href="#the-board-isnt-found-at-all">The board isn’t found at all</a>
+</li>
+<li><a href="#reads-work-sometimes-then-stop">Reads work sometimes, then stop</a>
 </li>
 <li><a href="#a-sensor-reads-empty">A sensor reads EMPTY</a>
 </li>
-<li><a href="#teachcolor-throws">teachColor() throws</a>
+<li><a href="#teaching-a-colour-refuses">Teaching a colour refuses</a>
 </li>
 <li><a href="#a-digital-output-never-goes-high">A digital output never goes high</a>
 </li>
 <li><a href="#a-digital-output-flickers">A digital output flickers</a>
 </li>
-<li><a href="#heading-or-pose-throws">Heading or pose throws</a>
+<li><a href="#heading-or-pose-fails">Heading or pose fails</a>
 </li>
 <li><a href="#heading-drifts">Heading drifts</a>
 </li>
 <li><a href="#the-pose-is-wrong">The pose is wrong</a>
 </li>
-<li><a href="#the-opmode-crawls-roughly-one-loop-per-second">The OpMode crawls, roughly one loop per second</a>
-</li>
-<li><a href="#readings-freeze-mid-match">Readings freeze mid-match</a>
-</li>
-<li><a href="#everything-breaks-when-the-opmode-stops">Everything breaks when the OpMode stops</a>
+<li><a href="#the-loop-crawls-roughly-one-iteration-per-second">The loop crawls, roughly one iteration per second</a>
 </li>
 <li><a href="#configuration-lost-after-power-off">Configuration lost after power-off</a>
+</li>
+<li><a href="#platform-specific">Platform-specific</a>
+<ul class="toc-sub">
+<li><a href="#readings-freeze-mid-match">Readings freeze mid-match</a></li>
+<li><a href="#everything-breaks-when-the-opmode-stops">Everything breaks when the OpMode stops</a></li>
+<li><a href="#every-call-returns-false-after-one-failure">Every call returns false after one failure</a></li>
+<li><a href="#the-sketch-compiles-but-does-nothing">The sketch compiles but does nothing</a></li>
+<li><a href="#not-enough-ram-on-an-uno">Not enough RAM on an Uno</a></li>
+<li><a href="#error-text-prints-as-garbage">Error text prints as garbage</a></li>
+</ul>
 </li>
 </ul>
   </aside>

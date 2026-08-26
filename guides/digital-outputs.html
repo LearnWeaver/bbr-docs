@@ -54,8 +54,21 @@
 <ul class="nav-list">
 <li><a href="../getting-started/hardware.html">What you have</a></li>
 <li><a href="../getting-started/wiring.html">Wiring it up</a></li>
-<li><a href="../getting-started/configuration.html">Robot configuration</a></li>
-<li><a href="../getting-started/first-opmode.html">Your first OpMode</a></li>
+<li><a href="../getting-started/platforms.html">Choose your platform</a></li>
+</ul>
+<p class="nav-group">FTC (Java)</p>
+<ul class="nav-list">
+<li><a href="../ftc/install.html">Install the driver</a></li>
+<li><a href="../ftc/first-opmode.html">Your first OpMode</a></li>
+<li><a href="../ftc/api.html">Java API summary</a></li>
+<li><a href="../ftc/examples.html">Example OpModes</a></li>
+</ul>
+<p class="nav-group">Arduino (C++)</p>
+<ul class="nav-list">
+<li><a href="../arduino/install.html">Install the library</a></li>
+<li><a href="../arduino/first-sketch.html">Your first sketch</a></li>
+<li><a href="../arduino/api.html">Arduino API summary</a></li>
+<li><a href="../arduino/examples.html">Example sketches</a></li>
 </ul>
 <p class="nav-group">Guides</p>
 <ul class="nav-list">
@@ -68,8 +81,6 @@
 </ul>
 <p class="nav-group">Reference</p>
 <ul class="nav-list">
-<li><a href="../reference/api.html">Java API summary</a></li>
-<li><a href="../reference/examples.html">Example OpModes</a></li>
 <li><a href="../reference/troubleshooting.html">Troubleshooting</a></li>
 </ul>
     </nav>
@@ -80,10 +91,13 @@
       <h1 id="digital-outputs-and-triggers">Digital outputs and triggers<a class="headerlink" href="#digital-outputs-and-triggers" title="Permanent link">#</a></h1>
 <p>This is the feature that makes the Expander different from &ldquo;some more sensor ports&rdquo;.</p>
 <h2 id="the-idea">The idea<a class="headerlink" href="#the-idea" title="Permanent link">#</a></h2>
-<p>You configure a condition <strong>once</strong>. The board watches for it continuously, at a speed your OpMode loop cannot match, and reports the answer on a pin. Your match code reads that pin as an ordinary digital input.</p>
+<p>You configure a condition <strong>once</strong>. The board watches for it continuously, at a speed your loop cannot match, and reports the answer on a pin. Your code reads that pin as an ordinary digital input.</p>
 <p>The result: no I2C traffic, no BBR driver on the hot path, no loop cost, and the condition keeps being enforced even if your code crashes or never runs.</p>
 <h2 id="setting-one-up">Setting one up<a class="headerlink" href="#setting-one-up" title="Permanent link">#</a></h2>
-<p>Write a setup OpMode. Run it once. It never needs to run again.</p>
+<p>Write a setup program. Run it once. It never needs to run again.</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="nd">@TeleOp</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"BBR: Setup colour trigger"</span><span class="p">)</span>
 <span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">BBRSetupTrigger</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">LinearOpMode</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nd">@Override</span>
@@ -112,26 +126,81 @@
 </code></pre></div>
 
 <p>That match OpMode does not import anything from <code>com.buildingblockrobotics</code>. It doesn&rsquo;t know the Expander exists.</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;BBRDigitalExpander.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Wire.h&gt;</span>
+
+<span class="n">BBRDigitalExpander</span><span class="w"> </span><span class="n">expander</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">);</span>
+<span class="w">  </span><span class="n">Wire</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+<span class="w">  </span><span class="n">expander</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+
+<span class="w">  </span><span class="n">expander</span><span class="p">.</span><span class="n">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">          </span><span class="c1">// teach the target colour</span>
+<span class="w">  </span><span class="n">expander</span><span class="p">.</span><span class="n">triggerOnColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">   </span><span class="c1">// output 0 follows it</span>
+
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"Saved. This sketch never needs to run again."</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span>
+</code></pre></div>
+
+<p>Then your runtime sketch:</p>
+<div class="highlight"><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">TRIGGER_PIN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">TRIGGER_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">INPUT</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">digitalRead</span><span class="p">(</span><span class="n">TRIGGER_PIN</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">HIGH</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// do the thing</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>That sketch does not <code>#include</code> the library. It doesn&rsquo;t know the Expander exists.</p>
+</div>
+</div>
 <h2 id="the-four-helpers">The four helpers<a class="headerlink" href="#the-four-helpers" title="Permanent link">#</a></h2>
-<div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">triggerOnColor</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">sensorPort</span><span class="p">,</span><span class="w"> </span><span class="n">classSlot</span><span class="p">);</span><span class="w">      </span><span class="c1">// while a taught colour is seen</span>
-<span class="n">exp</span><span class="p">.</span><span class="na">triggerWhenNear</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">sensorPort</span><span class="p">,</span><span class="w"> </span><span class="n">maxMm</span><span class="p">);</span><span class="w">         </span><span class="c1">// while something is within range</span>
-<span class="n">exp</span><span class="p">.</span><span class="na">triggerWhenEncoderPast</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">channel</span><span class="p">,</span><span class="w"> </span><span class="n">counts</span><span class="p">);</span><span class="w">    </span><span class="c1">// once an encoder passes a threshold</span>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">triggerOnColor</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">sensorPort</span><span class="p">,</span><span class="w"> </span><span class="n">classSlot</span><span class="p">);</span><span class="w">       </span><span class="c1">// while a taught colour is seen</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">triggerWhenNear</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">sensorPort</span><span class="p">,</span><span class="w"> </span><span class="n">maxMm</span><span class="p">);</span><span class="w">          </span><span class="c1">// while something is within range</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">triggerWhenEncoderPast</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">channel</span><span class="p">,</span><span class="w"> </span><span class="n">counts</span><span class="p">);</span><span class="w">     </span><span class="c1">// once an encoder passes a threshold</span>
 <span class="n">exp</span><span class="p">.</span><span class="na">triggerWhenFacing</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">headingDeg</span><span class="p">,</span><span class="w"> </span><span class="n">toleranceDeg</span><span class="p">);</span><span class="w"> </span><span class="c1">// while facing a heading</span>
 </code></pre></div>
 
-<p>All four take an output number 0–3, apply sensible debounce and hysteresis for you, and <strong>save to flash automatically</strong>. See <a href="heading.html">Heading (IMU)</a> for what <code>triggerWhenFacing</code> does at the ±180 seam.</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="p">.</span><span class="n">triggerOnColor</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">sensorPort</span><span class="p">,</span><span class="w"> </span><span class="n">classSlot</span><span class="p">);</span><span class="w">       </span><span class="c1">// while a taught colour is seen</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">triggerWhenNear</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">sensorPort</span><span class="p">,</span><span class="w"> </span><span class="n">maxMm</span><span class="p">);</span><span class="w">          </span><span class="c1">// while something is within range</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">triggerWhenEncoderPast</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">channel</span><span class="p">,</span><span class="w"> </span><span class="n">counts</span><span class="p">);</span><span class="w">     </span><span class="c1">// once an encoder passes a threshold</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">triggerWhenFacing</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">headingDeg</span><span class="p">,</span><span class="w"> </span><span class="n">toleranceDeg</span><span class="p">);</span><span class="w"> </span><span class="c1">// while facing a heading</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">disableOutput</span><span class="p">(</span><span class="n">output</span><span class="p">);</span><span class="w">                               </span><span class="c1">// stop driving it at all</span>
+</code></pre></div>
+
+</div>
+</div>
+<p>All of them take an output number 0–3, apply sensible debounce and hysteresis for you, and <strong>save to flash automatically</strong>. See <a href="heading.html">Heading (IMU)</a> for what the heading trigger does at the ±180 seam.</p>
 <h2 id="set-up-once-never-every-loop">Set up once — never every loop<a class="headerlink" href="#set-up-once-never-every-loop" title="Permanent link">#</a></h2>
-<p>Saving to flash is what makes a trigger survive power-off. It is also why these helpers belong in a setup OpMode you run once, or behind a button press, and <strong>never in your match loop</strong>.</p>
+<p>Saving to flash is what makes a trigger survive power-off. It is also why these helpers belong in a setup program you run once, or behind a button press, and <strong>never in your main loop</strong>.</p>
 <p>Calling one repeatedly with the <em>same</em> values is harmless. The board compares the new configuration against what it already holds and, finding no difference, does nothing at all — no write, no delay.</p>
 <p>Calling one repeatedly with <em>changing</em> values — a threshold following a stick, a heading re-armed every loop — is a different story. Three things go wrong, in the order you will notice them:</p>
-<p><strong>Your OpMode slows to a crawl.</strong> The board accepts at most one real save per second and rejects anything sooner. The driver waits that limit out rather than failing, so every call blocks your loop for up to a full second. A loop that should run at 50 Hz runs at 1 Hz.</p>
+<p><strong>Your loop slows to a crawl.</strong> The board accepts at most one real save per second and rejects anything sooner. Both drivers wait that limit out rather than failing, so every call blocks for up to a full second. A loop that should run at 50 Hz runs at 1 Hz.</p>
 <p><strong>The board stops sensing while it writes.</strong> A save halts sampling for up to 500 ms. During that window outputs hold their last state, debounce counters stop, and anything that passes a sensor is never seen — including in <code>LATCHED</code> mode, which is exactly the case you chose latching to catch. Nothing on the pin indicates this happened.</p>
-<p><strong>Eventually the flash wears out.</strong> Endurance is roughly 100,000 erase cycles per sector, and the board alternates two sectors, so about 200,000 saves. At the one-per-second ceiling that is around 55 hours of continuous saving. Not a number you hit by accident, but well within a season of a robot left enabled on the bench with a save in the loop.</p>
+<p><strong>Eventually the flash wears out.</strong> Endurance is roughly 100,000 erase cycles per sector, and the board alternates two sectors, so about 200,000 saves. At the one-per-second ceiling that is around 55 hours of continuous saving. Not a number you hit by accident, but well within a season of a robot left powered on the bench with a save in the loop.</p>
 <div class="hint hint-danger">
-<p>Keep <code>teachColor()</code> and every <code>triggerOn…</code> / <code>triggerWhen…</code> helper out of your match loop. Run them in a setup OpMode, or on a button press with edge detection so holding the button doesn&rsquo;t re-fire them.</p>
+<p>Keep <code>teachColor()</code> and every <code>triggerOn…</code> / <code>triggerWhen…</code> helper out of your main loop. Run them in a setup program, or on a button press with edge detection so holding the button doesn&rsquo;t re-fire them.</p>
 </div>
-<h3 id="changing-a-trigger-during-a-match">Changing a trigger during a match<a class="headerlink" href="#changing-a-trigger-during-a-match" title="Permanent link">#</a></h3>
-<p>If a threshold genuinely has to move at runtime, use the advanced tier, which does <strong>not</strong> auto-save:</p>
+<h3 id="changing-a-trigger-at-runtime">Changing a trigger at runtime<a class="headerlink" href="#changing-a-trigger-at-runtime" title="Permanent link">#</a></h3>
+<p>If a threshold genuinely has to move while the robot is running, use the advanced tier, which does <strong>not</strong> auto-save:</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputConfig</span><span class="w"> </span><span class="n">out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputConfig</span><span class="p">();</span>
 <span class="n">out</span><span class="p">.</span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputSource</span><span class="p">.</span><span class="na">ENCODER</span><span class="p">;</span>
 <span class="n">out</span><span class="p">.</span><span class="na">srcIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
@@ -140,10 +209,25 @@
 <span class="n">exp</span><span class="p">.</span><span class="na">configureOutput</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">);</span><span class="w">     </span><span class="c1">// RAM only: no flash write, no stall</span>
 </code></pre></div>
 
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">BBROutputConfig</span><span class="w"> </span><span class="n">out</span><span class="p">;</span>
+<span class="n">out</span><span class="p">.</span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BBROutputSource</span><span class="o">::</span><span class="n">Encoder</span><span class="p">;</span>
+<span class="n">out</span><span class="p">.</span><span class="n">srcIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="n">out</span><span class="p">.</span><span class="n">threshMin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">liftTarget</span><span class="p">;</span>
+<span class="n">out</span><span class="p">.</span><span class="n">threshMax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">INT32_MAX</span><span class="p">;</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">configureOutput</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">);</span><span class="w">   </span><span class="c1">// RAM only: no flash write, no stall</span>
+</code></pre></div>
+
+</div>
+</div>
 <p><code>configureOutput()</code> changes what the board is watching for immediately, costs one I2C transaction, and touches flash not at all. Call <code>saveConfigToFlash()</code> separately, once, when you actually want the value to outlive the power cycle — at the end of a tuning session, not every loop.</p>
 <h2 id="latching">Latching<a class="headerlink" href="#latching" title="Permanent link">#</a></h2>
 <p>By default an output follows its condition — high while true, low while false. Sometimes you want the opposite: catch a brief event and hold it until you&rsquo;re ready to deal with it.</p>
 <p>That is <code>LATCHED</code> mode, from the advanced tier:</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputConfig</span><span class="w"> </span><span class="n">out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputConfig</span><span class="p">();</span>
 <span class="n">out</span><span class="p">.</span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputSource</span><span class="p">.</span><span class="na">SENSOR_CLASS</span><span class="p">;</span>
 <span class="n">out</span><span class="p">.</span><span class="na">srcIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">      </span><span class="c1">// sensor port</span>
@@ -158,10 +242,34 @@
 <span class="n">exp</span><span class="p">.</span><span class="na">clearAllOutputLatches</span><span class="p">();</span>
 </code></pre></div>
 
-<p>This catches things your loop would otherwise miss — a line of tape flashing past under the robot at speed, for instance, which might be true for less than one loop iteration.</p>
-<p><code>BBRColorLatchExample</code> shows this working.</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">BBROutputConfig</span><span class="w"> </span><span class="n">out</span><span class="p">;</span>
+<span class="n">out</span><span class="p">.</span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BBROutputSource</span><span class="o">::</span><span class="n">SensorClass</span><span class="p">;</span>
+<span class="n">out</span><span class="p">.</span><span class="n">srcIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">      </span><span class="c1">// sensor port</span>
+<span class="n">out</span><span class="p">.</span><span class="n">classIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">    </span><span class="c1">// colour slot</span>
+<span class="n">out</span><span class="p">.</span><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BBROutputMode</span><span class="o">::</span><span class="n">Latched</span><span class="p">;</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">configureOutput</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">);</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">saveConfigToFlash</span><span class="p">();</span>
+</code></pre></div>
+
+<p>Once latched, the output stays high until you clear it:</p>
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="p">.</span><span class="n">clearOutputLatch</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">clearAllOutputLatches</span><span class="p">();</span>
+</code></pre></div>
+
+<p>You can also read the latch state over I2C rather than wiring the pin, which is handy on a board short of inputs:</p>
+<div class="highlight"><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">expander</span><span class="p">.</span><span class="n">outputLatched</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* it happened since the last clear */</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+
+</div>
+</div>
+<p>This catches things your loop would otherwise miss — a line of tape flashing past under the robot at speed, for instance, which might be true for less than one loop iteration. The question stops being &ldquo;is it true right now?&rdquo; and becomes &ldquo;has it been true since I last looked?&rdquo;, which is usually what you actually wanted to ask.</p>
 <h2 id="one-pin-per-colour">One pin per colour<a class="headerlink" href="#one-pin-per-colour" title="Permanent link">#</a></h2>
 <p>With four outputs you can watch four conditions at once. The usual pattern for a three-colour season is one pin per colour:</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
 <span class="n">exp</span><span class="p">.</span><span class="na">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
 <span class="n">exp</span><span class="p">.</span><span class="na">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span>
@@ -171,11 +279,34 @@
 <span class="n">exp</span><span class="p">.</span><span class="na">triggerOnColor</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span><span class="w">   </span><span class="c1">// output 2 = colour 3</span>
 </code></pre></div>
 
-<p>Your code then reads three digital inputs and knows exactly which colour is underneath, with no I2C at all. <code>BBRThreeColorExample</code> walks through the whole thing.</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="p">.</span><span class="n">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span>
+
+<span class="n">expander</span><span class="p">.</span><span class="n">triggerOnColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">   </span><span class="c1">// output 0 = colour 1</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">triggerOnColor</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w">   </span><span class="c1">// output 1 = colour 2</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">triggerOnColor</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span><span class="w">   </span><span class="c1">// output 2 = colour 3</span>
+</code></pre></div>
+
+</div>
+</div>
+<p>Your code then reads three digital inputs and knows exactly which colour is underneath, with no I2C at all.</p>
 <h2 id="advanced-options">Advanced options<a class="headerlink" href="#advanced-options" title="Permanent link">#</a></h2>
 <p><code>OutputConfig</code> exposes the rest: <code>activeLow</code> to invert the pin, <code>pulseMs</code> for a fixed-length pulse rather than a level, <code>debounceAssert</code> / <code>debounceRelease</code> to tune how many consistent readings are needed before the pin moves, and <code>threshMin</code> / <code>threshMax</code> for two-sided encoder or heading windows (heading in degrees × 100).</p>
 <div class="hint hint-danger">
 <p>Nothing in the advanced tier auto-saves. Call <code>saveConfigToFlash()</code> or lose it at power-off.</p>
+</div>
+<h2 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">#</a></h2>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
+<p><code>BBRColorTriggerSetup</code>, <code>BBRColorLatchExample</code> and <code>BBRThreeColorExample</code> cover setup, latching and the one-pin-per-colour pattern. See <a href="../ftc/examples.html">Example OpModes</a>.</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<p><code>TriggerSetup</code> and <code>TriggerRuntime</code> are the pair to read together; <code>LatchedOutput</code> covers latching. See <a href="../arduino/examples.html">Example sketches</a>.</p>
+</div>
 </div>
     </article>
     <nav class="pager-row"><a class="pager prev" href="../guides/distance.html"><span class="pager-label">Previous</span><span class="pager-title">Distance sensors</span></a><a class="pager next" href="../guides/heading.html"><span class="pager-label">Next</span><span class="pager-title">Heading (IMU)</span></a></nav>
@@ -195,7 +326,7 @@
 </li>
 <li><a href="#set-up-once-never-every-loop">Set up once — never every loop</a>
 <ul class="toc-sub">
-<li><a href="#changing-a-trigger-during-a-match">Changing a trigger during a match</a></li>
+<li><a href="#changing-a-trigger-at-runtime">Changing a trigger at runtime</a></li>
 </ul>
 </li>
 <li><a href="#latching">Latching</a>
@@ -203,6 +334,8 @@
 <li><a href="#one-pin-per-colour">One pin per colour</a>
 </li>
 <li><a href="#advanced-options">Advanced options</a>
+</li>
+<li><a href="#worked-example">Worked example</a>
 </li>
 </ul>
   </aside>

@@ -382,6 +382,55 @@ code {
 .hint-danger::before  { content: "⛔"; color: var(--hint-danger-bd); }
 .hint :not(pre) > code { background: color-mix(in srgb, var(--text) 8%, transparent); }
 
+/* -------------------------------------------------------------------- tabs */
+
+.tabs {
+  margin: 0 0 1.35rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.tab-btns {
+  display: flex; flex-wrap: wrap; gap: .25rem;
+  padding: .35rem .35rem 0;
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border);
+}
+.tab-btn {
+  appearance: none;
+  padding: .5rem .85rem;
+  border: 1px solid transparent; border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit; font-size: .85rem; font-weight: 500;
+  cursor: pointer;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn[aria-selected="true"] {
+  background: var(--bg);
+  border-color: var(--border);
+  color: var(--text);
+  /* Sit on top of the row's bottom border so the panel reads as attached. */
+  margin-bottom: -1px; padding-bottom: calc(.5rem + 1px);
+}
+.tab-panel { padding: 1.1rem 1.1rem .1rem; }
+.tab-panel > :last-child { margin-bottom: 1rem; }
+/* Code inside a panel is already boxed by the panel itself. */
+.tab-panel .highlight { border-radius: 8px; }
+
+/* Without JavaScript every panel is shown, each under its own heading, rather
+   than one panel with an inert row of buttons above it. */
+.tabs:not(.tabs-ready) .tab-btns { display: none; }
+.tabs:not(.tabs-ready) .tab-panel[hidden] { display: block; }
+.tabs:not(.tabs-ready) .tab-panel::before {
+  content: attr(data-tab);
+  display: block; margin-bottom: .75rem;
+  font-size: .8rem; font-weight: 600; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--text-faint);
+}
+.tabs:not(.tabs-ready) .tab-panel + .tab-panel { border-top: 1px solid var(--border); }
+
 /* ------------------------------------------------------------ pager/footer */
 
 .pager-row {

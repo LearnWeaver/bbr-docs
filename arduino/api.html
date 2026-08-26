@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arduino API summary · BBR Digital Expander</title>
+<meta name="description" content="Arduino API summary The everyday tier, which is what most projects need. Every method validates its arguments and, on failure, sets an error you can read rather than returning a pl">
+<link rel="canonical" href="https://expander.buildingblockrobotics.com/arduino/api.html">
+<link rel="stylesheet" href="../style.css">
+<script>
+  // Set the theme before first paint so the page never flashes the wrong one.
+  try {
+    var t = localStorage.getItem('bbr-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
+</head>
+<body class="page">
+
+<a class="skip" href="#content">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-btn" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <a class="brand" href="../index.html">
+    <span class="brand-name">BBR Digital Expander</span>
+    <span class="brand-tagline">Documentation</span>
+  </a>
+  <div class="search" role="search">
+    <input type="search" id="search-input" placeholder="Search"
+           autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <kbd class="search-key">/</kbd>
+    <div id="search-results" class="search-results" hidden></div>
+  </div>
+  <button class="theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.5"/>
+      <g class="rays"><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.4 4.4l2.1 2.1M17.5 17.5l2.1 2.1M19.6 4.4l-2.1 2.1M6.5 17.5l-2.1 2.1"/></g>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>
+    </svg>
+  </button>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <nav aria-label="Documentation">
+      <ul class="nav-list">
+<li><a href="../index.html">BBR Digital Expander</a></li>
+</ul>
+<p class="nav-group">Getting started</p>
+<ul class="nav-list">
+<li><a href="../getting-started/hardware.html">What you have</a></li>
+<li><a href="../getting-started/wiring.html">Wiring it up</a></li>
+<li><a href="../getting-started/platforms.html">Choose your platform</a></li>
+</ul>
+<p class="nav-group">FTC (Java)</p>
+<ul class="nav-list">
+<li><a href="../ftc/install.html">Install the driver</a></li>
+<li><a href="../ftc/first-opmode.html">Your first OpMode</a></li>
+<li><a href="../ftc/api.html">Java API summary</a></li>
+<li><a href="../ftc/examples.html">Example OpModes</a></li>
+</ul>
+<p class="nav-group">Arduino (C++)</p>
+<ul class="nav-list">
+<li><a href="../arduino/install.html">Install the library</a></li>
+<li><a href="../arduino/first-sketch.html">Your first sketch</a></li>
+<li><a href="../arduino/api.html" class="active">Arduino API summary</a></li>
+<li><a href="../arduino/examples.html">Example sketches</a></li>
+</ul>
+<p class="nav-group">Guides</p>
+<ul class="nav-list">
+<li><a href="../guides/encoders.html">Encoders</a></li>
+<li><a href="../guides/colour.html">Colour sensors</a></li>
+<li><a href="../guides/distance.html">Distance sensors</a></li>
+<li><a href="../guides/digital-outputs.html">Digital outputs and triggers</a></li>
+<li><a href="../guides/heading.html">Heading (IMU)</a></li>
+<li><a href="../guides/odometry.html">Odometry and pose</a></li>
+</ul>
+<p class="nav-group">Reference</p>
+<ul class="nav-list">
+<li><a href="../reference/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+    </nav>
+  </aside>
+
+  <main id="content" class="content">
+    <article class="prose">
+      <h1 id="arduino-api-summary">Arduino API summary<a class="headerlink" href="#arduino-api-summary" title="Permanent link">#</a></h1>
+<p>The everyday tier, which is what most projects need. Every method validates its arguments and, on failure, sets an error you can read rather than returning a plausible-looking wrong number.</p>
+<p>Nothing here throws and nothing allocates.</p>
+<h2 id="getting-the-device">Getting the device<a class="headerlink" href="#getting-the-device" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;BBRDigitalExpander.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Wire.h&gt;</span>
+
+<span class="n">BBRDigitalExpander</span><span class="w"> </span><span class="n">expander</span><span class="p">;</span><span class="w">                          </span><span class="c1">// 0x38 on Wire</span>
+<span class="n">BBRDigitalExpander</span><span class="w"> </span><span class="nf">expander</span><span class="p">(</span><span class="mh">0x39</span><span class="p">);</span><span class="w">                    </span><span class="c1">// jumpered address</span>
+<span class="n">BBRDigitalExpander</span><span class="w"> </span><span class="nf">expander</span><span class="p">(</span><span class="n">BBR_I2C_ADDR_DEFAULT</span><span class="p">,</span><span class="w"> </span><span class="n">Wire1</span><span class="p">);</span><span class="w">   </span><span class="c1">// second bus</span>
+
+<span class="n">Wire</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span><span class="w">   </span><span class="c1">// false if it is not there, or not what it should be</span>
+</code></pre></div>
+
+<h2 id="errors">Errors<a class="headerlink" href="#errors" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ok()</code></td>
+<td>Did the most recent call succeed</td>
+</tr>
+<tr>
+<td><code>lastStatus()</code></td>
+<td>A <code>BBRStatus</code> — <code>Ok</code>, <code>Transport</code>, <code>NoImu</code>, <code>BadArgument</code>, …</td>
+</tr>
+<tr>
+<td><code>lastErrorText()</code></td>
+<td>A flash-resident sentence, printable straight to <code>Serial</code></td>
+</tr>
+<tr>
+<td><code>lastCommandResult()</code></td>
+<td>The firmware&rsquo;s error code from the last failed command</td>
+</tr>
+</tbody>
+</table>
+<h2 id="encoders">Encoders<a class="headerlink" href="#encoders" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>encoderCount(channel)</code></td>
+<td>Signed accumulated counts</td>
+</tr>
+<tr>
+<td><code>encoderVelocity(channel)</code></td>
+<td>Signed counts per second, computed on the board</td>
+</tr>
+<tr>
+<td><code>pulseWidthUs(channel)</code></td>
+<td>Pulse width in µs (PULSE_WIDTH mode only)</td>
+</tr>
+<tr>
+<td><code>resetEncoder(channel)</code></td>
+<td><code>bool</code></td>
+</tr>
+<tr>
+<td><code>resetAllEncoders()</code></td>
+<td><code>bool</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="sensors">Sensors<a class="headerlink" href="#sensors" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sensorConnected(port)</code></td>
+<td><code>bool</code></td>
+</tr>
+<tr>
+<td><code>sensorType(port)</code></td>
+<td><code>BBRSensorType::Color</code>, <code>Distance</code>, <code>Empty</code> or <code>Unknown</code></td>
+</tr>
+<tr>
+<td><code>colorClass(port)</code></td>
+<td><code>0</code> for no match, else the colour slot <code>1</code>–<code>7</code></td>
+</tr>
+<tr>
+<td><code>seesColor(port, classSlot)</code></td>
+<td><code>bool</code></td>
+</tr>
+<tr>
+<td><code>distanceMm(port)</code></td>
+<td>Distance in mm, or <code>INFINITY</code> when nothing is in range</td>
+</tr>
+</tbody>
+</table>
+<h2 id="teaching-and-triggers">Teaching and triggers<a class="headerlink" href="#teaching-and-triggers" title="Permanent link">#</a></h2>
+<p>All of these <strong>save to flash automatically</strong>, which is why they are setup calls: run them once, or on a button press, never in a loop. See <a href="../guides/digital-outputs.html#set-up-once-never-every-loop">Set up once</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>teachColor(port, classSlot)</code></td>
+<td>Learn the colour currently in view</td>
+</tr>
+<tr>
+<td><code>triggerOnColor(output, port, classSlot)</code></td>
+<td>Output high while that colour is seen</td>
+</tr>
+<tr>
+<td><code>triggerWhenNear(output, port, maxMm)</code></td>
+<td>Output high while something is within range</td>
+</tr>
+<tr>
+<td><code>triggerWhenEncoderPast(output, channel, counts)</code></td>
+<td>Output high past a threshold</td>
+</tr>
+<tr>
+<td><code>triggerWhenFacing(output, headingDeg, toleranceDeg)</code></td>
+<td>Output high while facing that heading</td>
+</tr>
+<tr>
+<td><code>disableOutput(output)</code></td>
+<td>Stop driving that output at all</td>
+</tr>
+<tr>
+<td><code>outputState()</code> / <code>outputLatched()</code></td>
+<td>Bit per output, read back over I2C</td>
+</tr>
+<tr>
+<td><code>clearOutputLatch(output)</code></td>
+<td>Un-latch one output</td>
+</tr>
+<tr>
+<td><code>clearAllOutputLatches()</code></td>
+<td>Un-latch all four</td>
+</tr>
+</tbody>
+</table>
+<h2 id="heading-and-pose">Heading and pose<a class="headerlink" href="#heading-and-pose" title="Permanent link">#</a></h2>
+<p>These fail rather than return a heading or pose the board cannot stand behind.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>heading()</code></td>
+<td>Degrees CCW-positive, or <code>NAN</code> if the gyro cannot be trusted</td>
+</tr>
+<tr>
+<td><code>resetHeading()</code></td>
+<td><code>bool</code></td>
+</tr>
+<tr>
+<td><code>calibrateGyro()</code></td>
+<td><code>bool</code> (robot must be still, ~1 s)</td>
+</tr>
+<tr>
+<td><code>readImu(BBRImuState&amp;)</code></td>
+<td><code>bool</code></td>
+</tr>
+<tr>
+<td><code>getPose(BBRPose&amp;)</code></td>
+<td><code>bool</code> — mm, radians, +X forward, +Y left</td>
+</tr>
+<tr>
+<td><code>setPose(xMm, yMm, headingRad)</code></td>
+<td><code>bool</code></td>
+</tr>
+<tr>
+<td><code>readLocalizer(BBRLocalizerState&amp;)</code></td>
+<td><code>bool</code> — fails unless RUNNING</td>
+</tr>
+<tr>
+<td><code>readLocalizerRaw(BBRLocalizerState&amp;)</code></td>
+<td><code>bool</code> — any state, check it yourself</td>
+</tr>
+<tr>
+<td><code>waitForLocalizerReady(timeoutMs)</code></td>
+<td><code>bool</code></td>
+</tr>
+<tr>
+<td><code>resetLocalizerAndCalibrateImu()</code></td>
+<td><code>bool</code></td>
+</tr>
+<tr>
+<td><code>setLocalizerParams(...)</code> / <code>getLocalizerParams(...)</code></td>
+<td><code>bool</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="mounting-and-direction">Mounting and direction<a class="headerlink" href="#mounting-and-direction" title="Permanent link">#</a></h2>
+<p>Set once when the board is bolted on; <strong>not</strong> auto-saved, so follow with <code>saveConfigToFlash()</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>setEncoderInvertMask(mask)</code></td>
+<td>Bit per channel; set inverts that encoder&rsquo;s direction</td>
+</tr>
+<tr>
+<td><code>getEncoderInvertMask()</code></td>
+<td>Current mask, or <code>-1</code> on a failed read</td>
+</tr>
+<tr>
+<td><code>setImuAxisUp(axis)</code></td>
+<td>Which board axis points up (<code>BBR_AXIS_*</code>, flat is <code>BBR_AXIS_POS_Z</code>)</td>
+</tr>
+<tr>
+<td><code>getImuAxisUp()</code></td>
+<td>Current setting, or <code>-1</code> on a failed read</td>
+</tr>
+</tbody>
+</table>
+<h2 id="board-identity">Board identity<a class="headerlink" href="#board-identity" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>capabilities()</code> / <code>hasCapability(bit)</code></td>
+<td>Capability bits (<code>BBR_CAP_*</code>)</td>
+</tr>
+<tr>
+<td><code>isOdometryVariant()</code></td>
+<td>Is an IMU fitted</td>
+</tr>
+<tr>
+<td><code>protocolMinor()</code> / <code>hardwareVariant()</code></td>
+<td>Version numbers</td>
+</tr>
+<tr>
+<td><code>deviceStatus()</code></td>
+<td><code>BBR_STATUS_*</code> bits</td>
+</tr>
+<tr>
+<td><code>isConfigDirty()</code></td>
+<td>Are there unsaved config changes</td>
+</tr>
+<tr>
+<td><code>printDeviceInfo(Serial)</code></td>
+<td>The whole identity block, human-readable</td>
+</tr>
+</tbody>
+</table>
+<h2 id="blocks-and-raw-access">Blocks and raw access<a class="headerlink" href="#blocks-and-raw-access" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>readTelemetry(BBRTelemetry&amp;)</code></td>
+<td>Everything in one snapshot</td>
+</tr>
+<tr>
+<td><code>setTelemetryMaxAgeMs(ms)</code></td>
+<td>Cache window behind the everyday getters (default 10)</td>
+</tr>
+<tr>
+<td><code>invalidateTelemetry()</code></td>
+<td>Force the next getter to read the device</td>
+</tr>
+<tr>
+<td><code>encoderPinState()</code></td>
+<td>Live A/B input levels — a wiring diagnostic</td>
+</tr>
+<tr>
+<td><code>readRegisters(reg, buf, len)</code> / <code>writeRegisters(reg, data, len)</code></td>
+<td>Raw block access</td>
+</tr>
+<tr>
+<td><code>readRegister(reg)</code> / <code>writeRegister(reg, value)</code></td>
+<td>One byte; read returns <code>-1</code> on failure</td>
+</tr>
+<tr>
+<td><code>runCommand(opcode, arg, maxMs)</code></td>
+<td>The command protocol, done correctly</td>
+</tr>
+</tbody>
+</table>
+<h2 id="advanced-tier">Advanced tier<a class="headerlink" href="#advanced-tier" title="Permanent link">#</a></h2>
+<p>The full register map is available underneath: <code>configureOutput()</code>, <code>writeColorClass()</code>, <code>writeDistanceClass()</code>, <code>setChannelMode()</code>, <code>setPwmChannelParams()</code>, <code>setPwmWrapEnabled()</code>, <code>setLocalizerParams()</code>, <code>readTelemetry()</code>, <code>runCommand()</code>.</p>
+<div class="hint hint-danger">
+<p><strong>Nothing in the advanced tier saves automatically.</strong> Call <code>saveConfigToFlash()</code>, or the configuration is gone at power-off. <code>isConfigDirty()</code> tells you whether you have unsaved changes.</p>
+</div>
+<h2 id="behaviour-worth-knowing">Behaviour worth knowing<a class="headerlink" href="#behaviour-worth-knowing" title="Permanent link">#</a></h2>
+<p><strong><code>begin()</code> refuses loudly.</strong> A wrong device ID, an unsupported protocol version or an unrecognised hardware variant returns <code>false</code> rather than producing corrupt data later.</p>
+<p><strong>One transaction per snapshot.</strong> The everyday getters share a snapshot refreshed roughly every 10 ms, so four questions in one loop iteration cost one transaction and the answers are mutually consistent.</p>
+<p><strong>Big reads survive a small <code>Wire</code> buffer.</strong> The 96-byte telemetry block does not fit an Uno&rsquo;s 32-byte buffer, so it arrives in chunks — but the register pointer is written only once and the chunks continue from it, which is what keeps the whole block inside a single firmware snapshot. Nothing tears across the seam.</p>
+<p><strong>Commands are idempotent.</strong> Every command carries a token, so a bus retry cannot execute it twice.</p>
+<p><strong>Config writes are verified by readback.</strong> The board never NAKs for addressing reasons — an out-of-range write is silently discarded — so the library writes, reads back and compares.</p>
+<p><strong>IMU access fails when the gyro cannot be trusted</strong> rather than returning zeros, because a heading of <code>0.00</code> that never changes is indistinguishable from working software.</p>
+<p><strong>The localizer block is checked with CRC16.</strong> I2C acknowledges bytes without verifying them, so a noise-flipped bit would otherwise arrive looking like a valid pose. A mismatch is re-read, then reported.</p>
+    </article>
+    <nav class="pager-row"><a class="pager prev" href="../arduino/first-sketch.html"><span class="pager-label">Previous</span><span class="pager-title">Your first sketch</span></a><a class="pager next" href="../arduino/examples.html"><span class="pager-label">Next</span><span class="pager-title">Example sketches</span></a></nav>
+    <footer class="page-footer">
+      <a href="https://github.com/LearnWeaver/BBRDigitalExpander/edit/main/docs/gitbook/arduino/api.md" rel="noopener">Edit this page on GitHub</a>
+    </footer>
+  </main>
+
+  <aside class="onpage" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+<ul class="toc-list">
+<li><a href="#getting-the-device">Getting the device</a>
+</li>
+<li><a href="#errors">Errors</a>
+</li>
+<li><a href="#encoders">Encoders</a>
+</li>
+<li><a href="#sensors">Sensors</a>
+</li>
+<li><a href="#teaching-and-triggers">Teaching and triggers</a>
+</li>
+<li><a href="#heading-and-pose">Heading and pose</a>
+</li>
+<li><a href="#mounting-and-direction">Mounting and direction</a>
+</li>
+<li><a href="#board-identity">Board identity</a>
+</li>
+<li><a href="#blocks-and-raw-access">Blocks and raw access</a>
+</li>
+<li><a href="#advanced-tier">Advanced tier</a>
+</li>
+<li><a href="#behaviour-worth-knowing">Behaviour worth knowing</a>
+</li>
+</ul>
+  </aside>
+</div>
+
+<div class="scrim" hidden></div>
+<script src="../app.js" defer></script>
+</body>
+</html>

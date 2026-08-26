@@ -31,6 +31,54 @@
     });
   }
 
+  /* ----------------------------------------------------------------- tabs */
+
+  // Every tab group on the site shares one selection, stored per browser: pick
+  // Arduino on the encoders page and the odometry page is already showing
+  // Arduino when you get there. Groups that do not offer the remembered tab
+  // (a page with no Arduino equivalent, say) keep their own first tab.
+  var TAB_KEY = 'bbr-platform';
+  var tabGroups = [].slice.call(document.querySelectorAll('.tabs'));
+
+  function showTab(group, title) {
+    var matched = false;
+    group.querySelectorAll('.tab-panel').forEach(function (panel) {
+      var on = panel.getAttribute('data-tab') === title;
+      panel.hidden = !on;
+      matched = matched || on;
+    });
+    group.querySelectorAll('.tab-btn').forEach(function (btn) {
+      btn.setAttribute('aria-selected',
+        btn.getAttribute('data-tab') === title ? 'true' : 'false');
+    });
+    return matched;
+  }
+
+  if (tabGroups.length) {
+    var remembered = null;
+    try { remembered = localStorage.getItem(TAB_KEY); } catch (e) {}
+
+    tabGroups.forEach(function (group) {
+      group.classList.add('tabs-ready');
+      var first = group.querySelector('.tab-btn');
+      if (!showTab(group, remembered) && first) {
+        showTab(group, first.getAttribute('data-tab'));
+      }
+
+      group.addEventListener('click', function (event) {
+        var btn = event.target.closest('.tab-btn');
+        if (!btn || !group.contains(btn)) return;
+        var title = btn.getAttribute('data-tab');
+        try { localStorage.setItem(TAB_KEY, title); } catch (e) {}
+        // Keep the clicked button where it is on screen: switching platform
+        // half way down a long guide should not scroll the page.
+        var before = btn.getBoundingClientRect().top;
+        tabGroups.forEach(function (other) { showTab(other, title); });
+        window.scrollBy(0, btn.getBoundingClientRect().top - before);
+      });
+    });
+  }
+
   /* ------------------------------------------------------------ mobile nav */
 
   var menuBtn = document.querySelector('.menu-btn');

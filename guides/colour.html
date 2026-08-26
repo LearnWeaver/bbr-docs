@@ -54,8 +54,21 @@
 <ul class="nav-list">
 <li><a href="../getting-started/hardware.html">What you have</a></li>
 <li><a href="../getting-started/wiring.html">Wiring it up</a></li>
-<li><a href="../getting-started/configuration.html">Robot configuration</a></li>
-<li><a href="../getting-started/first-opmode.html">Your first OpMode</a></li>
+<li><a href="../getting-started/platforms.html">Choose your platform</a></li>
+</ul>
+<p class="nav-group">FTC (Java)</p>
+<ul class="nav-list">
+<li><a href="../ftc/install.html">Install the driver</a></li>
+<li><a href="../ftc/first-opmode.html">Your first OpMode</a></li>
+<li><a href="../ftc/api.html">Java API summary</a></li>
+<li><a href="../ftc/examples.html">Example OpModes</a></li>
+</ul>
+<p class="nav-group">Arduino (C++)</p>
+<ul class="nav-list">
+<li><a href="../arduino/install.html">Install the library</a></li>
+<li><a href="../arduino/first-sketch.html">Your first sketch</a></li>
+<li><a href="../arduino/api.html">Arduino API summary</a></li>
+<li><a href="../arduino/examples.html">Example sketches</a></li>
 </ul>
 <p class="nav-group">Guides</p>
 <ul class="nav-list">
@@ -68,8 +81,6 @@
 </ul>
 <p class="nav-group">Reference</p>
 <ul class="nav-list">
-<li><a href="../reference/api.html">Java API summary</a></li>
-<li><a href="../reference/examples.html">Example OpModes</a></li>
 <li><a href="../reference/troubleshooting.html">Troubleshooting</a></li>
 </ul>
     </nav>
@@ -80,25 +91,50 @@
       <h1 id="colour-sensors">Colour sensors<a class="headerlink" href="#colour-sensors" title="Permanent link">#</a></h1>
 <p>The board doesn&rsquo;t just hand you raw red, green, and blue numbers and leave you to work out what they mean. You <strong>teach</strong> it the colours you care about, and then ask it a direct question: <em>am I looking at colour 1?</em></p>
 <h2 id="teaching-a-colour">Teaching a colour<a class="headerlink" href="#teaching-a-colour" title="Permanent link">#</a></h2>
-<p>Hold the target in front of the sensor and call <code>teachColor</code>:</p>
+<p>Hold the target in front of the sensor and teach it:</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">   </span><span class="c1">// sensor port 0, this is now "colour 1"</span>
 </code></pre></div>
 
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="p">.</span><span class="n">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">   </span><span class="c1">// sensor port 0, this is now "colour 1"</span>
+</code></pre></div>
+
+</div>
+</div>
 <p>That takes a moment, and it saves to the board&rsquo;s flash automatically. You do <strong>not</strong> need to call <code>saveConfigToFlash()</code> afterwards — the teach helpers do it for you.</p>
 <p>Each port remembers up to <strong>7 colours</strong>, numbered 1 to 7.</p>
-<div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">   </span><span class="c1">// hold red   → colour 1</span>
-<span class="n">exp</span><span class="p">.</span><span class="na">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w">   </span><span class="c1">// hold blue  → colour 2</span>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">   </span><span class="c1">// hold red    → colour 1</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w">   </span><span class="c1">// hold blue   → colour 2</span>
 <span class="n">exp</span><span class="p">.</span><span class="na">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span><span class="w">   </span><span class="c1">// hold yellow → colour 3</span>
 </code></pre></div>
 
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="p">.</span><span class="n">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">   </span><span class="c1">// hold red    → colour 1</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w">   </span><span class="c1">// hold blue   → colour 2</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span><span class="w">   </span><span class="c1">// hold yellow → colour 3</span>
+</code></pre></div>
+
+</div>
+</div>
 <div class="hint hint-success">
-<p>Because it is stored in flash, teaching survives power cycles and applies in every OpMode. Teach at the start of the day, use all day.</p>
+<p>Because it is stored in flash, teaching survives power cycles and applies to everything that reads the board afterwards — a different program, a different language, a different host entirely. Teach at the start of the day, use all day.</p>
 </div>
 <h2 id="when-teaching-refuses">When teaching refuses<a class="headerlink" href="#when-teaching-refuses" title="Permanent link">#</a></h2>
-<p><code>teachColor()</code> <strong>throws</strong> rather than storing a colour it doesn&rsquo;t believe in — if the target is too dark, if the sensor is saturated, or if there is no sensor on that port.</p>
+<p>Teaching <strong>fails</strong> rather than storing a colour the board doesn&rsquo;t believe in — if the target is too dark, if the sensor is saturated, or if there is no sensor on that port.</p>
 <p>This is on purpose. A badly taught colour is worse than no colour at all: it either never fires or always fires, and both look like a code bug rather than a calibration problem. Better to find out while you&rsquo;re standing at the robot holding the target.</p>
-<p>If it throws, the usual fixes are more light, less light, or holding the target closer.</p>
+<p>If it refuses, the usual fixes are more light, less light, or holding the target closer.</p>
 <h2 id="reading-colours">Reading colours<a class="headerlink" href="#reading-colours" title="Permanent link">#</a></h2>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">getColorClass</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w">       </span><span class="c1">// 0 = no match, 1-7 = which colour</span>
 <span class="kt">boolean</span><span class="w"> </span><span class="n">isRed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">seesColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">    </span><span class="c1">// just asking about colour 1</span>
 </code></pre></div>
@@ -109,8 +145,26 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<h2 id="teaching-from-the-gamepad">Teaching from the gamepad<a class="headerlink" href="#teaching-from-the-gamepad" title="Permanent link">#</a></h2>
-<p>Rather than hard-coding a teach call, let a driver do it at the field with a button:</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="kt">uint8_t</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expander</span><span class="p">.</span><span class="n">colorClass</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w">      </span><span class="c1">// 0 = no match, 1-7 = which colour</span>
+<span class="kt">bool</span><span class="w">    </span><span class="n">isRed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expander</span><span class="p">.</span><span class="n">seesColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">    </span><span class="c1">// just asking about colour 1</span>
+</code></pre></div>
+
+<p><code>seesColor()</code> is usually the one you want — it reads as the question you are actually asking:</p>
+<div class="highlight"><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">expander</span><span class="p">.</span><span class="n">seesColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"over red"</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div>
+
+</div>
+</div>
+<p>Both fail safe. A dark, saturated, stale or unplugged sensor reads <code>0</code> — &ldquo;none of the colours I know&rdquo; — rather than confidently naming the wrong one.</p>
+<h2 id="teaching-at-the-field-not-in-code">Teaching at the field, not in code<a class="headerlink" href="#teaching-at-the-field-not-in-code" title="Permanent link">#</a></h2>
+<p>Rather than hard-coding a teach call, let a person do it at the robot:</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">gamepad1</span><span class="p">.</span><span class="na">a</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">prevA</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="n">exp</span><span class="p">.</span><span class="na">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
@@ -123,22 +177,74 @@
 </code></pre></div>
 
 <p>Catching the exception and showing it in telemetry turns a failed teach into something the driver can immediately react to, instead of a stack trace.</p>
-<p>The <code>!prevA</code> matters as much as the <code>try</code>. <code>teachColor()</code> writes to flash, and the board takes at most one save per second — so a held button, teaching on every loop, would stall your OpMode to a crawl. Edge detection makes one press mean one teach. See <a href="digital-outputs.html#set-up-once-never-every-loop">Set up once</a>.</p>
-<p><code>BBRTeachColorExample</code> and <code>BBRThreeColorExample</code> both do this properly.</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Serial</span><span class="p">.</span><span class="n">read</span><span class="p">();</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="sc">'1'</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="sc">'7'</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">expander</span><span class="p">.</span><span class="n">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">uint8_t</span><span class="p">)(</span><span class="n">c</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="sc">'0'</span><span class="p">)))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"learned"</span><span class="p">));</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"teach failed: "</span><span class="p">));</span>
+<span class="w">    </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">expander</span><span class="p">.</span><span class="n">lastErrorText</span><span class="p">());</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Printing <code>lastErrorText()</code> turns a failed teach into something you can immediately react to — it names the reason, and usually the fix.</p>
+</div>
+</div>
+<p>The edge detection matters as much as the error handling. Teaching writes to flash, and the board accepts at most one save per second — so a held button teaching on every loop would stall you to a crawl. One press, one teach. See <a href="digital-outputs.html#set-up-once-never-every-loop">Set up once</a>.</p>
 <h2 id="letting-the-board-watch-for-you">Letting the board watch for you<a class="headerlink" href="#letting-the-board-watch-for-you" title="Permanent link">#</a></h2>
 <p>Once a colour is taught, the board can drive a digital output whenever it sees it — with no I2C traffic and no code in your loop at all:</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">triggerOnColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">   </span><span class="c1">// output 0 high while port 0 sees colour 1</span>
 </code></pre></div>
 
-<p>This also saves automatically. Your match code then reads a stock <code>DigitalChannel</code>. See <a href="digital-outputs.html">Digital outputs and triggers</a>.</p>
+<p>This also saves automatically. Your match code then reads a stock <code>DigitalChannel</code>.</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="p">.</span><span class="n">triggerOnColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">   </span><span class="c1">// output 0 high while port 0 sees colour 1</span>
+</code></pre></div>
+
+<p>This also saves automatically. Your runtime sketch then reads the pin with <code>digitalRead()</code>.</p>
+</div>
+</div>
+<p>See <a href="digital-outputs.html">Digital outputs and triggers</a>.</p>
 <h2 id="raw-values">Raw values<a class="headerlink" href="#raw-values" title="Permanent link">#</a></h2>
 <p>If you need the underlying numbers — for tuning, or for a classifier of your own — they are in the telemetry block:</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">TelemetryBlock</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">readTelemetry</span><span class="p">();</span>
-<span class="kt">int</span><span class="o">[]</span><span class="w"> </span><span class="n">rgbip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="na">rawColor</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">;</span><span class="w">    </span><span class="c1">// r, g, b, ir, proximity</span>
+<span class="kt">int</span><span class="o">[]</span><span class="w"> </span><span class="n">rgbip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="na">rawColor</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">;</span><span class="w">             </span><span class="c1">// r, g, b, ir, proximity</span>
 <span class="kt">int</span><span class="w"> </span><span class="n">confidence</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="na">classConfidence</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">;</span><span class="w">   </span><span class="c1">// 0-255</span>
 </code></pre></div>
 
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">BBRTelemetry</span><span class="w"> </span><span class="n">t</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">expander</span><span class="p">.</span><span class="n">readTelemetry</span><span class="p">(</span><span class="n">t</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">red</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">sensor</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">color</span><span class="p">.</span><span class="n">red</span><span class="p">;</span><span class="w">   </span><span class="c1">// also .green .blue .ir .proximity</span>
+<span class="w">  </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">confidence</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">sensor</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">confidence</span><span class="p">;</span><span class="w">   </span><span class="c1">// 0-255</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Read <code>.color</code> only on a port whose <code>type</code> is <code>BBR_STYPE_COLOR</code>; on a distance port the same bytes carry <code>.distance</code> instead.</p>
+</div>
+</div>
 <p>Classification uses normalized chromaticity rather than raw brightness, which is why a taught colour keeps working as the lighting changes between your workshop and the competition venue.</p>
+<h2 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">#</a></h2>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
+<p><code>BBRTeachColorExample</code> and <code>BBRThreeColorExample</code> both teach from a gamepad button properly. <code>BBRColorClassExample</code> covers reading. See <a href="../ftc/examples.html">Example OpModes</a>.</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<p><code>ColorTeach</code> teaches from the serial monitor, and <code>ColorRead</code> shows classes, confidence and raw channels for every port. See <a href="../arduino/examples.html">Example sketches</a>.</p>
+</div>
+</div>
     </article>
     <nav class="pager-row"><a class="pager prev" href="../guides/encoders.html"><span class="pager-label">Previous</span><span class="pager-title">Encoders</span></a><a class="pager next" href="../guides/distance.html"><span class="pager-label">Next</span><span class="pager-title">Distance sensors</span></a></nav>
     <footer class="page-footer">
@@ -155,11 +261,13 @@
 </li>
 <li><a href="#reading-colours">Reading colours</a>
 </li>
-<li><a href="#teaching-from-the-gamepad">Teaching from the gamepad</a>
+<li><a href="#teaching-at-the-field-not-in-code">Teaching at the field, not in code</a>
 </li>
 <li><a href="#letting-the-board-watch-for-you">Letting the board watch for you</a>
 </li>
 <li><a href="#raw-values">Raw values</a>
+</li>
+<li><a href="#worked-example">Worked example</a>
 </li>
 </ul>
   </aside>

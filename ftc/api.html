@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Java API summary · BBR Digital Expander</title>
 <meta name="description" content="Java API summary The everyday tier, which is what most teams need. Every method validates its arguments and throws a message that names the fix rather than an array index exception">
-<link rel="canonical" href="https://expander.buildingblockrobotics.com/reference/api.html">
+<link rel="canonical" href="https://expander.buildingblockrobotics.com/ftc/api.html">
 <link rel="stylesheet" href="../style.css">
 <script>
   // Set the theme before first paint so the page never flashes the wrong one.
@@ -54,8 +54,21 @@
 <ul class="nav-list">
 <li><a href="../getting-started/hardware.html">What you have</a></li>
 <li><a href="../getting-started/wiring.html">Wiring it up</a></li>
-<li><a href="../getting-started/configuration.html">Robot configuration</a></li>
-<li><a href="../getting-started/first-opmode.html">Your first OpMode</a></li>
+<li><a href="../getting-started/platforms.html">Choose your platform</a></li>
+</ul>
+<p class="nav-group">FTC (Java)</p>
+<ul class="nav-list">
+<li><a href="../ftc/install.html">Install the driver</a></li>
+<li><a href="../ftc/first-opmode.html">Your first OpMode</a></li>
+<li><a href="../ftc/api.html" class="active">Java API summary</a></li>
+<li><a href="../ftc/examples.html">Example OpModes</a></li>
+</ul>
+<p class="nav-group">Arduino (C++)</p>
+<ul class="nav-list">
+<li><a href="../arduino/install.html">Install the library</a></li>
+<li><a href="../arduino/first-sketch.html">Your first sketch</a></li>
+<li><a href="../arduino/api.html">Arduino API summary</a></li>
+<li><a href="../arduino/examples.html">Example sketches</a></li>
 </ul>
 <p class="nav-group">Guides</p>
 <ul class="nav-list">
@@ -68,8 +81,6 @@
 </ul>
 <p class="nav-group">Reference</p>
 <ul class="nav-list">
-<li><a href="../reference/api.html" class="active">Java API summary</a></li>
-<li><a href="../reference/examples.html">Example OpModes</a></li>
 <li><a href="../reference/troubleshooting.html">Troubleshooting</a></li>
 </ul>
     </nav>
@@ -292,9 +303,9 @@ once, or on a button press, never in a match loop. See
 <p><strong>Failed reads serve the last known good value.</strong> When a read cannot reach the device the driver returns the previous snapshot and <code>isDataFresh()</code> goes false, rather than throwing. This is what stops a normal OpMode shutdown from detonating your loop. A genuine wiring fault — a long streak of failures — still throws.</p>
 <p><strong><code>BBRTransportException</code> means the read never reached the device</strong>, not that anything is broken. The SDK tears the I2C device down when an OpMode stops, so a read already in flight comes back empty. A polling loop should catch it and <code>break</code>.</p>
     </article>
-    <nav class="pager-row"><a class="pager prev" href="../guides/odometry.html"><span class="pager-label">Previous</span><span class="pager-title">Odometry and pose</span></a><a class="pager next" href="../reference/examples.html"><span class="pager-label">Next</span><span class="pager-title">Example OpModes</span></a></nav>
+    <nav class="pager-row"><a class="pager prev" href="../ftc/first-opmode.html"><span class="pager-label">Previous</span><span class="pager-title">Your first OpMode</span></a><a class="pager next" href="../ftc/examples.html"><span class="pager-label">Next</span><span class="pager-title">Example OpModes</span></a></nav>
     <footer class="page-footer">
-      <a href="https://github.com/LearnWeaver/BBRDigitalExpander/edit/main/docs/gitbook/reference/api.md" rel="noopener">Edit this page on GitHub</a>
+      <a href="https://github.com/LearnWeaver/BBRDigitalExpander/edit/main/docs/gitbook/ftc/api.md" rel="noopener">Edit this page on GitHub</a>
     </footer>
   </main>
 

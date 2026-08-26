@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Heading (IMU) · BBR Digital Expander</title>
-<meta name="description" content="Heading (IMU) Every method on this page throws if the gyro cannot be trusted — see Troubleshooting. That is deliberate, and better than a heading of 0.00 that never changes. Readin">
+<meta name="description" content="Heading (IMU) Every call on this page fails if the gyro cannot be trusted — an exception in Java, false or NAN in C++. That is deliberate, and better than a heading of 0.00 that ne">
 <link rel="canonical" href="https://expander.buildingblockrobotics.com/guides/heading.html">
 <link rel="stylesheet" href="../style.css">
 <script>
@@ -54,8 +54,21 @@
 <ul class="nav-list">
 <li><a href="../getting-started/hardware.html">What you have</a></li>
 <li><a href="../getting-started/wiring.html">Wiring it up</a></li>
-<li><a href="../getting-started/configuration.html">Robot configuration</a></li>
-<li><a href="../getting-started/first-opmode.html">Your first OpMode</a></li>
+<li><a href="../getting-started/platforms.html">Choose your platform</a></li>
+</ul>
+<p class="nav-group">FTC (Java)</p>
+<ul class="nav-list">
+<li><a href="../ftc/install.html">Install the driver</a></li>
+<li><a href="../ftc/first-opmode.html">Your first OpMode</a></li>
+<li><a href="../ftc/api.html">Java API summary</a></li>
+<li><a href="../ftc/examples.html">Example OpModes</a></li>
+</ul>
+<p class="nav-group">Arduino (C++)</p>
+<ul class="nav-list">
+<li><a href="../arduino/install.html">Install the library</a></li>
+<li><a href="../arduino/first-sketch.html">Your first sketch</a></li>
+<li><a href="../arduino/api.html">Arduino API summary</a></li>
+<li><a href="../arduino/examples.html">Example sketches</a></li>
 </ul>
 <p class="nav-group">Guides</p>
 <ul class="nav-list">
@@ -68,8 +81,6 @@
 </ul>
 <p class="nav-group">Reference</p>
 <ul class="nav-list">
-<li><a href="../reference/api.html">Java API summary</a></li>
-<li><a href="../reference/examples.html">Example OpModes</a></li>
 <li><a href="../reference/troubleshooting.html">Troubleshooting</a></li>
 </ul>
     </nav>
@@ -79,29 +90,66 @@
     <article class="prose">
       <h1 id="heading-imu">Heading (IMU)<a class="headerlink" href="#heading-imu" title="Permanent link">#</a></h1>
 <div class="hint hint-warning">
-<p>Every method on this page throws if the gyro cannot be trusted — see <a href="../reference/troubleshooting.html">Troubleshooting</a>. That is deliberate, and better than a heading of <code>0.00</code> that never changes.</p>
+<p>Every call on this page <strong>fails</strong> if the gyro cannot be trusted — an exception in Java, <code>false</code> or <code>NAN</code> in C++. That is deliberate, and better than a heading of <code>0.00</code> that never changes. See <a href="../reference/troubleshooting.html">Troubleshooting</a>.</p>
 </div>
+<p>Needs the <strong>odometry variant</strong> of the board. On a base board these calls say so specifically, rather than reporting a plausible heading forever.</p>
 <h2 id="reading-heading">Reading heading<a class="headerlink" href="#reading-heading" title="Permanent link">#</a></h2>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="kt">double</span><span class="w"> </span><span class="n">deg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">getHeading</span><span class="p">();</span><span class="w">   </span><span class="c1">// degrees, CCW positive</span>
 </code></pre></div>
 
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="kt">float</span><span class="w"> </span><span class="n">deg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expander</span><span class="p">.</span><span class="n">heading</span><span class="p">();</span><span class="w">   </span><span class="c1">// degrees, CCW positive; NAN if untrustworthy</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">expander</span><span class="p">.</span><span class="n">ok</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">expander</span><span class="p">.</span><span class="n">lastErrorText</span><span class="p">());</span>
+<span class="p">}</span>
+</code></pre></div>
+
+</div>
+</div>
 <p>The board fuses gyro and accelerometer data continuously at high rate, so the heading you read is already filtered. You are not integrating anything yourself.</p>
-<h2 id="zero-it-at-match-start">Zero it at match start<a class="headerlink" href="#zero-it-at-match-start" title="Permanent link">#</a></h2>
+<h2 id="zero-it-at-the-start">Zero it at the start<a class="headerlink" href="#zero-it-at-the-start" title="Permanent link">#</a></h2>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">resetHeading</span><span class="p">();</span>
 </code></pre></div>
 
-<p>Heading is measured from wherever the robot was when you last called this. Call it at match start, once the robot is in its starting position.</p>
-<p><code>resetHeading()</code> is per-match and is <strong>not</strong> saved to flash — it will not disturb any mounting calibration.</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="p">.</span><span class="n">resetHeading</span><span class="p">();</span>
+</code></pre></div>
+
+</div>
+</div>
+<p>Heading is measured from wherever the robot was when you last called this. Call it once the robot is in its starting position.</p>
+<p>Resetting the heading is per-run and is <strong>not</strong> saved to flash — it will not disturb any mounting calibration.</p>
 <h2 id="calibrate-the-gyro">Calibrate the gyro<a class="headerlink" href="#calibrate-the-gyro" title="Permanent link">#</a></h2>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">calibrateGyro</span><span class="p">();</span><span class="w">   </span><span class="c1">// ~1 second, robot must be COMPLETELY still</span>
 </code></pre></div>
 
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="p">.</span><span class="n">calibrateGyro</span><span class="p">();</span><span class="w">   </span><span class="c1">// ~1 second, robot must be COMPLETELY still</span>
+</code></pre></div>
+
+</div>
+</div>
 <p>This measures the gyro&rsquo;s bias — the small non-zero reading it produces while sitting still, which would otherwise accumulate into heading drift.</p>
 <div class="hint hint-danger">
 <p>The robot must be genuinely still. Not &ldquo;mostly still&rdquo;, not &ldquo;someone is holding it&rdquo;. If the board detects movement it refuses rather than storing a bad bias, because a wrong bias is worse than an old one.</p>
 </div>
-<p>Calibrating during init, while the robot sits on the field waiting for the match to start, is the natural place for it.</p>
+<p>Doing it while the robot sits waiting to start is the natural place for it.</p>
 <h2 id="checking-the-state">Checking the state<a class="headerlink" href="#checking-the-state" title="Permanent link">#</a></h2>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">ImuState</span><span class="w"> </span><span class="n">imu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">readImu</span><span class="p">();</span>
 
 <span class="n">imu</span><span class="p">.</span><span class="na">yawDeg</span><span class="p">;</span><span class="w">              </span><span class="c1">// heading</span>
@@ -114,33 +162,75 @@
 <span class="n">imu</span><span class="p">.</span><span class="na">isGyroSaturated</span><span class="p">();</span><span class="w">   </span><span class="c1">// did a rate exceed what the gyro can measure</span>
 </code></pre></div>
 
-<p><code>isFusionValid()</code> is the one to check before trusting a heading. It drops briefly after a mounting change or a reset while the filter re-converges — around 100 ms — and comes back on its own.</p>
-<p><code>isGyroSaturated()</code> matters if your robot spins hard. Past the gyro&rsquo;s maximum rate the heading estimate is no longer trustworthy, and this flag is how you find out that happened rather than wondering why the heading is off afterwards.</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">BBRImuState</span><span class="w"> </span><span class="n">imu</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">expander</span><span class="p">.</span><span class="n">readImu</span><span class="p">(</span><span class="n">imu</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">imu</span><span class="p">.</span><span class="n">yawDeg</span><span class="p">;</span><span class="w">             </span><span class="c1">// heading</span>
+<span class="w">  </span><span class="n">imu</span><span class="p">.</span><span class="n">pitchDeg</span><span class="p">;</span>
+<span class="w">  </span><span class="n">imu</span><span class="p">.</span><span class="n">rollDeg</span><span class="p">;</span>
+<span class="w">  </span><span class="n">imu</span><span class="p">.</span><span class="n">gyroDps</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span><span class="w">         </span><span class="c1">// rates, robot frame, x y z</span>
+<span class="w">  </span><span class="n">imu</span><span class="p">.</span><span class="n">accelMps2</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span><span class="w">       </span><span class="c1">// m/s^2, gravity removed</span>
+<span class="w">  </span><span class="n">imu</span><span class="p">.</span><span class="n">fusionValid</span><span class="p">();</span><span class="w">      </span><span class="c1">// is the attitude output usable right now</span>
+<span class="w">  </span><span class="n">imu</span><span class="p">.</span><span class="n">biasValid</span><span class="p">();</span><span class="w">        </span><span class="c1">// has it been still long enough to trust the bias</span>
+<span class="w">  </span><span class="n">imu</span><span class="p">.</span><span class="n">gyroSaturated</span><span class="p">();</span><span class="w">    </span><span class="c1">// did a rate exceed what the gyro can measure</span>
+<span class="p">}</span>
+</code></pre></div>
+
+</div>
+</div>
+<p><code>fusionValid</code> is the one to check before trusting a heading. It drops briefly after a mounting change or a reset while the filter re-converges — around 100 ms — and comes back on its own.</p>
+<p><code>gyroSaturated</code> matters if your robot spins hard. Past the gyro&rsquo;s maximum rate the heading estimate is no longer trustworthy, and this flag is how you find out that happened rather than wondering why the heading is off afterwards.</p>
 <h2 id="mounting">Mounting<a class="headerlink" href="#mounting" title="Permanent link">#</a></h2>
 <p>The board knows its own IMU orientation — that is handled in firmware and is not your problem.</p>
 <p>What it cannot know is how <em>you</em> bolted the board to <em>your</em> robot.</p>
 <div class="hint hint-warning">
-<p><strong>Mount the board square to the robot&rsquo;s forward direction.</strong> The firmware supports a mounting yaw <em>offset</em> (<code>IMU_YAW_OFFSET</code>), and it applies live without a reboot — but the Java driver does not currently expose a method to set it. Until it does, a board mounted at an angle in the horizontal plane will report headings rotated by that angle, with nothing to correct it from your OpMode.</p>
+<p><strong>Mount the board square to the robot&rsquo;s forward direction.</strong> The firmware supports a mounting yaw <em>offset</em> (<code>IMU_YAW_OFFSET</code>), and it applies live without a reboot — but neither driver currently exposes a method to set it. Until one does, a board mounted at an angle in the horizontal plane will report headings rotated by that angle, with nothing to correct it from your code.</p>
 </div>
 <p>Square and flat is the default and needs no configuration at all.</p>
 <p>If you had to mount the board on its edge rather than flat — bolted to a side rail, say — tell it which way is up, so it integrates yaw about the true vertical instead of about whatever axis happens to be pointing sideways:</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">setImuAxisUp</span><span class="p">(</span><span class="n">BBRRegMap</span><span class="p">.</span><span class="na">AXIS_POS_Z</span><span class="p">);</span><span class="w">   </span><span class="c1">// AXIS_POS_Z is flat, the default</span>
 <span class="n">exp</span><span class="p">.</span><span class="na">saveConfigToFlash</span><span class="p">();</span>
 <span class="n">exp</span><span class="p">.</span><span class="na">resetLocalizerAndCalibrateImu</span><span class="p">();</span><span class="w">      </span><span class="c1">// re-calibrate on the new axis</span>
 </code></pre></div>
 
-<p>The six <code>AXIS_*</code> values cover ±X, ±Y and ±Z. Re-calibrate after changing it, or the gyro bias will still belong to the old axis.</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="p">.</span><span class="n">setImuAxisUp</span><span class="p">(</span><span class="n">BBR_AXIS_POS_Z</span><span class="p">);</span><span class="w">        </span><span class="c1">// BBR_AXIS_POS_Z is flat, the default</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">saveConfigToFlash</span><span class="p">();</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">resetLocalizerAndCalibrateImu</span><span class="p">();</span><span class="w">     </span><span class="c1">// re-calibrate on the new axis</span>
+</code></pre></div>
+
+</div>
+</div>
+<p>The six axis values cover ±X, ±Y and ±Z. Re-calibrate after changing it, or the gyro bias will still belong to the old axis.</p>
 <h2 id="heading-triggers">Heading triggers<a class="headerlink" href="#heading-triggers" title="Permanent link">#</a></h2>
 <p>The board can drive a digital output from heading, the same way it does for colours and distances. A &ldquo;robot is pointing roughly downfield&rdquo; pin costs you no loop time and no I2C traffic:</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">triggerWhenFacing</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">90</span><span class="p">,</span><span class="w"> </span><span class="mi">15</span><span class="p">);</span><span class="w">   </span><span class="c1">// output 0 high while heading is 90° ±15°</span>
 </code></pre></div>
 
-<p>Degrees, not centidegrees, and the same headings <code>getHeading()</code> reports. Tolerance is either side of the target, so that example is a 30° window. Like the other everyday helpers it saves to flash automatically.</p>
-<p>The window is allowed to straddle the ±180 seam — <code>triggerWhenFacing(0, 180, 20)</code> covers 160° to −160°. The board does that arithmetic; you do not.</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="p">.</span><span class="n">triggerWhenFacing</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">90.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">15.0f</span><span class="p">);</span><span class="w">   </span><span class="c1">// output 0 high while heading is 90° ±15°</span>
+</code></pre></div>
+
+</div>
+</div>
+<p>Degrees, not centidegrees, and the same headings the heading getter reports. Tolerance is either side of the target, so that example is a 30° window. Like the other everyday helpers it saves to flash automatically.</p>
+<p>The window is allowed to straddle the ±180 seam — a target of 180 with a tolerance of 20 covers 160° to −160°. The board does that arithmetic; you do not.</p>
 <div class="hint hint-info">
 <p>The pin stays low until the gyro has settled after power-on, and goes low again if the IMU faults. A heading trigger never reports a confident answer the board doesn&rsquo;t have.</p>
 </div>
 <p>If you need an asymmetric window rather than a target-and-tolerance, the advanced tier takes the raw edges in degrees × 100:</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputConfig</span><span class="w"> </span><span class="n">out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputConfig</span><span class="p">();</span>
 <span class="n">out</span><span class="p">.</span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputSource</span><span class="p">.</span><span class="na">IMU_HEADING</span><span class="p">;</span>
 <span class="n">out</span><span class="p">.</span><span class="na">threshMin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4500</span><span class="p">;</span><span class="w">    </span><span class="c1">// 45.00°</span>
@@ -149,9 +239,29 @@
 <span class="n">exp</span><span class="p">.</span><span class="na">saveConfigToFlash</span><span class="p">();</span>
 </code></pre></div>
 
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">BBROutputConfig</span><span class="w"> </span><span class="n">out</span><span class="p">;</span>
+<span class="n">out</span><span class="p">.</span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BBROutputSource</span><span class="o">::</span><span class="n">ImuHeading</span><span class="p">;</span>
+<span class="n">out</span><span class="p">.</span><span class="n">threshMin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4500</span><span class="p">;</span><span class="w">    </span><span class="c1">// 45.00°</span>
+<span class="n">out</span><span class="p">.</span><span class="n">threshMax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">13500</span><span class="p">;</span><span class="w">   </span><span class="c1">// 135.00°</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">configureOutput</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">);</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">saveConfigToFlash</span><span class="p">();</span>
+</code></pre></div>
+
+</div>
+</div>
 <p>Setting <code>threshMin</code> above <code>threshMax</code> is not an error there either: it is how you ask for a window that wraps through ±180.</p>
 <h2 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">#</a></h2>
-<p><code>BBRImuHeadingExample</code> covers heading, calibration, and failing loudly when the gyro cannot be trusted. <code>BBRHeadingTriggerExample</code> arms a heading trigger from the current heading and shows the pin following it. See <a href="../reference/examples.html">Example OpModes</a>.</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
+<p><code>BBRImuHeadingExample</code> covers heading, calibration, and failing loudly when the gyro cannot be trusted. <code>BBRHeadingTriggerExample</code> arms a heading trigger and shows the pin following it. See <a href="../ftc/examples.html">Example OpModes</a>.</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<p><code>HeadingIMU</code> covers heading, calibration and the saturation flags, and <code>TriggerSetup</code> arms a heading trigger. See <a href="../arduino/examples.html">Example sketches</a>.</p>
+</div>
+</div>
     </article>
     <nav class="pager-row"><a class="pager prev" href="../guides/digital-outputs.html"><span class="pager-label">Previous</span><span class="pager-title">Digital outputs and triggers</span></a><a class="pager next" href="../guides/odometry.html"><span class="pager-label">Next</span><span class="pager-title">Odometry and pose</span></a></nav>
     <footer class="page-footer">
@@ -164,7 +274,7 @@
 <ul class="toc-list">
 <li><a href="#reading-heading">Reading heading</a>
 </li>
-<li><a href="#zero-it-at-match-start">Zero it at match start</a>
+<li><a href="#zero-it-at-the-start">Zero it at the start</a>
 </li>
 <li><a href="#calibrate-the-gyro">Calibrate the gyro</a>
 </li>
