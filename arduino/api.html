@@ -231,6 +231,10 @@
 <td>Bit per output, read back over I2C</td>
 </tr>
 <tr>
+<td><code>setEncoderDirection(channel, direction)</code></td>
+<td><code>Forward</code> or <code>Reverse</code> for one channel</td>
+</tr>
+<tr>
 <td><code>clearOutputLatch(output)</code></td>
 <td>Un-latch one output</td>
 </tr>
@@ -297,7 +301,7 @@
 </tbody>
 </table>
 <h2 id="mounting-and-direction">Mounting and direction<a class="headerlink" href="#mounting-and-direction" title="Permanent link">#</a></h2>
-<p>Set once when the board is bolted on; <strong>not</strong> auto-saved, so follow with <code>saveConfigToFlash()</code>.</p>
+<p>Set once when the board is bolted on. Unlike <code>setEncoderDirection()</code> above, nothing here auto-saves — follow with <code>saveConfigToFlash()</code>.</p>
 <table>
 <thead>
 <tr>
@@ -306,10 +310,6 @@
 </tr>
 </thead>
 <tbody>
-<tr>
-<td><code>setEncoderDirection(channel, direction)</code></td>
-<td><code>Forward</code> or <code>Reverse</code> for one channel</td>
-</tr>
 <tr>
 <td><code>getEncoderDirection(channel, out)</code></td>
 <td>Which way that channel counts</td>

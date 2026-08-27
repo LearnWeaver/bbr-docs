@@ -172,15 +172,15 @@ program never reaches it:</p>
 <div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="c1">// The X pod counts backwards, so tell the board to flip that channel.</span>
+<span class="c1">// Saved to flash for you.</span>
 <span class="n">exp</span><span class="p">.</span><span class="na">setEncoderDirection</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">Direction</span><span class="p">.</span><span class="na">REVERSE</span><span class="p">);</span>
-<span class="n">exp</span><span class="p">.</span><span class="na">saveConfigToFlash</span><span class="p">();</span>
 </code></pre></div>
 
 </div>
 <div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="c1">// The X pod counts backwards, so tell the board to flip that channel.</span>
+<span class="c1">// Saved to flash for you.</span>
 <span class="n">expander</span><span class="p">.</span><span class="n">setEncoderDirection</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">BBREncoderDirection</span><span class="o">::</span><span class="n">Reverse</span><span class="p">);</span>
-<span class="n">expander</span><span class="p">.</span><span class="n">saveConfigToFlash</span><span class="p">();</span>
 </code></pre></div>
 
 </div>
@@ -226,6 +226,9 @@ setup, before starting the localizer.</p>
 </div>
 <div class="hint hint-info">
 <p>Stored parameters take effect on the <strong>next</strong> localizer reset, not immediately. Set them first, then start the localizer.</p>
+</div>
+<div class="hint hint-warning">
+<p><code>setLocalizerParams()</code> does <strong>not</strong> save to flash — call <code>saveConfigToFlash()</code> after it, or your pods&rsquo; resolution is gone at the next power-on. (<code>setEncoderDirection()</code>, below, does save itself.)</p>
 </div>
 <p><strong>Measuring <code>ticksPerMm</code>:</strong> push the robot a couple of metres along one axis, then divide the counts by the distance travelled. Do it for each axis separately. This is the number that decides whether your pose is right, so measure it properly rather than calculating it from the wheel diameter on the datasheet.</p>
 <p><strong>Measuring <code>imuScalar</code>:</strong> spin the robot ten full turns and compare the reported heading change against 3600°. The ratio is your scalar, and it should land near <code>1.0</code>.</p>

@@ -131,21 +131,20 @@
 <div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">setEncoderDirection</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">Direction</span><span class="p">.</span><span class="na">REVERSE</span><span class="p">);</span>
-<span class="n">exp</span><span class="p">.</span><span class="na">saveConfigToFlash</span><span class="p">();</span>
 </code></pre></div>
 
 </div>
 <div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="p">.</span><span class="n">setEncoderDirection</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">BBREncoderDirection</span><span class="o">::</span><span class="n">Reverse</span><span class="p">);</span>
-<span class="n">expander</span><span class="p">.</span><span class="n">saveConfigToFlash</span><span class="p">();</span>
 </code></pre></div>
 
 </div>
 </div>
 <p><code>FORWARD</code> means the channel counts up when the mechanism moves the way you call forward; <code>REVERSE</code> flips both the count and the velocity. Ask for the current setting with <code>getEncoderDirection(channel)</code>.</p>
-<p>This is not auto-saved, so call <code>saveConfigToFlash()</code> yourself or the direction is back to front after a power cycle.</p>
+<p><strong>This one saves itself.</strong> Direction is set once when the encoder is bolted on, and a channel that counts backwards again after every reboot is a bug nobody traces back to a missing save call — so it goes to flash for you. Setting the same direction repeatedly costs nothing: the board compares the payload it would write against what is already stored and skips the write.</p>
+<p>Like the other setup helpers, run it once rather than in a loop.</p>
 <div class="hint hint-info">
-<p>Setting several channels at once, or reading them as one value, is the advanced tier: <code>setEncoderInvertMask(mask)</code> / <code>getEncoderInvertMask()</code>, one bit per channel, set means inverted. <code>setEncoderDirection()</code> is the same setting said one channel at a time.</p>
+<p>Setting several channels at once, or reading them as one value, is the advanced tier: <code>setEncoderInvertMask(mask)</code> / <code>getEncoderInvertMask()</code>, one bit per channel, set means inverted. Those do <strong>not</strong> auto-save — call <code>saveConfigToFlash()</code> yourself.</p>
 </div>
 <h2 id="absolute-pulse-width-encoders">Absolute (pulse-width) encoders<a class="headerlink" href="#absolute-pulse-width-encoders" title="Permanent link">#</a></h2>
 <p>Any channel can be switched from quadrature to reading a PWM absolute encoder — the kind that reports its position as a pulse width, typically 1 to 1024 µs per revolution. An absolute encoder is correct the instant you power on, with no homing move.</p>
