@@ -133,6 +133,7 @@
 <p>You do not tell the board what kind of sensor you plugged in. It works that out.</p>
 <h2 id="encoders">Encoders<a class="headerlink" href="#encoders" title="Permanent link">#</a></h2>
 <p>Each of the four encoder channels takes a quadrature encoder (an A and a B signal). Channels can individually be switched to read a pulse-width absolute encoder instead — see <a href="../guides/encoders.html">Encoders</a>.</p>
+<p>If you are using the localizer, two of these channels carry the <strong>X and Y tracking pods</strong>. Which two is your choice, but note it down as you wire them — the localizer has to be told, and it will not start until both are assigned. See <a href="../guides/odometry.html#which-encoder-ports-the-pods-use">Which encoder ports the pods use</a>.</p>
 <h2 id="digital-outputs">Digital outputs<a class="headerlink" href="#digital-outputs" title="Permanent link">#</a></h2>
 <p>You only need to wire these if you are using the standalone trigger feature, where the board watches a condition for you and reports the answer on a pin.</p>
 <div class="tabs">

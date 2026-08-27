@@ -93,6 +93,106 @@
 <p>These calls <strong>fail</strong> if the gyro cannot be trusted, rather than reporting a pose the board cannot stand behind. See <a href="../reference/troubleshooting.html">Troubleshooting</a>.</p>
 </div>
 <p>The board can track where your robot is — x, y, and heading — by combining two dead-wheel encoders with the onboard gyro. The integration runs on the board at 1 kHz, and you read the answer in a single I2C transaction. Needs the <strong>odometry variant</strong>.</p>
+<h2 id="which-encoder-ports-the-pods-use">Which encoder ports the pods use<a class="headerlink" href="#which-encoder-ports-the-pods-use" title="Permanent link">#</a></h2>
+<p>The localizer reads <strong>two of the four quadrature encoder channels</strong>. You choose
+which two — there is no fixed pair — but they must be different channels, and
+<strong>both must be assigned or the localizer will not start</strong>. Starting it with a
+port unassigned fails with <code>ERR_LOC_BAD_PARAMS</code> rather than running on a guess.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Rolls when the robot</th>
+<th>Typically mounted</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>X pod</strong></td>
+<td>drives forward or backward</td>
+<td>along the robot&rsquo;s fore-aft axis</td>
+</tr>
+<tr>
+<td><strong>Y pod</strong></td>
+<td>strafes left or right</td>
+<td>across it, perpendicular to X</td>
+</tr>
+</tbody>
+</table>
+<p>Whichever channels you plug them into become <code>portX</code> and <code>portY</code>. Channels 0 and
+1 are only a convention — the examples use them because they leave 2 and 3 free
+for other encoders, not because the board cares.</p>
+<div class="hint hint-warning">
+<p><strong>Both pod channels must stay in <code>QUADRATURE</code> mode.</strong> A channel switched to
+<code>PULSE_WIDTH</code> is reading a pulse width, not counting ticks, and cannot feed the
+localizer. If you are using absolute encoders elsewhere, keep them on the two
+channels the pods are not using.</p>
+</div>
+<h3 id="getting-the-directions-right">Getting the directions right<a class="headerlink" href="#getting-the-directions-right" title="Permanent link">#</a></h3>
+<p>The localizer expects <strong>forward travel and left travel to both count positive</strong>.
+A pod mounted the other way round counts backwards, and the pose drifts in a way
+that looks like a <code>ticksPerMm</code> problem but isn&rsquo;t.</p>
+<p>Check it before you trust any pose. Read the two channels directly, push the
+robot by hand, and watch which way they move:</p>
+<table>
+<thead>
+<tr>
+<th>Push the robot</th>
+<th>X channel</th>
+<th>Y channel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>forward</td>
+<td>counts <strong>up</strong></td>
+<td>barely moves</td>
+</tr>
+<tr>
+<td>backward</td>
+<td>counts down</td>
+<td>barely moves</td>
+</tr>
+<tr>
+<td>left (strafe)</td>
+<td>barely moves</td>
+<td>counts <strong>up</strong></td>
+</tr>
+<tr>
+<td>right (strafe)</td>
+<td>barely moves</td>
+<td>counts down</td>
+</tr>
+</tbody>
+</table>
+<p>If one counts the wrong way, fix it on the board rather than negating numbers in
+your code — the localizer reads the channels itself, so a sign flip in your
+program never reaches it:</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="c1">// The X pod counts backwards, so tell the board to flip that channel.</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">setEncoderDirection</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">Direction</span><span class="p">.</span><span class="na">REVERSE</span><span class="p">);</span>
+<span class="n">exp</span><span class="p">.</span><span class="na">saveConfigToFlash</span><span class="p">();</span>
+</code></pre></div>
+
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="c1">// The X pod counts backwards, so tell the board to flip that channel.</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">setEncoderDirection</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">BBREncoderDirection</span><span class="o">::</span><span class="n">Reverse</span><span class="p">);</span>
+<span class="n">expander</span><span class="p">.</span><span class="n">saveConfigToFlash</span><span class="p">();</span>
+</code></pre></div>
+
+</div>
+</div>
+<p>See <a href="encoders.html#direction">Direction</a>.</p>
+<div class="hint hint-danger">
+<p><strong>Do not change a pod channel&rsquo;s invert mask or channel mode while the localizer
+is running.</strong> The board swallows one tick delta rather than integrating the
+jump, and sets the <code>PORT_CONFLICT</code> flag so you know it happened — but that flag
+is sticky and the pose has lost that tick. Set direction and mode once, at
+setup, before starting the localizer.</p>
+</div>
 <h2 id="setting-it-up">Setting it up<a class="headerlink" href="#setting-it-up" title="Permanent link">#</a></h2>
 <p>Tell the board about your odometry pods once:</p>
 <div class="tabs">
@@ -129,7 +229,8 @@
 </div>
 <p><strong>Measuring <code>ticksPerMm</code>:</strong> push the robot a couple of metres along one axis, then divide the counts by the distance travelled. Do it for each axis separately. This is the number that decides whether your pose is right, so measure it properly rather than calculating it from the wheel diameter on the datasheet.</p>
 <p><strong>Measuring <code>imuScalar</code>:</strong> spin the robot ten full turns and compare the reported heading change against 3600°. The ratio is your scalar, and it should land near <code>1.0</code>.</p>
-<p><strong>Getting the directions right:</strong> the localizer expects forward travel and left travel to both count <em>positive</em>. A pod mounted the other way round counts backwards, and the pose will drift in a way that looks like a <code>ticksPerMm</code> problem but isn&rsquo;t. Fix it on the board rather than negating numbers in your code — see <a href="encoders.html#direction">Direction</a>.</p>
+<p><code>portX</code> and <code>portY</code> are the channels you picked above. Getting them the wrong
+way round is not a subtle failure — the robot will think forward is sideways.</p>
 <p>Then start it, which zeroes the pose and calibrates the gyro in one step:</p>
 <div class="tabs">
 <div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
@@ -213,7 +314,7 @@
 <span class="w">    </span><span class="c1">// pose is good</span>
 <span class="p">}</span>
 <span class="n">s</span><span class="p">.</span><span class="na">hasGyroEverSaturated</span><span class="p">();</span><span class="w">   </span><span class="c1">// latched: a collision hard enough to lose heading</span>
-<span class="n">s</span><span class="p">.</span><span class="na">hasPortConflict</span><span class="p">();</span><span class="w">        </span><span class="c1">// a pod's channel is claimed by another feature</span>
+<span class="n">s</span><span class="p">.</span><span class="na">hasPortConflict</span><span class="p">();</span><span class="w">        </span><span class="c1">// a pod channel was disturbed mid-run</span>
 <span class="n">s</span><span class="p">.</span><span class="na">isPoseClipped</span><span class="p">();</span><span class="w">          </span><span class="c1">// the pose ran outside ±32.7 m</span>
 </code></pre></div>
 
@@ -224,7 +325,7 @@
 <span class="w">  </span><span class="c1">// pose is good</span>
 <span class="p">}</span>
 <span class="n">s</span><span class="p">.</span><span class="n">gyroEverSaturated</span><span class="p">();</span><span class="w">   </span><span class="c1">// latched: a collision hard enough to lose heading</span>
-<span class="n">s</span><span class="p">.</span><span class="n">portConflict</span><span class="p">();</span><span class="w">        </span><span class="c1">// a pod's channel is claimed by another feature</span>
+<span class="n">s</span><span class="p">.</span><span class="n">portConflict</span><span class="p">();</span><span class="w">        </span><span class="c1">// a pod channel was disturbed mid-run</span>
 <span class="n">s</span><span class="p">.</span><span class="n">poseClipped</span><span class="p">();</span><span class="w">         </span><span class="c1">// the pose ran outside ±32.7 m</span>
 </code></pre></div>
 
@@ -259,6 +360,11 @@
   <aside class="onpage" aria-label="On this page">
     <p class="toc-title">On this page</p>
 <ul class="toc-list">
+<li><a href="#which-encoder-ports-the-pods-use">Which encoder ports the pods use</a>
+<ul class="toc-sub">
+<li><a href="#getting-the-directions-right">Getting the directions right</a></li>
+</ul>
+</li>
 <li><a href="#setting-it-up">Setting it up</a>
 </li>
 <li><a href="#reading-the-pose">Reading the pose</a>

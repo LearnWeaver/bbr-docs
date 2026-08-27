@@ -249,8 +249,16 @@ once, or on a button press, never in a match loop. See
 </thead>
 <tbody>
 <tr>
+<td><code>setEncoderDirection(channel, direction)</code></td>
+<td><code>FORWARD</code> or <code>REVERSE</code> for one channel</td>
+</tr>
+<tr>
+<td><code>getEncoderDirection(channel)</code></td>
+<td>Which way that channel counts</td>
+</tr>
+<tr>
 <td><code>setEncoderInvertMask(mask)</code></td>
-<td>Bit per channel; set inverts that encoder&rsquo;s direction</td>
+<td>All four at once; bit per channel, set = inverted</td>
 </tr>
 <tr>
 <td><code>getEncoderInvertMask()</code></td>

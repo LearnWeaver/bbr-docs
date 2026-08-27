@@ -126,7 +126,7 @@
 <h2 id="ports-and-numbering">Ports and numbering<a class="headerlink" href="#ports-and-numbering" title="Permanent link">#</a></h2>
 <p>Everything is numbered <strong>0 to 3</strong>, and each group is numbered independently:</p>
 <ul>
-<li><strong>Encoder channels 0–3</strong> — quadrature by default; each can be switched to read a pulse-width (PWM) absolute encoder instead.</li>
+<li><strong>Encoder channels 0–3</strong> — quadrature by default; each can be switched to read a pulse-width (PWM) absolute encoder instead. On the odometry variant, <strong>two of these carry the localizer&rsquo;s tracking pods</strong> — you choose which two, and they must stay in quadrature mode. See <a href="../guides/odometry.html#which-encoder-ports-the-pods-use">Which encoder ports the pods use</a>.</li>
 <li><strong>Sensor ports 0–3</strong> — each takes a colour <em>or</em> a distance sensor. Any mix is fine, including four of the same kind.</li>
 <li><strong>Digital outputs 0–3</strong> — driven by the board, read by the Hub as ordinary digital inputs.</li>
 </ul>

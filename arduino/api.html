@@ -307,8 +307,16 @@
 </thead>
 <tbody>
 <tr>
+<td><code>setEncoderDirection(channel, direction)</code></td>
+<td><code>Forward</code> or <code>Reverse</code> for one channel</td>
+</tr>
+<tr>
+<td><code>getEncoderDirection(channel, out)</code></td>
+<td>Which way that channel counts</td>
+</tr>
+<tr>
 <td><code>setEncoderInvertMask(mask)</code></td>
-<td>Bit per channel; set inverts that encoder&rsquo;s direction</td>
+<td>All four at once; bit per channel, set = inverted</td>
 </tr>
 <tr>
 <td><code>getEncoderInvertMask()</code></td>
