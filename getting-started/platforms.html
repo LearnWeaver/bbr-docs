@@ -131,7 +131,7 @@
 <p>Every page under <strong>Guides</strong> applies to all three. Where a guide shows code, it shows it for each platform — pick a tab once and the rest of the site follows your choice.</p>
 <h2 id="something-else-entirely">Something else entirely<a class="headerlink" href="#something-else-entirely" title="Permanent link">#</a></h2>
 <p>Nothing above is a requirement. If your host can write a register pointer and read bytes back, it can use the Expander — the drivers exist to save you work, not to gate access to the hardware.</p>
-<p>What you would be implementing is small: read <code>DEVICE_ID</code> at <code>0x00</code> to confirm what you are talking to, read a block from <code>0x10</code> for telemetry, write a three-byte command block to run a command. The three drivers are the reference implementation of that, and they are all MIT licensed, so porting one is a reading exercise rather than a research project.</p>
+<p>What you would be implementing is small: read register <code>0x00</code> (<code>DEVICE_ID</code>) to confirm what you are talking to, read the 96-byte telemetry block from register <code>0x10</code>, and write three bytes at register <code>0x0A</code> to run a command. The three drivers are the reference implementation of that, and they are all MIT licensed, so porting one is a reading exercise rather than a research project.</p>
 <div class="hint hint-info">
 <p>There is no packaged driver for FRC yet. The board works there — it is the same I2C — but you would be writing the driver, so budget for that rather than assuming a library is waiting. The Python driver is the closest starting point: it is the same two tiers over a bus abstraction small enough to re-point at something else.</p>
 </div>
