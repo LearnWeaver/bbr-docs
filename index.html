@@ -70,6 +70,13 @@
 <li><a href="arduino/api.html">Arduino API summary</a></li>
 <li><a href="arduino/examples.html">Example sketches</a></li>
 </ul>
+<p class="nav-group">Raspberry Pi (Python)</p>
+<ul class="nav-list">
+<li><a href="raspberry-pi/install.html">Install the driver</a></li>
+<li><a href="raspberry-pi/first-script.html">Your first script</a></li>
+<li><a href="raspberry-pi/api.html">Python API summary</a></li>
+<li><a href="raspberry-pi/examples.html">Example scripts</a></li>
+</ul>
 <p class="nav-group">Guides</p>
 <ul class="nav-list">
 <li><a href="guides/encoders.html">Encoders</a></li>
@@ -97,7 +104,7 @@
 <li><strong>Four digital outputs</strong> — which the board drives on its own, without your code in the loop.</li>
 <li><strong>Heading and pose</strong> — from an onboard gyro and two dead-wheel encoders.</li>
 </ul>
-<p>It was designed for the REV Control Hub and Expansion Hub, and that is still where most of these boards end up. But there is nothing FTC-specific inside it: it is an ordinary I2C target at 100 or 400 kHz, so an Arduino, an ESP32 or anything else with a <code>Wire</code> implementation drives it exactly as well. See <a href="getting-started/platforms.html">Choose your platform</a>.</p>
+<p>It was designed for the REV Control Hub and Expansion Hub, and that is still where most of these boards end up. But there is nothing FTC-specific inside it: it is an ordinary I2C target at 100 or 400 kHz, so an Arduino, an ESP32 or a Raspberry Pi drives it exactly as well. See <a href="getting-started/platforms.html">Choose your platform</a>.</p>
 <h2 id="why-youd-want-one">Why you&rsquo;d want one<a class="headerlink" href="#why-youd-want-one" title="Permanent link">#</a></h2>
 <p><strong>You ran out of ports.</strong> Every FTC team hits this. The Control Hub has four motor encoders and a handful of I2C buses, and by the time you have a drivetrain, a lift and an intake, the arm encoder and the colour sensor are fighting over what&rsquo;s left. The Expander gives you back four encoders and four sensors for the cost of one port — and if you need more, add a second board. On a microcontroller the same arithmetic applies to pins, interrupts and timers.</p>
 <p><strong>Your loop got slow.</strong> Four I2C sensors read individually is four round trips every cycle. The Expander reads all of them on its own, in parallel, and hands you the answers in one transaction. Reading four sensors costs about what reading one used to.</p>
@@ -107,7 +114,7 @@
 <p>Most sensor code on a robot follows the same shape: read a sensor every loop, compare it to a number, act on the answer. That costs you I2C traffic, loop time, and a surprising amount of code for what is usually one decision.</p>
 <p>The Expander lets you move that decision onto the board. You teach it what to look for <strong>once</strong>, during setup, and it watches for that condition continuously at high speed. Your match code reads the answer as a plain digital input:</p>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="c1">// Setup OpMode, run once. Ever.</span>
 <span class="n">exp</span><span class="p">.</span><span class="na">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">            </span><span class="c1">// show it the target: that is now colour 1</span>
@@ -132,6 +139,19 @@
 </code></pre></div>
 
 </div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="c1"># Setup script, run once. Ever.</span>
+<span class="n">expander</span><span class="o">.</span><span class="n">teach_color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>         <span class="c1"># show it the target: that is now colour 1</span>
+<span class="n">expander</span><span class="o">.</span><span class="n">trigger_on_color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># digital output 0 goes high whenever colour 1 is seen</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># Runtime script. No BBR driver, no I2C, no loop cost.</span>
+<span class="n">trigger</span> <span class="o">=</span> <span class="n">DigitalInputDevice</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">trigger</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+    <span class="o">...</span>
+</code></pre></div>
+
+</div>
 </div>
 <p>The configuration is stored in the board&rsquo;s flash, so it survives power cycles. Once it is set up, the board keeps doing its job whether or not your code is talking to it — which also means a disconnect or a crashed program doesn&rsquo;t take your sensing with it. Any of the four outputs can watch any of four things: a colour you taught it, a distance inside a range you set, an encoder passing a count, or the robot facing a heading — see <a href="guides/digital-outputs.html">Digital outputs and triggers</a>.</p>
 <p>You do not have to work this way. Every value is also readable directly over I2C, and plenty of teams will just use it as four more encoders and four more sensors. Both styles are supported and you can mix them.</p>
@@ -139,7 +159,7 @@
 <p>Both drivers are deliberately split, because a first-season programmer and a fourth-year programmer want different things from the same board.</p>
 <p>The <strong>everyday tier</strong> is one call per question. No bitmasks, no register numbers, no tuning constants to guess at — the tuning values that matter (debounce, hysteresis, signal thresholds) are preset to values that work. If you can write a line of code, you can use the whole board.</p>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">counts</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">getEncoderCount</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
 <span class="kt">boolean</span><span class="w"> </span><span class="n">isRed</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">seesColor</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
@@ -156,6 +176,14 @@
 </code></pre></div>
 
 </div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">counts</span> <span class="o">=</span> <span class="n">expander</span><span class="o">.</span><span class="n">encoder_count</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">is_red</span> <span class="o">=</span> <span class="n">expander</span><span class="o">.</span><span class="n">sees_color</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">mm</span> <span class="o">=</span> <span class="n">expander</span><span class="o">.</span><span class="n">distance_mm</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">heading</span> <span class="o">=</span> <span class="n">expander</span><span class="o">.</span><span class="n">heading</span><span class="p">()</span>
+</code></pre></div>
+
+</div>
 </div>
 <p>The <strong>advanced tier</strong> exposes the full register map underneath — custom colour windows, output modes, latching, pulse outputs, two-sided thresholds, localizer tuning. It is there when you outgrow the helpers, and nothing in the everyday tier prevents you from reaching for it.</p>
 <p>Start with the everyday tier. You can always go deeper later, and nothing you write today has to be thrown away when you do.</p>
@@ -163,7 +191,7 @@
 <ul>
 <li>Never used one before → <a href="getting-started/hardware.html">What you have</a></li>
 <li>Board wired and ready → <a href="getting-started/platforms.html">Choose your platform</a></li>
-<li>Want to see working code → <a href="ftc/examples.html">Example OpModes</a> or <a href="arduino/examples.html">Example sketches</a></li>
+<li>Want to see working code → <a href="ftc/examples.html">Example OpModes</a>, <a href="arduino/examples.html">Example sketches</a> or <a href="raspberry-pi/examples.html">Example scripts</a></li>
 <li>Something isn&rsquo;t working → <a href="reference/troubleshooting.html">Troubleshooting</a></li>
 </ul>
     </article>

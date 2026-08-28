@@ -70,6 +70,13 @@
 <li><a href="../arduino/api.html">Arduino API summary</a></li>
 <li><a href="../arduino/examples.html">Example sketches</a></li>
 </ul>
+<p class="nav-group">Raspberry Pi (Python)</p>
+<ul class="nav-list">
+<li><a href="../raspberry-pi/install.html">Install the driver</a></li>
+<li><a href="../raspberry-pi/first-script.html">Your first script</a></li>
+<li><a href="../raspberry-pi/api.html">Python API summary</a></li>
+<li><a href="../raspberry-pi/examples.html">Example scripts</a></li>
+</ul>
 <p class="nav-group">Guides</p>
 <ul class="nav-list">
 <li><a href="../guides/encoders.html">Encoders</a></li>
@@ -96,7 +103,7 @@
 <h2 id="setting-one-up">Setting one up<a class="headerlink" href="#setting-one-up" title="Permanent link">#</a></h2>
 <p>Write a setup program. Run it once. It never needs to run again.</p>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="nd">@TeleOp</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"BBR: Setup colour trigger"</span><span class="p">)</span>
 <span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">BBRSetupTrigger</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">LinearOpMode</span><span class="w"> </span><span class="p">{</span>
@@ -163,10 +170,32 @@
 
 <p>That sketch does not <code>#include</code> the library. It doesn&rsquo;t know the Expander exists.</p>
 </div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">bbr_digital_expander</span><span class="w"> </span><span class="kn">import</span> <span class="n">BBRDigitalExpander</span>
+
+<span class="k">with</span> <span class="n">BBRDigitalExpander</span><span class="p">(</span><span class="n">bus</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">as</span> <span class="n">expander</span><span class="p">:</span>
+    <span class="n">expander</span><span class="o">.</span><span class="n">teach_color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>          <span class="c1"># teach the target colour</span>
+    <span class="n">expander</span><span class="o">.</span><span class="n">trigger_on_color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># output 0 follows it</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Saved. This script never needs to run again."</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Then your runtime script:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">gpiozero</span><span class="w"> </span><span class="kn">import</span> <span class="n">DigitalInputDevice</span>
+
+<span class="n">trigger</span> <span class="o">=</span> <span class="n">DigitalInputDevice</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span>   <span class="c1"># BCM pin wired to expander output 0</span>
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">trigger</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+        <span class="o">...</span>  <span class="c1"># do the thing</span>
+</code></pre></div>
+
+<p>That script does not import the driver. It doesn&rsquo;t know the Expander exists.</p>
+</div>
 </div>
 <h2 id="the-four-helpers">The four helpers<a class="headerlink" href="#the-four-helpers" title="Permanent link">#</a></h2>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">triggerOnColor</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">sensorPort</span><span class="p">,</span><span class="w"> </span><span class="n">classSlot</span><span class="p">);</span><span class="w">       </span><span class="c1">// while a taught colour is seen</span>
 <span class="n">exp</span><span class="p">.</span><span class="na">triggerWhenNear</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">sensorPort</span><span class="p">,</span><span class="w"> </span><span class="n">maxMm</span><span class="p">);</span><span class="w">          </span><span class="c1">// while something is within range</span>
@@ -181,6 +210,15 @@
 <span class="n">expander</span><span class="p">.</span><span class="n">triggerWhenEncoderPast</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">channel</span><span class="p">,</span><span class="w"> </span><span class="n">counts</span><span class="p">);</span><span class="w">     </span><span class="c1">// once an encoder passes a threshold</span>
 <span class="n">expander</span><span class="p">.</span><span class="n">triggerWhenFacing</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">headingDeg</span><span class="p">,</span><span class="w"> </span><span class="n">toleranceDeg</span><span class="p">);</span><span class="w"> </span><span class="c1">// while facing a heading</span>
 <span class="n">expander</span><span class="p">.</span><span class="n">disableOutput</span><span class="p">(</span><span class="n">output</span><span class="p">);</span><span class="w">                               </span><span class="c1">// stop driving it at all</span>
+</code></pre></div>
+
+</div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="o">.</span><span class="n">trigger_on_color</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">sensor_port</span><span class="p">,</span> <span class="n">class_slot</span><span class="p">)</span>         <span class="c1"># while a taught colour is seen</span>
+<span class="n">expander</span><span class="o">.</span><span class="n">trigger_when_near</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">sensor_port</span><span class="p">,</span> <span class="n">max_mm</span><span class="p">)</span>            <span class="c1"># while something is within range</span>
+<span class="n">expander</span><span class="o">.</span><span class="n">trigger_when_encoder_past</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">counts</span><span class="p">)</span>        <span class="c1"># once an encoder passes a threshold</span>
+<span class="n">expander</span><span class="o">.</span><span class="n">trigger_when_facing</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">heading_deg</span><span class="p">,</span> <span class="n">tolerance_deg</span><span class="p">)</span>   <span class="c1"># while facing a heading</span>
+<span class="n">expander</span><span class="o">.</span><span class="n">disable_output</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>                                    <span class="c1"># stop driving it at all</span>
 </code></pre></div>
 
 </div>
@@ -199,7 +237,7 @@
 <h3 id="changing-a-trigger-at-runtime">Changing a trigger at runtime<a class="headerlink" href="#changing-a-trigger-at-runtime" title="Permanent link">#</a></h3>
 <p>If a threshold genuinely has to move while the robot is running, use the advanced tier, which does <strong>not</strong> auto-save:</p>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputConfig</span><span class="w"> </span><span class="n">out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputConfig</span><span class="p">();</span>
 <span class="n">out</span><span class="p">.</span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputSource</span><span class="p">.</span><span class="na">ENCODER</span><span class="p">;</span>
@@ -220,13 +258,23 @@
 </code></pre></div>
 
 </div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="o">.</span><span class="n">configure_output</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">OutputConfig</span><span class="p">(</span>   <span class="c1"># RAM only: no flash write, no stall</span>
+    <span class="n">source</span><span class="o">=</span><span class="n">OutputSource</span><span class="o">.</span><span class="n">ENCODER</span><span class="p">,</span>
+    <span class="n">src_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">thresh_min</span><span class="o">=</span><span class="n">lift_target</span><span class="p">,</span>
+    <span class="n">thresh_max</span><span class="o">=</span><span class="mh">0x7FFFFFFF</span><span class="p">,</span>
+<span class="p">))</span>
+</code></pre></div>
+
+</div>
 </div>
 <p><code>configureOutput()</code> changes what the board is watching for immediately, costs one I2C transaction, and touches flash not at all. Call <code>saveConfigToFlash()</code> separately, once, when you actually want the value to outlive the power cycle — at the end of a tuning session, not every loop.</p>
 <h2 id="latching">Latching<a class="headerlink" href="#latching" title="Permanent link">#</a></h2>
 <p>By default an output follows its condition — high while true, low while false. Sometimes you want the opposite: catch a brief event and hold it until you&rsquo;re ready to deal with it.</p>
 <p>That is <code>LATCHED</code> mode, from the advanced tier:</p>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputConfig</span><span class="w"> </span><span class="n">out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputConfig</span><span class="p">();</span>
 <span class="n">out</span><span class="p">.</span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputSource</span><span class="p">.</span><span class="na">SENSOR_CLASS</span><span class="p">;</span>
@@ -263,12 +311,33 @@
 </code></pre></div>
 
 </div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="o">.</span><span class="n">configure_output</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">OutputConfig</span><span class="p">(</span>
+    <span class="n">source</span><span class="o">=</span><span class="n">OutputSource</span><span class="o">.</span><span class="n">SENSOR_CLASS</span><span class="p">,</span>
+    <span class="n">src_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>     <span class="c1"># sensor port</span>
+    <span class="n">class_index</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>   <span class="c1"># colour slot</span>
+    <span class="n">mode</span><span class="o">=</span><span class="n">OutputMode</span><span class="o">.</span><span class="n">LATCHED</span><span class="p">,</span>
+<span class="p">))</span>
+<span class="n">expander</span><span class="o">.</span><span class="n">save_config_to_flash</span><span class="p">()</span>
+</code></pre></div>
+
+<p>Once latched, the output stays high until you clear it:</p>
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="o">.</span><span class="n">clear_output_latch</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">expander</span><span class="o">.</span><span class="n">clear_all_output_latches</span><span class="p">()</span>
+</code></pre></div>
+
+<p>You can also read the latch state over I2C rather than wiring the pin, which is handy when your GPIO header is already spoken for:</p>
+<div class="highlight"><pre><span></span><code><span class="k">if</span> <span class="n">expander</span><span class="o">.</span><span class="n">output_latched</span><span class="p">()</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span><span class="p">):</span>
+    <span class="o">...</span>  <span class="c1"># it happened since the last clear</span>
+</code></pre></div>
+
+</div>
 </div>
 <p>This catches things your loop would otherwise miss — a line of tape flashing past under the robot at speed, for instance, which might be true for less than one loop iteration. The question stops being &ldquo;is it true right now?&rdquo; and becomes &ldquo;has it been true since I last looked?&rdquo;, which is usually what you actually wanted to ask.</p>
 <h2 id="one-pin-per-colour">One pin per colour<a class="headerlink" href="#one-pin-per-colour" title="Permanent link">#</a></h2>
 <p>With four outputs you can watch four conditions at once. The usual pattern for a three-colour season is one pin per colour:</p>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
 <span class="n">exp</span><span class="p">.</span><span class="na">teachColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
@@ -291,6 +360,17 @@
 </code></pre></div>
 
 </div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="o">.</span><span class="n">teach_color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">expander</span><span class="o">.</span><span class="n">teach_color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">expander</span><span class="o">.</span><span class="n">teach_color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="n">expander</span><span class="o">.</span><span class="n">trigger_on_color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>   <span class="c1"># output 0 = colour 1</span>
+<span class="n">expander</span><span class="o">.</span><span class="n">trigger_on_color</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>   <span class="c1"># output 1 = colour 2</span>
+<span class="n">expander</span><span class="o">.</span><span class="n">trigger_on_color</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>   <span class="c1"># output 2 = colour 3</span>
+</code></pre></div>
+
+</div>
 </div>
 <p>Your code then reads three digital inputs and knows exactly which colour is underneath, with no I2C at all.</p>
 <h2 id="advanced-options">Advanced options<a class="headerlink" href="#advanced-options" title="Permanent link">#</a></h2>
@@ -300,12 +380,15 @@
 </div>
 <h2 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">#</a></h2>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <p><code>BBRColorTriggerSetup</code>, <code>BBRColorLatchExample</code> and <code>BBRThreeColorExample</code> cover setup, latching and the one-pin-per-colour pattern. See <a href="../ftc/examples.html">Example OpModes</a>.</p>
 </div>
 <div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
 <p><code>TriggerSetup</code> and <code>TriggerRuntime</code> are the pair to read together; <code>LatchedOutput</code> covers latching. See <a href="../arduino/examples.html">Example sketches</a>.</p>
+</div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<p><code>trigger_setup.py</code> and <code>trigger_runtime.py</code> are the pair to read together; <code>latched_output.py</code> covers latching. See <a href="../raspberry-pi/examples.html">Example scripts</a>.</p>
 </div>
 </div>
     </article>

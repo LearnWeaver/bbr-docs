@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Troubleshooting · BBR Digital Expander</title>
-<meta name="description" content="Troubleshooting The board isn’t found at all FTC (Java) Arduino (C++) “Not a BBR Digital Expander: DEVICE_ID …” — something answered at the address, but it wasn’t an Expander. Chec">
+<meta name="description" content="Troubleshooting The board isn’t found at all FTC (Java) Arduino (C++) Raspberry Pi (Python) “Not a BBR Digital Expander: DEVICE_ID …” — something answered at the address, but it wa">
 <link rel="canonical" href="https://expander.buildingblockrobotics.com/reference/troubleshooting.html">
 <link rel="stylesheet" href="../style.css">
 <script>
@@ -70,6 +70,13 @@
 <li><a href="../arduino/api.html">Arduino API summary</a></li>
 <li><a href="../arduino/examples.html">Example sketches</a></li>
 </ul>
+<p class="nav-group">Raspberry Pi (Python)</p>
+<ul class="nav-list">
+<li><a href="../raspberry-pi/install.html">Install the driver</a></li>
+<li><a href="../raspberry-pi/first-script.html">Your first script</a></li>
+<li><a href="../raspberry-pi/api.html">Python API summary</a></li>
+<li><a href="../raspberry-pi/examples.html">Example scripts</a></li>
+</ul>
 <p class="nav-group">Guides</p>
 <ul class="nav-list">
 <li><a href="../guides/encoders.html">Encoders</a></li>
@@ -91,7 +98,7 @@
       <h1 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">#</a></h1>
 <h2 id="the-board-isnt-found-at-all">The board isn&rsquo;t found at all<a class="headerlink" href="#the-board-isnt-found-at-all" title="Permanent link">#</a></h2>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <p><strong>&ldquo;Not a BBR Digital Expander: DEVICE_ID &hellip;&rdquo;</strong> — something answered at the address, but it wasn&rsquo;t an Expander. Check you picked the right I2C bus in the robot configuration, and that nothing else on the bus is at address <code>0x38</code>.</p>
 <p><strong>Device not found in hardwareMap</strong> — the name in your code doesn&rsquo;t match the name in the robot configuration. The examples use <code>expander</code>.</p>
@@ -113,6 +120,26 @@
 <p><strong>&ldquo;firmware speaks a protocol major this driver does not&rdquo;</strong> — update whichever of the two is older.</p>
 <div class="hint hint-info">
 <p>An I2C scanner sketch is a good next step: it separates &ldquo;nothing on the bus at all&rdquo; (pull-ups, power, wiring) from &ldquo;something is there at an address I didn&rsquo;t expect&rdquo; (jumpers, clash).</p>
+</div>
+</div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<p><code>begin()</code> raises, and the exception says which of these it is.</p>
+<p><strong><code>TransportError</code>: &ldquo;could not open I2C bus&rdquo;</strong> — the bus device is not there, or you cannot reach it:</p>
+<ol>
+<li><strong>I2C is not enabled.</strong> <code>sudo raspi-config nonint do_i2c 0</code>, then reboot.</li>
+<li><strong>Permissions.</strong> <code>sudo usermod -aG i2c "$USER"</code>, then log out and back in. Running as root works too, but do not build a habit of it.</li>
+<li><strong>Wrong adapter number.</strong> <code>bus=1</code> is the header on every current Pi; a Pi Zero or a software-I2C overlay may be a different number. <code>ls /dev/i2c-*</code> lists what you have.</li>
+</ol>
+<p><strong><code>TransportError</code>: &ldquo;the expander did not acknowledge&rdquo;</strong> — the bus opened, nothing answered at that address:</p>
+<ol>
+<li><strong>Wrong address.</strong> The jumpers select <code>0x38</code>–<code>0x3B</code>; the driver defaults to <code>0x38</code>.</li>
+<li><strong>No power, or not enough of it.</strong> 3.3 V at about 55 mA, from header pin 1.</li>
+<li><strong>SDA and SCL swapped</strong>, or no shared ground.</li>
+</ol>
+<p><strong><code>WrongDeviceError</code></strong> — something answered, but it isn&rsquo;t this board. Check for an address clash with another device on the same bus.</p>
+<p><strong><code>ProtocolMismatchError</code></strong> — update whichever of the driver and the firmware is older.</p>
+<div class="hint hint-info">
+<p><code>i2cdetect -y 1</code> is the fastest next step: it separates &ldquo;nothing on the bus at all&rdquo; (power, wiring, I2C not enabled) from &ldquo;something is there at an address I didn&rsquo;t expect&rdquo; (jumpers, clash).</p>
 </div>
 </div>
 </div>
@@ -190,7 +217,7 @@
 <p>The everyday teach and trigger helpers save for you.</p>
 <h2 id="platform-specific">Platform-specific<a class="headerlink" href="#platform-specific" title="Permanent link">#</a></h2>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <h3 id="readings-freeze-mid-match">Readings freeze mid-match<a class="headerlink" href="#readings-freeze-mid-match" title="Permanent link">#</a></h3>
 <p>Check <code>isDataFresh()</code>. When a read can&rsquo;t reach the device the driver serves the last known good value rather than throwing, so a stale reading looks like a working one that stopped changing.</p>
@@ -208,6 +235,23 @@
 <p><code>BBRTelemetry</code> is about 100 bytes and the block read uses a 96-byte buffer while it decodes, so a <code>readTelemetry()</code> call needs roughly 200 bytes of stack. On a 2 KB part that is affordable but not free — if you are already close to the limit, use the everyday getters, which keep one cached block rather than one per call site, and avoid keeping several <code>BBRTelemetry</code> copies alive at once.</p>
 <h3 id="error-text-prints-as-garbage">Error text prints as garbage<a class="headerlink" href="#error-text-prints-as-garbage" title="Permanent link">#</a></h3>
 <p><code>lastErrorText()</code> returns a <code>const __FlashStringHelper *</code>, which <code>Serial.println()</code> handles correctly. Passing it somewhere expecting a <code>char *</code> prints the flash address instead of the string.</p>
+</div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<h3 id="occasional-corrupt-reads-on-a-pi-but-the-board-is-fine-on-a-hub">Occasional corrupt reads on a Pi, but the board is fine on a Hub<a class="headerlink" href="#occasional-corrupt-reads-on-a-pi-but-the-board-is-fine-on-a-hub" title="Permanent link">#</a></h3>
+<p>Not something you should meet — a Pi 4 and a Pi 5 both run the whole driver at the stock bus rate with nothing added to <code>config.txt</code> — but here is the cause and the fix if you do.</p>
+<p>The expander is an RP2040 in I2C target mode, so it stretches the clock while its firmware services a transfer, and the Pi&rsquo;s hardware I2C controller has a long-standing bug handling clock stretching.</p>
+<p>The driver catches the damage rather than passing it on — a uniform block raises <code>TransportError</code> and a corrupted localizer block raises <code>CrcMismatchError</code> after three tries — so the symptom is intermittent exceptions rather than silently wrong numbers.</p>
+<p>Fix it at the bus, in <code>/boot/firmware/config.txt</code>:</p>
+<ul>
+<li><code>dtparam=i2c_arm_baudrate=50000</code>, then reboot. This is usually enough.</li>
+<li>Or switch to software I2C, which has no such bug: <code>dtoverlay=i2c-gpio,i2c_gpio_sda=23,i2c_gpio_scl=24</code>, then pass that adapter&rsquo;s number as <code>bus=</code>.</li>
+</ul>
+<h3 id="every-call-raises-notinitializederror">Every call raises NotInitializedError<a class="headerlink" href="#every-call-raises-notinitializederror" title="Permanent link">#</a></h3>
+<p><code>begin()</code> has not succeeded. The <code>with</code> form runs it for you and raises on the way in, which is why the examples use it — a bare constructor does not talk to the board at all.</p>
+<h3 id="a-loop-that-reads-several-values-is-slower-than-expected">A loop that reads several values is slower than expected<a class="headerlink" href="#a-loop-that-reads-several-values-is-slower-than-expected" title="Permanent link">#</a></h3>
+<p>Each everyday getter serves from one cached telemetry block, refreshed when it is older than <code>telemetry_max_age_ms</code> (10 ms by default). If your loop runs faster than that and you want a fresh block each pass, call <code>invalidate_telemetry()</code> — or read <code>read_telemetry()</code> once and use the snapshot, which is what <code>sensor_dump.py</code> does.</p>
+<h3 id="smbus2-is-not-installed">smbus2 is not installed<a class="headerlink" href="#smbus2-is-not-installed" title="Permanent link">#</a></h3>
+<p><code>pip install smbus2</code>. On a system-managed Python (Bookworm and later) either use a virtual environment or <code>sudo apt install python3-smbus2</code>.</p>
 </div>
 </div>
     </article>
@@ -250,6 +294,10 @@
 <li><a href="#the-sketch-compiles-but-does-nothing">The sketch compiles but does nothing</a></li>
 <li><a href="#not-enough-ram-on-an-uno">Not enough RAM on an Uno</a></li>
 <li><a href="#error-text-prints-as-garbage">Error text prints as garbage</a></li>
+<li><a href="#occasional-corrupt-reads-on-a-pi-but-the-board-is-fine-on-a-hub">Occasional corrupt reads on a Pi, but the board is fine on a Hub</a></li>
+<li><a href="#every-call-raises-notinitializederror">Every call raises NotInitializedError</a></li>
+<li><a href="#a-loop-that-reads-several-values-is-slower-than-expected">A loop that reads several values is slower than expected</a></li>
+<li><a href="#smbus2-is-not-installed">smbus2 is not installed</a></li>
 </ul>
 </li>
 </ul>

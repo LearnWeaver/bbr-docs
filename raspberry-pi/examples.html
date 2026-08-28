@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Example OpModes · BBR Digital Expander</title>
-<meta name="description" content="Example OpModes Every example below lives in the driver repository on GitHub, under org/firstinspires/ftc/teamcode/: Get the driver and examples on GitHub → Or clone it directly: g">
-<link rel="canonical" href="https://expander.buildingblockrobotics.com/ftc/examples.html">
+<title>Example scripts · BBR Digital Expander</title>
+<meta name="description" content="Example scripts Every example below ships with the package, in its examples/ folder. Each one runs as-is: python3 examples/device_info.py They all assume the board is at the defaul">
+<link rel="canonical" href="https://expander.buildingblockrobotics.com/raspberry-pi/examples.html">
 <link rel="stylesheet" href="../style.css">
 <script>
   // Set the theme before first paint so the page never flashes the wrong one.
@@ -61,7 +61,7 @@
 <li><a href="../ftc/install.html">Install the driver</a></li>
 <li><a href="../ftc/first-opmode.html">Your first OpMode</a></li>
 <li><a href="../ftc/api.html">Java API summary</a></li>
-<li><a href="../ftc/examples.html" class="active">Example OpModes</a></li>
+<li><a href="../ftc/examples.html">Example OpModes</a></li>
 </ul>
 <p class="nav-group">Arduino (C++)</p>
 <ul class="nav-list">
@@ -75,7 +75,7 @@
 <li><a href="../raspberry-pi/install.html">Install the driver</a></li>
 <li><a href="../raspberry-pi/first-script.html">Your first script</a></li>
 <li><a href="../raspberry-pi/api.html">Python API summary</a></li>
-<li><a href="../raspberry-pi/examples.html">Example scripts</a></li>
+<li><a href="../raspberry-pi/examples.html" class="active">Example scripts</a></li>
 </ul>
 <p class="nav-group">Guides</p>
 <ul class="nav-list">
@@ -95,102 +95,107 @@
 
   <main id="content" class="content">
     <article class="prose">
-      <h1 id="example-opmodes">Example OpModes<a class="headerlink" href="#example-opmodes" title="Permanent link">#</a></h1>
-<p>Every example below lives in the driver repository on GitHub, under <code>org/firstinspires/ftc/teamcode/</code>:</p>
-<div class="hint hint-info">
-<p><strong><a href="https://github.com/BuildingBlockRobotics/DigitalExpander">Get the driver and examples on GitHub →</a></strong></p>
-<p>Or clone it directly:</p>
-<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/BuildingBlockRobotics/DigitalExpander.git
+      <h1 id="example-scripts">Example scripts<a class="headerlink" href="#example-scripts" title="Permanent link">#</a></h1>
+<p>Every example below ships with the package, in its <code>examples/</code> folder. Each one runs as-is:</p>
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>examples/device_info.py
 </code></pre></div>
 
-</div>
-<p>Copy the ones you want into your project. They all expect the device to be named <code>expander</code> in the robot configuration — if you named yours something else, change that string.</p>
+<p>They all assume the board is at the default address <code>0x38</code> on <code>/dev/i2c-1</code>. If you jumpered a different address or are using another adapter, change the constructor at the top of the file.</p>
 <h2 id="start-here">Start here<a class="headerlink" href="#start-here" title="Permanent link">#</a></h2>
 <table>
 <thead>
 <tr>
-<th>OpMode</th>
+<th>Script</th>
 <th>What it shows</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>BBRSensorDumpTest</code></td>
+<td><code>device_info.py</code></td>
+<td>Identity, firmware version, variant, capabilities, and what is on each port</td>
+</tr>
+<tr>
+<td><code>sensor_dump.py</code></td>
 <td>Every live value in one transaction — the fastest way to check your wiring</td>
 </tr>
 <tr>
-<td><code>BBRColorClassExample</code></td>
-<td>Reading colour classes and confidence, the primary sensor interface</td>
-</tr>
-<tr>
-<td><code>BBREncoderExample</code></td>
-<td>Counts, firmware velocities, idempotent resets</td>
+<td><code>encoder_read.py</code></td>
+<td>Counts, firmware velocities, and the pin-state diagnostic</td>
 </tr>
 </tbody>
 </table>
+<p>Run <code>device_info.py</code> before anything else. If it prints a device report, your wiring, pull-ups, logic levels and address jumpers are all correct, and everything else will work.</p>
 <h2 id="colour">Colour<a class="headerlink" href="#colour" title="Permanent link">#</a></h2>
 <table>
 <thead>
 <tr>
-<th>OpMode</th>
+<th>Script</th>
 <th>What it shows</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>BBRTeachColorExample</code></td>
-<td>Teach-by-example from a gamepad button, saving to flash</td>
+<td><code>color_teach.py</code></td>
+<td>Teach-by-example from the terminal, saved to flash</td>
 </tr>
 <tr>
-<td><code>BBRThreeColorExample</code></td>
-<td>The full three-colour season pattern, one pin per colour</td>
+<td><code>color_read.py</code></td>
+<td>Reading colour classes, and asking about one colour directly</td>
 </tr>
 <tr>
-<td><code>BBRColorTriggerSetup</code></td>
-<td>Setting up a colour-driven digital output</td>
-</tr>
-<tr>
-<td><code>BBRColorLatchExample</code></td>
+<td><code>latched_output.py</code></td>
 <td>Latched outputs — catching an event too brief for your loop</td>
 </tr>
 </tbody>
 </table>
+<p><code>latched_output.py</code> is worth reading even if you never use latching, because the problem it solves is worse on a Pi than anywhere else: a 3 ms event and a loop the scheduler can pause for 20 ms do not mix, and no amount of tightening your Python will fix that. The board latches; you read the latch whenever you get round to it.</p>
 <h2 id="distance">Distance<a class="headerlink" href="#distance" title="Permanent link">#</a></h2>
 <table>
 <thead>
 <tr>
-<th>OpMode</th>
+<th>Script</th>
 <th>What it shows</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>BBRDistanceTriggerSetup</code></td>
-<td>The canonical setup-once trigger configuration</td>
-</tr>
-<tr>
-<td><code>BBRDistanceTriggerRuntime</code></td>
-<td>The match half: a stock <code>DigitalChannel</code>, zero I2C</td>
+<td><code>distance_read.py</code></td>
+<td>Millimetres, and what &ldquo;nothing in range&rdquo; looks like</td>
 </tr>
 </tbody>
 </table>
-<p>Read these two together. They are the clearest demonstration of what the board is for — the setup OpMode runs once and is then never needed again, and the runtime OpMode has no idea the Expander exists.</p>
+<h2 id="triggers">Triggers<a class="headerlink" href="#triggers" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Script</th>
+<th>What it shows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>trigger_setup.py</code></td>
+<td>The canonical setup-once configuration: colour, distance, encoder and heading</td>
+</tr>
+<tr>
+<td><code>trigger_runtime.py</code></td>
+<td>The runtime half: one GPIO read, zero I2C, no driver at all</td>
+</tr>
+</tbody>
+</table>
+<p>Read these two together. They are the clearest demonstration of what the board is for — the setup script runs once and is then never needed again, and the runtime script does not even import the driver.</p>
 <h2 id="encoders">Encoders<a class="headerlink" href="#encoders" title="Permanent link">#</a></h2>
 <table>
 <thead>
 <tr>
-<th>OpMode</th>
+<th>Script</th>
 <th>What it shows</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>BBRPwmEncoderExample</code></td>
-<td>Absolute pulse-width encoders, wrap tracking</td>
-</tr>
-<tr>
-<td><code>BBREncoderTriggerExample</code></td>
-<td>Driving an output from an encoder threshold</td>
+<td><code>pwm_encoder.py</code></td>
+<td>Absolute pulse-width encoders, calibration, wrap tracking</td>
 </tr>
 </tbody>
 </table>
@@ -198,50 +203,30 @@
 <table>
 <thead>
 <tr>
-<th>OpMode</th>
+<th>Script</th>
 <th>What it shows</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>BBRImuHeadingExample</code></td>
+<td><code>heading_imu.py</code></td>
 <td>Heading, gyro calibration, failing loudly on an untrustworthy gyro</td>
 </tr>
 <tr>
-<td><code>BBRHeadingTriggerExample</code></td>
-<td>Driving an output from heading, including the ±180 wrap</td>
-</tr>
-<tr>
-<td><code>BBRLocalizerExample</code></td>
-<td>Full pose tracking: params, calibration, live pose, re-zeroing</td>
+<td><code>localizer.py</code></td>
+<td>Full pose tracking: parameters, calibration, waiting for ready, live pose</td>
 </tr>
 </tbody>
 </table>
-<h2 id="diagnostics">Diagnostics<a class="headerlink" href="#diagnostics" title="Permanent link">#</a></h2>
-<table>
-<thead>
-<tr>
-<th>OpMode</th>
-<th>What it shows</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>BBRLineProbeTest</code></td>
-<td>Bench-testing a sensor against a line</td>
-</tr>
-<tr>
-<td><code>BBRSensorDumpTest</code></td>
-<td>Complete state dump, useful whenever something is unclear</td>
-</tr>
-</tbody>
-</table>
+<p>Both need the odometry variant of the board. On a base board they say so and stop, rather than reporting a heading of <code>0.00</code> forever.</p>
 <h2 id="a-note-on-the-examples">A note on the examples<a class="headerlink" href="#a-note-on-the-examples" title="Permanent link">#</a></h2>
-<p>They are written to be read as much as run. Where an example catches an exception or checks a status flag, that is showing you something worth copying — particularly the <code>BBRTransportException</code> handling in the IMU and localizer examples, which is what keeps a normal OpMode shutdown from looking like a hardware fault.</p>
+<p>They are written to be read as much as run. Where an example catches a specific exception rather than <code>BBRError</code>, that is showing you something worth copying — particularly <code>heading_imu.py</code>, where the difference between <code>NoImuError</code> and <code>ImuFaultError</code> is the difference between &ldquo;you bought the base board&rdquo; and &ldquo;the IMU has come loose&rdquo;.</p>
+<p><code>trigger_runtime.py</code> needs <code>gpiozero</code>, which Raspberry Pi OS ships with. The rest need only the driver itself.</p>
+<p>Stop any of them with Ctrl-C; they all exit cleanly rather than dumping a traceback.</p>
     </article>
-    <nav class="pager-row"><a class="pager prev" href="../ftc/api.html"><span class="pager-label">Previous</span><span class="pager-title">Java API summary</span></a><a class="pager next" href="../arduino/install.html"><span class="pager-label">Next</span><span class="pager-title">Install the library</span></a></nav>
+    <nav class="pager-row"><a class="pager prev" href="../raspberry-pi/api.html"><span class="pager-label">Previous</span><span class="pager-title">Python API summary</span></a><a class="pager next" href="../guides/encoders.html"><span class="pager-label">Next</span><span class="pager-title">Encoders</span></a></nav>
     <footer class="page-footer">
-      <a href="https://github.com/LearnWeaver/BBRDigitalExpander/edit/main/docs/gitbook/ftc/examples.md" rel="noopener">Edit this page on GitHub</a>
+      <a href="https://github.com/LearnWeaver/BBRDigitalExpander/edit/main/docs/gitbook/raspberry-pi/examples.md" rel="noopener">Edit this page on GitHub</a>
     </footer>
   </main>
 
@@ -254,11 +239,11 @@
 </li>
 <li><a href="#distance">Distance</a>
 </li>
+<li><a href="#triggers">Triggers</a>
+</li>
 <li><a href="#encoders">Encoders</a>
 </li>
 <li><a href="#heading-and-odometry">Heading and odometry</a>
-</li>
-<li><a href="#diagnostics">Diagnostics</a>
 </li>
 <li><a href="#a-note-on-the-examples">A note on the examples</a>
 </li>

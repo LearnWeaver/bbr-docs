@@ -70,6 +70,13 @@
 <li><a href="../arduino/api.html">Arduino API summary</a></li>
 <li><a href="../arduino/examples.html">Example sketches</a></li>
 </ul>
+<p class="nav-group">Raspberry Pi (Python)</p>
+<ul class="nav-list">
+<li><a href="../raspberry-pi/install.html">Install the driver</a></li>
+<li><a href="../raspberry-pi/first-script.html">Your first script</a></li>
+<li><a href="../raspberry-pi/api.html">Python API summary</a></li>
+<li><a href="../raspberry-pi/examples.html">Example scripts</a></li>
+</ul>
 <p class="nav-group">Guides</p>
 <ul class="nav-list">
 <li><a href="../guides/encoders.html">Encoders</a></li>
@@ -169,7 +176,7 @@ robot by hand, and watch which way they move:</p>
 your code — the localizer reads the channels itself, so a sign flip in your
 program never reaches it:</p>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="c1">// The X pod counts backwards, so tell the board to flip that channel.</span>
 <span class="c1">// Saved to flash for you.</span>
@@ -181,6 +188,13 @@ program never reaches it:</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// The X pod counts backwards, so tell the board to flip that channel.</span>
 <span class="c1">// Saved to flash for you.</span>
 <span class="n">expander</span><span class="p">.</span><span class="n">setEncoderDirection</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">BBREncoderDirection</span><span class="o">::</span><span class="n">Reverse</span><span class="p">);</span>
+</code></pre></div>
+
+</div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="c1"># The X pod counts backwards, so tell the board to flip that channel.</span>
+<span class="c1"># Saved to flash for you.</span>
+<span class="n">expander</span><span class="o">.</span><span class="n">set_encoder_direction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">EncoderDirection</span><span class="o">.</span><span class="n">REVERSE</span><span class="p">)</span>
 </code></pre></div>
 
 </div>
@@ -196,7 +210,7 @@ setup, before starting the localizer.</p>
 <h2 id="setting-it-up">Setting it up<a class="headerlink" href="#setting-it-up" title="Permanent link">#</a></h2>
 <p>Tell the board about your odometry pods once:</p>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">LocalizerParams</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">LocalizerParams</span><span class="p">();</span>
 <span class="n">p</span><span class="p">.</span><span class="na">portX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">              </span><span class="c1">// encoder channel for the X (forward) pod</span>
@@ -223,6 +237,19 @@ setup, before starting the localizer.</p>
 </code></pre></div>
 
 </div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="o">.</span><span class="n">set_localizer_params</span><span class="p">(</span><span class="n">LocalizerParams</span><span class="p">(</span>
+    <span class="n">port_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>               <span class="c1"># encoder channel for the X (forward) pod</span>
+    <span class="n">port_y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>               <span class="c1"># encoder channel for the Y (lateral) pod</span>
+    <span class="n">ticks_per_mm_x</span><span class="o">=</span><span class="mf">13.26</span><span class="p">,</span>   <span class="c1"># measure these, see below</span>
+    <span class="n">ticks_per_mm_y</span><span class="o">=</span><span class="mf">13.26</span><span class="p">,</span>
+    <span class="n">tcp_offset_x_mm</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>    <span class="c1"># tracking point offset from robot centre, mm</span>
+    <span class="n">tcp_offset_y_mm</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">imu_scalar</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>         <span class="c1"># gyro scale correction</span>
+<span class="p">))</span>
+</code></pre></div>
+
+</div>
 </div>
 <div class="hint hint-info">
 <p>Stored parameters take effect on the <strong>next</strong> localizer reset, not immediately. Set them first, then start the localizer.</p>
@@ -236,7 +263,7 @@ setup, before starting the localizer.</p>
 way round is not a subtle failure — the robot will think forward is sideways.</p>
 <p>Then start it, which zeroes the pose and calibrates the gyro in one step:</p>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">resetLocalizerAndCalibrateImu</span><span class="p">();</span>
 
@@ -258,11 +285,21 @@ way round is not a subtle failure — the robot will think forward is sideways.<
 </code></pre></div>
 
 </div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="o">.</span><span class="n">reset_localizer_and_calibrate_imu</span><span class="p">()</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">expander</span><span class="o">.</span><span class="n">wait_for_localizer_ready</span><span class="p">(</span><span class="mi">5000</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">BBRError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Localizer never became ready: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+
+</div>
 </div>
 <p>The robot must be <strong>still</strong> for this. It takes one to two seconds.</p>
 <h2 id="reading-the-pose">Reading the pose<a class="headerlink" href="#reading-the-pose" title="Permanent link">#</a></h2>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">Pose2D</span><span class="w"> </span><span class="n">pose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">getPose</span><span class="p">();</span>
 <span class="n">pose</span><span class="p">.</span><span class="na">xMm</span><span class="p">;</span><span class="w">             </span><span class="c1">// millimetres</span>
@@ -285,13 +322,23 @@ way round is not a subtle failure — the robot will think forward is sideways.<
 
 <p><code>getPose()</code> returns <code>false</code> unless the localizer is actually running — you never get a stale or made-up position. For velocities as well as position, read the whole block with <code>readLocalizer()</code>.</p>
 </div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">pose</span> <span class="o">=</span> <span class="n">expander</span><span class="o">.</span><span class="n">get_pose</span><span class="p">()</span>
+<span class="n">pose</span><span class="o">.</span><span class="n">x_mm</span>          <span class="c1"># millimetres</span>
+<span class="n">pose</span><span class="o">.</span><span class="n">y_mm</span>          <span class="c1"># millimetres</span>
+<span class="n">pose</span><span class="o">.</span><span class="n">heading_rad</span>   <span class="c1"># radians</span>
+<span class="n">pose</span><span class="o">.</span><span class="n">heading_deg</span>   <span class="c1"># degrees, for printing</span>
+</code></pre></div>
+
+<p><code>get_pose()</code> raises unless the localizer is actually running — you never get a stale or made-up position. For velocities as well as position, read the whole block with <code>read_localizer()</code>.</p>
+</div>
 </div>
 <p>Conventions: millimetres and radians, <strong>+X forward, +Y left, counter-clockwise positive</strong>. This is the standard FTC field convention, so it lines up with the rest of your code there, and it is the usual robotics convention everywhere else.</p>
 <p>The field names say their units — <code>xMm</code>, <code>headingRad</code> — so a unit mix-up has to survive you typing the wrong name. Use <code>headingDeg()</code> for display rather than converting by hand.</p>
 <h2 id="setting-the-pose">Setting the pose<a class="headerlink" href="#setting-the-pose" title="Permanent link">#</a></h2>
 <p>Zero it, or place the robot at a known point:</p>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">setPose</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">Pose2D</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">));</span>
 <span class="n">exp</span><span class="p">.</span><span class="na">setPose</span><span class="p">(</span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">Pose2D</span><span class="p">.</span><span class="na">fromDegrees</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="mi">90</span><span class="p">));</span>
@@ -306,11 +353,18 @@ way round is not a subtle failure — the robot will think forward is sideways.<
 
 <p>The heading is in radians and is normalized into [−π, π) for you, so <code>radians(90)</code> from a degree-based calculation is fine to pass straight in.</p>
 </div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="o">.</span><span class="n">set_pose</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+<span class="n">expander</span><span class="o">.</span><span class="n">set_pose</span><span class="p">(</span><span class="mf">500.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">200.0</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mf">90.0</span><span class="p">))</span>
+</code></pre></div>
+
+<p>The heading is in radians and is normalized into [−π, π) for you, so <code>math.radians(90)</code> from a degree-based calculation is fine to pass straight in.</p>
+</div>
 </div>
 <p>Setting the pose is how you tell the robot where it started, or correct it mid-run from a known feature — a vision fix, or driving into a wall at a known place.</p>
 <h2 id="checking-status">Checking status<a class="headerlink" href="#checking-status" title="Permanent link">#</a></h2>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">LocalizerState</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">readLocalizerRaw</span><span class="p">();</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="na">status</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">LocalizerStatus</span><span class="p">.</span><span class="na">RUNNING</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
@@ -333,6 +387,16 @@ way round is not a subtle failure — the robot will think forward is sideways.<
 </code></pre></div>
 
 </div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">s</span> <span class="o">=</span> <span class="n">expander</span><span class="o">.</span><span class="n">read_localizer_raw</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">LocalizerStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
+    <span class="o">...</span>  <span class="c1"># pose is good</span>
+<span class="n">s</span><span class="o">.</span><span class="n">gyro_ever_saturated</span>   <span class="c1"># latched: a collision hard enough to lose heading</span>
+<span class="n">s</span><span class="o">.</span><span class="n">port_conflict</span>         <span class="c1"># a pod channel was disturbed mid-run</span>
+<span class="n">s</span><span class="o">.</span><span class="n">pose_clipped</span>          <span class="c1"># the pose ran outside ±32.7 m</span>
+</code></pre></div>
+
+</div>
 </div>
 <p>Worth watching during development. If the localizer drops out of running, you want to know that rather than to keep driving on a pose that stopped updating.</p>
 <p><code>gyroEverSaturated</code> is latched since the last reset. Once it is true, the heading — and everything integrated from it — has lost an unknown amount of turn, and the fix is a fresh fix from outside, not a smaller loop time.</p>
@@ -345,12 +409,15 @@ way round is not a subtle failure — the robot will think forward is sideways.<
 </ul>
 <h2 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">#</a></h2>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <p><code>BBRLocalizerExample</code> covers the whole flow: params, calibration, waiting for RUNNING, live pose, re-zeroing and teleporting. See <a href="../ftc/examples.html">Example OpModes</a>.</p>
 </div>
 <div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
 <p><code>Localizer</code> covers the whole flow: params, calibration, waiting for ready, live pose, re-zeroing and teleporting. See <a href="../arduino/examples.html">Example sketches</a>.</p>
+</div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<p><code>localizer.py</code> covers the whole flow: params, calibration, waiting for ready and live pose. See <a href="../raspberry-pi/examples.html">Example scripts</a>.</p>
 </div>
 </div>
     </article>

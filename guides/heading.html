@@ -70,6 +70,13 @@
 <li><a href="../arduino/api.html">Arduino API summary</a></li>
 <li><a href="../arduino/examples.html">Example sketches</a></li>
 </ul>
+<p class="nav-group">Raspberry Pi (Python)</p>
+<ul class="nav-list">
+<li><a href="../raspberry-pi/install.html">Install the driver</a></li>
+<li><a href="../raspberry-pi/first-script.html">Your first script</a></li>
+<li><a href="../raspberry-pi/api.html">Python API summary</a></li>
+<li><a href="../raspberry-pi/examples.html">Example scripts</a></li>
+</ul>
 <p class="nav-group">Guides</p>
 <ul class="nav-list">
 <li><a href="../guides/encoders.html">Encoders</a></li>
@@ -95,7 +102,7 @@
 <p>Needs the <strong>odometry variant</strong> of the board. On a base board these calls say so specifically, rather than reporting a plausible heading forever.</p>
 <h2 id="reading-heading">Reading heading<a class="headerlink" href="#reading-heading" title="Permanent link">#</a></h2>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="kt">double</span><span class="w"> </span><span class="n">deg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">getHeading</span><span class="p">();</span><span class="w">   </span><span class="c1">// degrees, CCW positive</span>
 </code></pre></div>
@@ -109,11 +116,17 @@
 </code></pre></div>
 
 </div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">deg</span> <span class="o">=</span> <span class="n">expander</span><span class="o">.</span><span class="n">heading</span><span class="p">()</span>   <span class="c1"># degrees, CCW positive; raises if untrustworthy</span>
+</code></pre></div>
+
+<p>There is no sentinel here: a board with no IMU raises <code>NoImuError</code>, and one whose IMU has stopped answering raises <code>ImuFaultError</code>.</p>
+</div>
 </div>
 <p>The board fuses gyro and accelerometer data continuously at high rate, so the heading you read is already filtered. You are not integrating anything yourself.</p>
 <h2 id="zero-it-at-the-start">Zero it at the start<a class="headerlink" href="#zero-it-at-the-start" title="Permanent link">#</a></h2>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">resetHeading</span><span class="p">();</span>
 </code></pre></div>
@@ -124,12 +137,17 @@
 </code></pre></div>
 
 </div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="o">.</span><span class="n">reset_heading</span><span class="p">()</span>
+</code></pre></div>
+
+</div>
 </div>
 <p>Heading is measured from wherever the robot was when you last called this. Call it once the robot is in its starting position.</p>
 <p>Resetting the heading is per-run and is <strong>not</strong> saved to flash — it will not disturb any mounting calibration.</p>
 <h2 id="calibrate-the-gyro">Calibrate the gyro<a class="headerlink" href="#calibrate-the-gyro" title="Permanent link">#</a></h2>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">calibrateGyro</span><span class="p">();</span><span class="w">   </span><span class="c1">// ~1 second, robot must be COMPLETELY still</span>
 </code></pre></div>
@@ -137,6 +155,11 @@
 </div>
 <div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="p">.</span><span class="n">calibrateGyro</span><span class="p">();</span><span class="w">   </span><span class="c1">// ~1 second, robot must be COMPLETELY still</span>
+</code></pre></div>
+
+</div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="o">.</span><span class="n">calibrate_gyro</span><span class="p">()</span>   <span class="c1"># ~1 second, robot must be COMPLETELY still</span>
 </code></pre></div>
 
 </div>
@@ -148,7 +171,7 @@
 <p>Doing it while the robot sits waiting to start is the natural place for it.</p>
 <h2 id="checking-the-state">Checking the state<a class="headerlink" href="#checking-the-state" title="Permanent link">#</a></h2>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">ImuState</span><span class="w"> </span><span class="n">imu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">readImu</span><span class="p">();</span>
 
@@ -178,6 +201,19 @@
 </code></pre></div>
 
 </div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">imu</span> <span class="o">=</span> <span class="n">expander</span><span class="o">.</span><span class="n">read_imu</span><span class="p">()</span>
+<span class="n">imu</span><span class="o">.</span><span class="n">yaw_deg</span>          <span class="c1"># heading</span>
+<span class="n">imu</span><span class="o">.</span><span class="n">pitch_deg</span>
+<span class="n">imu</span><span class="o">.</span><span class="n">roll_deg</span>
+<span class="n">imu</span><span class="o">.</span><span class="n">gyro_dps</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>      <span class="c1"># rates, robot frame, x y z</span>
+<span class="n">imu</span><span class="o">.</span><span class="n">accel_mps2</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>    <span class="c1"># m/s^2, gravity removed</span>
+<span class="n">imu</span><span class="o">.</span><span class="n">fusion_valid</span>     <span class="c1"># is the attitude output usable right now</span>
+<span class="n">imu</span><span class="o">.</span><span class="n">bias_valid</span>       <span class="c1"># has it been still long enough to trust the bias</span>
+<span class="n">imu</span><span class="o">.</span><span class="n">gyro_saturated</span>   <span class="c1"># did a rate exceed what the gyro can measure</span>
+</code></pre></div>
+
+</div>
 </div>
 <p><code>fusionValid</code> is the one to check before trusting a heading. It drops briefly after a mounting change or a reset while the filter re-converges — around 100 ms — and comes back on its own.</p>
 <p><code>gyroSaturated</code> matters if your robot spins hard. Past the gyro&rsquo;s maximum rate the heading estimate is no longer trustworthy, and this flag is how you find out that happened rather than wondering why the heading is off afterwards.</p>
@@ -190,7 +226,7 @@
 <p>Square and flat is the default and needs no configuration at all.</p>
 <p>If you had to mount the board on its edge rather than flat — bolted to a side rail, say — tell it which way is up, so it integrates yaw about the true vertical instead of about whatever axis happens to be pointing sideways:</p>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">setImuAxisUp</span><span class="p">(</span><span class="n">BBRRegMap</span><span class="p">.</span><span class="na">AXIS_POS_Z</span><span class="p">);</span><span class="w">   </span><span class="c1">// AXIS_POS_Z is flat, the default</span>
 <span class="n">exp</span><span class="p">.</span><span class="na">saveConfigToFlash</span><span class="p">();</span>
@@ -205,12 +241,19 @@
 </code></pre></div>
 
 </div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="o">.</span><span class="n">set_imu_axis_up</span><span class="p">(</span><span class="n">AxisUp</span><span class="o">.</span><span class="n">POS_Z</span><span class="p">)</span>          <span class="c1"># POS_Z is flat, the default</span>
+<span class="n">expander</span><span class="o">.</span><span class="n">save_config_to_flash</span><span class="p">()</span>
+<span class="n">expander</span><span class="o">.</span><span class="n">reset_localizer_and_calibrate_imu</span><span class="p">()</span>    <span class="c1"># re-calibrate on the new axis</span>
+</code></pre></div>
+
+</div>
 </div>
 <p>The six axis values cover ±X, ±Y and ±Z. Re-calibrate after changing it, or the gyro bias will still belong to the old axis.</p>
 <h2 id="heading-triggers">Heading triggers<a class="headerlink" href="#heading-triggers" title="Permanent link">#</a></h2>
 <p>The board can drive a digital output from heading, the same way it does for colours and distances. A &ldquo;robot is pointing roughly downfield&rdquo; pin costs you no loop time and no I2C traffic:</p>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">triggerWhenFacing</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">90</span><span class="p">,</span><span class="w"> </span><span class="mi">15</span><span class="p">);</span><span class="w">   </span><span class="c1">// output 0 high while heading is 90° ±15°</span>
 </code></pre></div>
@@ -218,6 +261,11 @@
 </div>
 <div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="p">.</span><span class="n">triggerWhenFacing</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">90.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">15.0f</span><span class="p">);</span><span class="w">   </span><span class="c1">// output 0 high while heading is 90° ±15°</span>
+</code></pre></div>
+
+</div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="o">.</span><span class="n">trigger_when_facing</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">)</span>   <span class="c1"># output 0 high while heading is 90° ±15°</span>
 </code></pre></div>
 
 </div>
@@ -229,7 +277,7 @@
 </div>
 <p>If you need an asymmetric window rather than a target-and-tolerance, the advanced tier takes the raw edges in degrees × 100:</p>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputConfig</span><span class="w"> </span><span class="n">out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputConfig</span><span class="p">();</span>
 <span class="n">out</span><span class="p">.</span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">OutputSource</span><span class="p">.</span><span class="na">IMU_HEADING</span><span class="p">;</span>
@@ -250,16 +298,29 @@
 </code></pre></div>
 
 </div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="o">.</span><span class="n">configure_output</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">OutputConfig</span><span class="p">(</span>
+    <span class="n">source</span><span class="o">=</span><span class="n">OutputSource</span><span class="o">.</span><span class="n">IMU_HEADING</span><span class="p">,</span>
+    <span class="n">thresh_min</span><span class="o">=</span><span class="mi">4500</span><span class="p">,</span>    <span class="c1"># 45.00°</span>
+    <span class="n">thresh_max</span><span class="o">=</span><span class="mi">13500</span><span class="p">,</span>   <span class="c1"># 135.00°</span>
+<span class="p">))</span>
+<span class="n">expander</span><span class="o">.</span><span class="n">save_config_to_flash</span><span class="p">()</span>
+</code></pre></div>
+
+</div>
 </div>
 <p>Setting <code>threshMin</code> above <code>threshMax</code> is not an error there either: it is how you ask for a window that wraps through ±180.</p>
 <h2 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">#</a></h2>
 <div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button></div>
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <p><code>BBRImuHeadingExample</code> covers heading, calibration, and failing loudly when the gyro cannot be trusted. <code>BBRHeadingTriggerExample</code> arms a heading trigger and shows the pin following it. See <a href="../ftc/examples.html">Example OpModes</a>.</p>
 </div>
 <div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
 <p><code>HeadingIMU</code> covers heading, calibration and the saturation flags, and <code>TriggerSetup</code> arms a heading trigger. See <a href="../arduino/examples.html">Example sketches</a>.</p>
+</div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<p><code>heading_imu.py</code> covers heading, calibration and the saturation flags, and <code>trigger_setup.py</code> arms a heading trigger. See <a href="../raspberry-pi/examples.html">Example scripts</a>.</p>
 </div>
 </div>
     </article>

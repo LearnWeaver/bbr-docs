@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Install the driver · BBR Digital Expander</title>
+<meta name="description" content="Install the driver The Python driver drives the whole board — encoders, colour, distance, digital outputs, IMU and the localizer — over a Linux I2C bus. It depends on nothing but s">
+<link rel="canonical" href="https://expander.buildingblockrobotics.com/raspberry-pi/install.html">
+<link rel="stylesheet" href="../style.css">
+<script>
+  // Set the theme before first paint so the page never flashes the wrong one.
+  try {
+    var t = localStorage.getItem('bbr-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
+</head>
+<body class="page">
+
+<a class="skip" href="#content">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-btn" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <a class="brand" href="../index.html">
+    <span class="brand-name">BBR Digital Expander</span>
+    <span class="brand-tagline">Documentation</span>
+  </a>
+  <div class="search" role="search">
+    <input type="search" id="search-input" placeholder="Search"
+           autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <kbd class="search-key">/</kbd>
+    <div id="search-results" class="search-results" hidden></div>
+  </div>
+  <button class="theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.5"/>
+      <g class="rays"><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.4 4.4l2.1 2.1M17.5 17.5l2.1 2.1M19.6 4.4l-2.1 2.1M6.5 17.5l-2.1 2.1"/></g>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>
+    </svg>
+  </button>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <nav aria-label="Documentation">
+      <ul class="nav-list">
+<li><a href="../index.html">BBR Digital Expander</a></li>
+</ul>
+<p class="nav-group">Getting started</p>
+<ul class="nav-list">
+<li><a href="../getting-started/hardware.html">What you have</a></li>
+<li><a href="../getting-started/wiring.html">Wiring it up</a></li>
+<li><a href="../getting-started/platforms.html">Choose your platform</a></li>
+</ul>
+<p class="nav-group">FTC (Java)</p>
+<ul class="nav-list">
+<li><a href="../ftc/install.html">Install the driver</a></li>
+<li><a href="../ftc/first-opmode.html">Your first OpMode</a></li>
+<li><a href="../ftc/api.html">Java API summary</a></li>
+<li><a href="../ftc/examples.html">Example OpModes</a></li>
+</ul>
+<p class="nav-group">Arduino (C++)</p>
+<ul class="nav-list">
+<li><a href="../arduino/install.html">Install the library</a></li>
+<li><a href="../arduino/first-sketch.html">Your first sketch</a></li>
+<li><a href="../arduino/api.html">Arduino API summary</a></li>
+<li><a href="../arduino/examples.html">Example sketches</a></li>
+</ul>
+<p class="nav-group">Raspberry Pi (Python)</p>
+<ul class="nav-list">
+<li><a href="../raspberry-pi/install.html" class="active">Install the driver</a></li>
+<li><a href="../raspberry-pi/first-script.html">Your first script</a></li>
+<li><a href="../raspberry-pi/api.html">Python API summary</a></li>
+<li><a href="../raspberry-pi/examples.html">Example scripts</a></li>
+</ul>
+<p class="nav-group">Guides</p>
+<ul class="nav-list">
+<li><a href="../guides/encoders.html">Encoders</a></li>
+<li><a href="../guides/colour.html">Colour sensors</a></li>
+<li><a href="../guides/distance.html">Distance sensors</a></li>
+<li><a href="../guides/digital-outputs.html">Digital outputs and triggers</a></li>
+<li><a href="../guides/heading.html">Heading (IMU)</a></li>
+<li><a href="../guides/odometry.html">Odometry and pose</a></li>
+</ul>
+<p class="nav-group">Reference</p>
+<ul class="nav-list">
+<li><a href="../reference/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+    </nav>
+  </aside>
+
+  <main id="content" class="content">
+    <article class="prose">
+      <h1 id="install-the-driver">Install the driver<a class="headerlink" href="#install-the-driver" title="Permanent link">#</a></h1>
+<p>The Python driver drives the whole board — encoders, colour, distance, digital outputs, IMU and the localizer — over a Linux I2C bus. It depends on nothing but <code>smbus2</code>, and while a Raspberry Pi is what most people use it on, nothing in it is Pi-specific: anything exposing <code>/dev/i2c-*</code> works.</p>
+<p>It has been run end to end on a <strong>Raspberry Pi 4 and a Raspberry Pi 5</strong> — every example including the IMU and the localizer — at the stock bus rate, with no <code>config.txt</code> changes.</p>
+<h2 id="get-it">Get it<a class="headerlink" href="#get-it" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>bbr-digital-expander
+</code></pre></div>
+
+<div class="hint hint-warning">
+<p><strong>Not on PyPI yet.</strong> That command will not work until the name is registered. Until then, install it straight from GitHub:</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/BuildingBlockRobotics/DigitalExpander-Python
+</code></pre></div>
+
+</div>
+<p>On a system-managed Python (Raspberry Pi OS Bookworm and later), either make a virtual environment first or install into your user site with <code>pip install --user</code>.</p>
+<div class="hint hint-warning">
+<p>Do not edit <code>regmap.py</code>. It is generated from the register map specification, and any change you make will be overwritten the next time it is regenerated.</p>
+</div>
+<h2 id="turn-i2c-on">Turn I2C on<a class="headerlink" href="#turn-i2c-on" title="Permanent link">#</a></h2>
+<p>Off by default on a fresh Raspberry Pi OS:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>raspi-config<span class="w"> </span>nonint<span class="w"> </span>do_i2c<span class="w"> </span><span class="m">0</span><span class="w">     </span><span class="c1"># or Interface Options -&gt; I2C</span>
+sudo<span class="w"> </span>usermod<span class="w"> </span>-aG<span class="w"> </span>i2c<span class="w"> </span><span class="s2">"</span><span class="nv">$USER</span><span class="s2">"</span><span class="w">          </span><span class="c1"># then log out and back in</span>
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>i2c-tools<span class="w">            </span><span class="c1"># for i2cdetect, worth having</span>
+</code></pre></div>
+
+<h2 id="wire-it-up">Wire it up<a class="headerlink" href="#wire-it-up" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Expander</th>
+<th>Raspberry Pi header</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SDA</td>
+<td>pin 3 — GPIO 2 (SDA1)</td>
+</tr>
+<tr>
+<td>SCL</td>
+<td>pin 5 — GPIO 3 (SCL1)</td>
+</tr>
+<tr>
+<td>GND</td>
+<td>pin 6 — GND</td>
+</tr>
+<tr>
+<td>Power</td>
+<td>pin 1 — 3V3, about 55 mA</td>
+</tr>
+</tbody>
+</table>
+<div class="hint hint-danger">
+<p><strong>Not pin 2 or 4.</strong> Those are 5 V. The Expander&rsquo;s I2C lines, encoder inputs and digital outputs are all 3.3 V and <strong>none of them are 5 V tolerant</strong>.</p>
+</div>
+<p>Bus pull-ups are the one thing a Control Hub does that most hosts do not — but a Raspberry Pi is the happy exception. It fits <strong>1.8 kΩ pull-ups to 3.3 V on GPIO 2 and GPIO 3</strong>, close to the Hub&rsquo;s 2.49 kΩ, so on a Pi you normally fit nothing at all. The full picture is on <a href="../getting-started/wiring.html">Wiring it up</a>.</p>
+<h2 id="check-the-bus-before-writing-any-code">Check the bus before writing any code<a class="headerlink" href="#check-the-bus-before-writing-any-code" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code>i2cdetect<span class="w"> </span>-y<span class="w"> </span><span class="m">1</span>
+</code></pre></div>
+
+<p>The board should appear at <code>0x38</code> (or wherever you jumpered it). If the row is empty, no amount of Python will help — go to <a href="../reference/troubleshooting.html">Troubleshooting</a> first.</p>
+<h2 id="address-and-bus">Address and bus<a class="headerlink" href="#address-and-bus" title="Permanent link">#</a></h2>
+<p>The board answers at 7-bit address <code>0x38</code> by default, and the address jumpers move it to <code>0x39</code>, <code>0x3A</code> or <code>0x3B</code>. That is how you put more than one Expander on the same bus:</p>
+<div class="highlight"><pre><span></span><code><span class="n">first</span> <span class="o">=</span> <span class="n">BBRDigitalExpander</span><span class="p">()</span>            <span class="c1"># 0x38 on /dev/i2c-1</span>
+<span class="n">second</span> <span class="o">=</span> <span class="n">BBRDigitalExpander</span><span class="p">(</span><span class="mh">0x39</span><span class="p">)</span>       <span class="c1"># jumpered</span>
+</code></pre></div>
+
+<p><code>bus=</code> takes an adapter number, a device path, or an already-open <code>SMBus</code> you want to share:</p>
+<div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">(</span><span class="n">bus</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>               <span class="c1"># /dev/i2c-1, the Pi header</span>
+<span class="n">BBRDigitalExpander</span><span class="p">(</span><span class="n">bus</span><span class="o">=</span><span class="s2">"/dev/i2c-3"</span><span class="p">)</span>    <span class="c1"># a software-I2C overlay, say</span>
+</code></pre></div>
+
+<h2 id="start-it">Start it<a class="headerlink" href="#start-it" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">bbr_digital_expander</span><span class="w"> </span><span class="kn">import</span> <span class="n">BBRDigitalExpander</span><span class="p">,</span> <span class="n">BBRError</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">BBRDigitalExpander</span><span class="p">(</span><span class="n">bus</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">as</span> <span class="n">expander</span><span class="p">:</span>
+        <span class="n">expander</span><span class="o">.</span><span class="n">print_device_info</span><span class="p">()</span>
+<span class="k">except</span> <span class="n">BBRError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Expander not found: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+
+<p>The <code>with</code> form calls <code>begin()</code> on the way in and closes the bus on the way out. <code>begin()</code> reads the board&rsquo;s identity block and checks three things: that the device ID is really an Expander, that the protocol version is one the driver speaks, and that the hardware variant is one it recognises. Any of those failing raises rather than carrying on — a clear stop at setup beats corrupt data an hour later.</p>
+<p>If you would rather manage the lifetime yourself, <code>begin()</code> returns the expander, so <code>expander = BBRDigitalExpander().begin()</code> is the one-line form. Call <code>close()</code> when you are done.</p>
+<h2 id="check-it-before-writing-anything-else">Check it before writing anything else<a class="headerlink" href="#check-it-before-writing-anything-else" title="Permanent link">#</a></h2>
+<p>Run <code>examples/device_info.py</code>. It prints the firmware version, the hardware variant, the capability bits, the status flags and the address it answered at. If that report appears, your wiring, your pull-ups, your logic levels and your address jumpers are all correct, and everything else on this site will work.</p>
+<p>If it does not appear, fix that first — see <a href="../reference/troubleshooting.html">Troubleshooting</a>.</p>
+<h2 id="next">Next<a class="headerlink" href="#next" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="first-script.html">Your first script</a></li>
+<li><a href="api.html">Python API summary</a></li>
+<li><a href="examples.html">Example scripts</a></li>
+</ul>
+    </article>
+    <nav class="pager-row"><a class="pager prev" href="../arduino/examples.html"><span class="pager-label">Previous</span><span class="pager-title">Example sketches</span></a><a class="pager next" href="../raspberry-pi/first-script.html"><span class="pager-label">Next</span><span class="pager-title">Your first script</span></a></nav>
+    <footer class="page-footer">
+      <a href="https://github.com/LearnWeaver/BBRDigitalExpander/edit/main/docs/gitbook/raspberry-pi/install.md" rel="noopener">Edit this page on GitHub</a>
+    </footer>
+  </main>
+
+  <aside class="onpage" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+<ul class="toc-list">
+<li><a href="#get-it">Get it</a>
+</li>
+<li><a href="#turn-i2c-on">Turn I2C on</a>
+</li>
+<li><a href="#wire-it-up">Wire it up</a>
+</li>
+<li><a href="#check-the-bus-before-writing-any-code">Check the bus before writing any code</a>
+</li>
+<li><a href="#address-and-bus">Address and bus</a>
+</li>
+<li><a href="#start-it">Start it</a>
+</li>
+<li><a href="#check-it-before-writing-anything-else">Check it before writing anything else</a>
+</li>
+<li><a href="#next">Next</a>
+</li>
+</ul>
+  </aside>
+</div>
+
+<div class="scrim" hidden></div>
+<script src="../app.js" defer></script>
+</body>
+</html>

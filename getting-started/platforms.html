@@ -70,6 +70,13 @@
 <li><a href="../arduino/api.html">Arduino API summary</a></li>
 <li><a href="../arduino/examples.html">Example sketches</a></li>
 </ul>
+<p class="nav-group">Raspberry Pi (Python)</p>
+<ul class="nav-list">
+<li><a href="../raspberry-pi/install.html">Install the driver</a></li>
+<li><a href="../raspberry-pi/first-script.html">Your first script</a></li>
+<li><a href="../raspberry-pi/api.html">Python API summary</a></li>
+<li><a href="../raspberry-pi/examples.html">Example scripts</a></li>
+</ul>
 <p class="nav-group">Guides</p>
 <ul class="nav-list">
 <li><a href="../guides/encoders.html">Encoders</a></li>
@@ -90,7 +97,7 @@
     <article class="prose">
       <h1 id="choose-your-platform">Choose your platform<a class="headerlink" href="#choose-your-platform" title="Permanent link">#</a></h1>
 <p>The Expander is an <strong>I2C target</strong>. That is the whole interface: one 7-bit address, a register map behind it, 100 or 400 kHz, no vendor runtime and no special host. Anything that can be an I2C master can drive the whole board.</p>
-<p>Two ready-made drivers ship today, and they are deliberately the same shape — the same two tiers, the same helper names, the same refusals. Learning one teaches you the other.</p>
+<p>Three ready-made drivers ship today, and they are deliberately the same shape — the same two tiers, the same helper names, the same refusals. Learning one teaches you the others.</p>
 <table>
 <thead>
 <tr>
@@ -113,18 +120,25 @@
 <td>C++</td>
 <td><a href="../arduino/install.html">Install the library</a></td>
 </tr>
+<tr>
+<td>Raspberry Pi, and anything else running Linux</td>
+<td><code>bbr_digital_expander</code> Python package</td>
+<td>Python</td>
+<td><a href="../raspberry-pi/install.html">Install the driver</a></td>
+</tr>
 </tbody>
 </table>
-<p>Every page under <strong>Guides</strong> applies to both. Where a guide shows code, it shows it for each platform — pick a tab once and the rest of the site follows your choice.</p>
+<p>Every page under <strong>Guides</strong> applies to all three. Where a guide shows code, it shows it for each platform — pick a tab once and the rest of the site follows your choice.</p>
 <h2 id="something-else-entirely">Something else entirely<a class="headerlink" href="#something-else-entirely" title="Permanent link">#</a></h2>
 <p>Nothing above is a requirement. If your host can write a register pointer and read bytes back, it can use the Expander — the drivers exist to save you work, not to gate access to the hardware.</p>
-<p>What you would be implementing is small: read <code>DEVICE_ID</code> at <code>0x00</code> to confirm what you are talking to, read a block from <code>0x10</code> for telemetry, write a three-byte command block to run a command. The two drivers are the reference implementation of that, and they are both MIT licensed, so porting one is a reading exercise rather than a research project.</p>
+<p>What you would be implementing is small: read <code>DEVICE_ID</code> at <code>0x00</code> to confirm what you are talking to, read a block from <code>0x10</code> for telemetry, write a three-byte command block to run a command. The three drivers are the reference implementation of that, and they are all MIT licensed, so porting one is a reading exercise rather than a research project.</p>
 <div class="hint hint-info">
-<p>There is no packaged driver for FRC or for Raspberry Pi yet. The board works on both — it is the same I2C — but you would be writing the driver, so budget for that rather than assuming a library is waiting.</p>
+<p>There is no packaged driver for FRC yet. The board works there — it is the same I2C — but you would be writing the driver, so budget for that rather than assuming a library is waiting. The Python driver is the closest starting point: it is the same two tiers over a bus abstraction small enough to re-point at something else.</p>
 </div>
 <h2 id="which-one-do-i-pick">Which one do I pick?<a class="headerlink" href="#which-one-do-i-pick" title="Permanent link">#</a></h2>
 <p>If you are on a Control Hub, the answer is FTC. The driver registers as a hardware device, so the board appears in the robot configuration alongside everything else.</p>
-<p>If you are on anything else, the Arduino library is the one to start from even when the board is not an Arduino — it is plain C++ over <code>Wire</code> and depends on nothing else.</p>
+<p>If you are on a Raspberry Pi — or a Jetson, or any other Linux board with an I2C bus — the answer is Python. Install the driver and you are reading sensors in five lines.</p>
+<p>If you are on a microcontroller, the Arduino library is the one to start from even when the board is not an Arduino — it is plain C++ over <code>Wire</code> and depends on nothing else.</p>
 <h2 id="what-differs-between-them">What differs between them<a class="headerlink" href="#what-differs-between-them" title="Permanent link">#</a></h2>
 <p>Only the things the languages force apart:</p>
 <table>
@@ -133,6 +147,7 @@
 <th></th>
 <th>FTC (Java)</th>
 <th>Arduino (C++)</th>
+<th>Raspberry Pi (Python)</th>
 </tr>
 </thead>
 <tbody>
@@ -140,30 +155,35 @@
 <td>Getting the device</td>
 <td><code>hardwareMap.get(...)</code></td>
 <td><code>expander.begin()</code> after <code>Wire.begin()</code></td>
+<td><code>with BBRDigitalExpander() as expander:</code></td>
 </tr>
 <tr>
 <td>A call that fails</td>
 <td>Throws <code>BBRException</code></td>
 <td>Returns <code>false</code>; <code>lastErrorText()</code> says why</td>
+<td>Raises a <code>BBRError</code></td>
 </tr>
 <tr>
 <td>A heading it cannot trust</td>
 <td>Throws</td>
 <td>Returns <code>NAN</code></td>
+<td>Raises</td>
 </tr>
 <tr>
 <td>A distance out of range</td>
 <td><code>Double.POSITIVE_INFINITY</code></td>
 <td><code>INFINITY</code></td>
+<td><code>math.inf</code></td>
 </tr>
 <tr>
 <td>Method naming</td>
 <td><code>getEncoderCount(0)</code></td>
 <td><code>encoderCount(0)</code></td>
+<td><code>encoder_count(0)</code></td>
 </tr>
 </tbody>
 </table>
-<p>The board behaves identically either way. Everything else on this site — what the values mean, what the board does with them, what the tuning knobs are for — is the same on both.</p>
+<p>The board behaves identically whichever you use. Everything else on this site — what the values mean, what the board does with them, what the tuning knobs are for — is the same on both.</p>
     </article>
     <nav class="pager-row"><a class="pager prev" href="../getting-started/wiring.html"><span class="pager-label">Previous</span><span class="pager-title">Wiring it up</span></a><a class="pager next" href="../ftc/install.html"><span class="pager-label">Next</span><span class="pager-title">Install the driver</span></a></nav>
     <footer class="page-footer">
