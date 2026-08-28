@@ -55,6 +55,7 @@
 <li><a href="../getting-started/hardware.html">What you have</a></li>
 <li><a href="../getting-started/wiring.html">Wiring it up</a></li>
 <li><a href="../getting-started/platforms.html">Choose your platform</a></li>
+<li><a href="../getting-started/firmware.html">Updating the firmware</a></li>
 </ul>
 <p class="nav-group">FTC (Java)</p>
 <ul class="nav-list">
@@ -117,7 +118,7 @@
 <li><strong>SDA and SCL swapped.</strong></li>
 </ol>
 <p><strong>&ldquo;not a BBR Digital Expander&rdquo;</strong> — something answered, but it isn&rsquo;t this board. Check for an address clash with another device on the same bus.</p>
-<p><strong>&ldquo;firmware speaks a protocol major this driver does not&rdquo;</strong> — update whichever of the two is older.</p>
+<p><strong>&ldquo;firmware speaks a protocol major this driver does not&rdquo;</strong> — update whichever of the two is older. See <a href="../getting-started/firmware.html">Updating the firmware</a>.</p>
 <div class="hint hint-info">
 <p>An I2C scanner sketch is a good next step: it separates &ldquo;nothing on the bus at all&rdquo; (pull-ups, power, wiring) from &ldquo;something is there at an address I didn&rsquo;t expect&rdquo; (jumpers, clash).</p>
 </div>
@@ -137,7 +138,7 @@
 <li><strong>SDA and SCL swapped</strong>, or no shared ground.</li>
 </ol>
 <p><strong><code>WrongDeviceError</code></strong> — something answered, but it isn&rsquo;t this board. Check for an address clash with another device on the same bus.</p>
-<p><strong><code>ProtocolMismatchError</code></strong> — update whichever of the driver and the firmware is older.</p>
+<p><strong><code>ProtocolMismatchError</code></strong> — update whichever of the driver and the firmware is older. See <a href="../getting-started/firmware.html">Updating the firmware</a>.</p>
 <div class="hint hint-info">
 <p><code>i2cdetect -y 1</code> is the fastest next step: it separates &ldquo;nothing on the bus at all&rdquo; (power, wiring, I2C not enabled) from &ldquo;something is there at an address I didn&rsquo;t expect&rdquo; (jumpers, clash).</p>
 </div>

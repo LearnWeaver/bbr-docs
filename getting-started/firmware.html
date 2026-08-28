@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Updating the firmware · BBR Digital Expander</title>
+<meta name="description" content="Updating the firmware The board runs its own firmware, and it ships with a version on it. You do not need to update it to use the board — but a driver that refuses to start with “f">
+<link rel="canonical" href="https://expander.buildingblockrobotics.com/getting-started/firmware.html">
+<link rel="stylesheet" href="../style.css">
+<script>
+  // Set the theme before first paint so the page never flashes the wrong one.
+  try {
+    var t = localStorage.getItem('bbr-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
+</head>
+<body class="page">
+
+<a class="skip" href="#content">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-btn" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <a class="brand" href="../index.html">
+    <span class="brand-name">BBR Digital Expander</span>
+    <span class="brand-tagline">Documentation</span>
+  </a>
+  <div class="search" role="search">
+    <input type="search" id="search-input" placeholder="Search"
+           autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <kbd class="search-key">/</kbd>
+    <div id="search-results" class="search-results" hidden></div>
+  </div>
+  <button class="theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.5"/>
+      <g class="rays"><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.4 4.4l2.1 2.1M17.5 17.5l2.1 2.1M19.6 4.4l-2.1 2.1M6.5 17.5l-2.1 2.1"/></g>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>
+    </svg>
+  </button>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <nav aria-label="Documentation">
+      <ul class="nav-list">
+<li><a href="../index.html">BBR Digital Expander</a></li>
+</ul>
+<p class="nav-group">Getting started</p>
+<ul class="nav-list">
+<li><a href="../getting-started/hardware.html">What you have</a></li>
+<li><a href="../getting-started/wiring.html">Wiring it up</a></li>
+<li><a href="../getting-started/platforms.html">Choose your platform</a></li>
+<li><a href="../getting-started/firmware.html" class="active">Updating the firmware</a></li>
+</ul>
+<p class="nav-group">FTC (Java)</p>
+<ul class="nav-list">
+<li><a href="../ftc/install.html">Install the driver</a></li>
+<li><a href="../ftc/first-opmode.html">Your first OpMode</a></li>
+<li><a href="../ftc/api.html">Java API summary</a></li>
+<li><a href="../ftc/examples.html">Example OpModes</a></li>
+</ul>
+<p class="nav-group">Arduino (C++)</p>
+<ul class="nav-list">
+<li><a href="../arduino/install.html">Install the library</a></li>
+<li><a href="../arduino/first-sketch.html">Your first sketch</a></li>
+<li><a href="../arduino/api.html">Arduino API summary</a></li>
+<li><a href="../arduino/examples.html">Example sketches</a></li>
+</ul>
+<p class="nav-group">Raspberry Pi (Python)</p>
+<ul class="nav-list">
+<li><a href="../raspberry-pi/install.html">Install the driver</a></li>
+<li><a href="../raspberry-pi/first-script.html">Your first script</a></li>
+<li><a href="../raspberry-pi/api.html">Python API summary</a></li>
+<li><a href="../raspberry-pi/examples.html">Example scripts</a></li>
+</ul>
+<p class="nav-group">Guides</p>
+<ul class="nav-list">
+<li><a href="../guides/encoders.html">Encoders</a></li>
+<li><a href="../guides/colour.html">Colour sensors</a></li>
+<li><a href="../guides/distance.html">Distance sensors</a></li>
+<li><a href="../guides/digital-outputs.html">Digital outputs and triggers</a></li>
+<li><a href="../guides/heading.html">Heading (IMU)</a></li>
+<li><a href="../guides/odometry.html">Odometry and pose</a></li>
+</ul>
+<p class="nav-group">Reference</p>
+<ul class="nav-list">
+<li><a href="../reference/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+    </nav>
+  </aside>
+
+  <main id="content" class="content">
+    <article class="prose">
+      <h1 id="updating-the-firmware">Updating the firmware<a class="headerlink" href="#updating-the-firmware" title="Permanent link">#</a></h1>
+<p>The board runs its own firmware, and it ships with a version on it. You do not need to update it to use the board — but a driver that refuses to start with <em>&ldquo;firmware speaks a protocol major this driver does not&rdquo;</em> is telling you the two have drifted apart, and this is the page that fixes it.</p>
+<h2 id="get-the-release">Get the release<a class="headerlink" href="#get-the-release" title="Permanent link">#</a></h2>
+<p>Firmware is published as a <strong>UF2</strong> on the driver repository&rsquo;s releases page:</p>
+<p><strong><a href="https://github.com/BuildingBlockRobotics/DigitalExpander/releases/latest">Latest firmware release</a></strong></p>
+<p>A UF2 is the Raspberry Pi Foundation&rsquo;s drag-and-drop firmware format. There is nothing to install to use one — the board appears as a USB drive and you copy the file onto it.</p>
+<h2 id="which-version-am-i-on">Which version am I on?<a class="headerlink" href="#which-version-am-i-on" title="Permanent link">#</a></h2>
+<p>Ask the board rather than guessing. Every driver prints it:</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
+<p>The FTC driver does not expose the firmware version — it reads the identity block at startup but only surfaces <code>getProtocolMinor()</code>, <code>getCapabilities()</code> and <code>isOdometryVariant()</code> from it:</p>
+<div class="highlight"><pre><span></span><code><span class="n">telemetry</span><span class="p">.</span><span class="na">addData</span><span class="p">(</span><span class="s">"protocol"</span><span class="p">,</span><span class="w"> </span><span class="s">"1.%d"</span><span class="p">,</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">getProtocolMinor</span><span class="p">());</span>
+<span class="n">telemetry</span><span class="p">.</span><span class="na">addData</span><span class="p">(</span><span class="s">"odometry variant"</span><span class="p">,</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">isOdometryVariant</span><span class="p">());</span>
+</code></pre></div>
+
+<p>To read the firmware triplet itself, put the board on an Arduino or a Raspberry Pi for a moment and use the tab beside this one. The board is the same board whatever is talking to it, so the answer is the same.</p>
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="p">.</span><span class="n">printDeviceInfo</span><span class="p">(</span><span class="n">Serial</span><span class="p">);</span><span class="w">   </span><span class="c1">// firmware    1.0.0</span>
+</code></pre></div>
+
+</div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>examples/device_info.py<span class="w">     </span><span class="c1"># firmware    1.0.0</span>
+</code></pre></div>
+
+</div>
+</div>
+<p>The <strong>firmware</strong> version and the <strong>protocol</strong> version are different numbers and move independently. The protocol version is the contract the drivers are written against; the firmware version identifies the build. A driver only refuses to run over a mismatched <em>protocol major</em>.</p>
+<h2 id="put-the-board-in-bootloader-mode">Put the board in bootloader mode<a class="headerlink" href="#put-the-board-in-bootloader-mode" title="Permanent link">#</a></h2>
+<p>The board can be told to do this over I2C, from whatever host is already talking to it — no cable-swapping, and nothing to press:</p>
+<div class="tabs">
+<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
+<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">runCommand</span><span class="p">(</span><span class="mh">0xF0</span><span class="p">,</span><span class="w"> </span><span class="mh">0x5A</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w">   </span><span class="c1">// REBOOT_BOOTLOADER, with its required argument</span>
+</code></pre></div>
+
+</div>
+<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="p">.</span><span class="n">runCommand</span><span class="p">(</span><span class="mh">0xF0</span><span class="p">,</span><span class="w"> </span><span class="mh">0x5A</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w">   </span><span class="c1">// REBOOT_BOOTLOADER, with its required argument</span>
+</code></pre></div>
+
+</div>
+<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="mh">0xF0</span><span class="p">,</span> <span class="mh">0x5A</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>   <span class="c1"># REBOOT_BOOTLOADER, with its required argument</span>
+</code></pre></div>
+
+</div>
+</div>
+<div class="hint hint-info">
+<p><strong>That call is expected to fail, and the failure means it worked.</strong> The command never returns — the board is already in the bootloader by the time a reply would have been sent — so the driver waits for a status that cannot arrive and reports a timeout or a transport error. Ignore it. If instead the call <em>succeeds</em>, the command was rejected: the argument <code>0x5A</code> is required precisely so a stray write cannot reboot a robot mid-match.</p>
+</div>
+<p>The board then disconnects from I2C and appears over USB as a drive named <strong>RPI-RP2</strong>.</p>
+<div class="hint hint-warning">
+<p><strong>The physical route into the bootloader is not documented here yet</strong> — whether this board carries a BOOTSEL button, and where. Do not guess from a Pico: the layout is not the same. The I2C command above is the supported route until this page says otherwise.</p>
+</div>
+<h2 id="copy-the-uf2-across">Copy the UF2 across<a class="headerlink" href="#copy-the-uf2-across" title="Permanent link">#</a></h2>
+<p>Drag the <code>.uf2</code> file onto the RPI-RP2 drive, or:</p>
+<div class="highlight"><pre><span></span><code>cp<span class="w"> </span>bbr-digital-expander-1.0.0.uf2<span class="w"> </span>/Volumes/RPI-RP2/<span class="w">     </span><span class="c1"># macOS</span>
+cp<span class="w"> </span>bbr-digital-expander-1.0.0.uf2<span class="w"> </span>/media/<span class="nv">$USER</span>/RPI-RP2/<span class="w"> </span><span class="c1"># Linux</span>
+</code></pre></div>
+
+<p>The drive disappears on its own as soon as the copy finishes — that is the board rebooting into the new firmware, not an error or an ejection failure. It is back on the I2C bus a moment later.</p>
+<p>Then check it took, with the same <code>device_info</code> call as above. The version it reports is the version you flashed.</p>
+<h2 id="your-configuration-survives">Your configuration survives<a class="headerlink" href="#your-configuration-survives" title="Permanent link">#</a></h2>
+<p>Taught colours, trigger configuration, encoder directions, localizer parameters and PWM calibration all live in a flash region the firmware image does not reach — the image ends well below 64 KB, and the configuration slots are at the top of an 8 MB part. <strong>Updating the firmware does not erase what you taught the board.</strong></p>
+<p>The exception is a firmware that changes the <em>configuration schema</em>. When that happens the board loads defaults rather than misreading an old layout, and says so: <code>STATUS</code> raises its <code>CFG_DEFAULTED</code> bit, which <code>device_info</code> prints as <code>config-defaulted</code>. Any release that does this will say so in its notes. Re-teach and re-save if you see it.</p>
+<h2 id="if-it-goes-wrong">If it goes wrong<a class="headerlink" href="#if-it-goes-wrong" title="Permanent link">#</a></h2>
+<p><strong>The drive appeared, the file copied, and now nothing is on the bus.</strong> Put it back in bootloader mode and copy the UF2 again. A UF2 is verified as it is written, so a half-copied image is not the usual cause; a wrong <code>.uf2</code> — one built for a different board — is.</p>
+<p><strong>Nothing appears when you run the reboot command.</strong> The board was probably not answering in the first place. Confirm it is there at all before blaming the update: see <a href="../reference/troubleshooting.html">Troubleshooting</a>.</p>
+    </article>
+    <nav class="pager-row"><a class="pager prev" href="../getting-started/platforms.html"><span class="pager-label">Previous</span><span class="pager-title">Choose your platform</span></a><a class="pager next" href="../ftc/install.html"><span class="pager-label">Next</span><span class="pager-title">Install the driver</span></a></nav>
+    <footer class="page-footer">
+      <a href="https://github.com/LearnWeaver/BBRDigitalExpander/edit/main/docs/gitbook/getting-started/firmware.md" rel="noopener">Edit this page on GitHub</a>
+    </footer>
+  </main>
+
+  <aside class="onpage" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+<ul class="toc-list">
+<li><a href="#get-the-release">Get the release</a>
+</li>
+<li><a href="#which-version-am-i-on">Which version am I on?</a>
+</li>
+<li><a href="#put-the-board-in-bootloader-mode">Put the board in bootloader mode</a>
+</li>
+<li><a href="#copy-the-uf2-across">Copy the UF2 across</a>
+</li>
+<li><a href="#your-configuration-survives">Your configuration survives</a>
+</li>
+<li><a href="#if-it-goes-wrong">If it goes wrong</a>
+</li>
+</ul>
+  </aside>
+</div>
+
+<div class="scrim" hidden></div>
+<script src="../app.js" defer></script>
+</body>
+</html>
