@@ -147,16 +147,27 @@
 <td>That port or channel is the other kind</td>
 </tr>
 <tr>
-<td><code>CrcMismatchError</code></td>
-<td>The localizer block failed its checksum three times</td>
-</tr>
-<tr>
 <td><code>LocalizerNotRunningError</code></td>
 <td>A pose was read before the localizer was ready</td>
 </tr>
 </tbody>
 </table>
 <p>Every one carries <code>.message</code> and <code>.status</code>, a <code>Status</code> value you can branch on.</p>
+<p><strong>Failed reads serve the last known good value.</strong> When a snapshot read cannot reach the device — or, for the localizer, when three reads in a row fail their checksum — the driver returns the previous snapshot and <code>is_data_fresh()</code> goes false, rather than raising. A bus being torn down, or a burst of noise, should not kill a running program. Fail-loud survives where it matters: a device that has never answered raises <code>TransportError</code>, and a streak still failing after half a second (5+ reads) raises <code>BBRError</code>. The FTC driver behaves identically.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>is_data_fresh()</code></td>
+<td>Did the last snapshot read actually reach the device</td>
+</tr>
+</tbody>
+</table>
 <h2 id="encoders">Encoders<a class="headerlink" href="#encoders" title="Permanent link">#</a></h2>
 <table>
 <thead>

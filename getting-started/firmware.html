@@ -107,9 +107,8 @@
 <div class="tabs">
 <div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
-<p>The FTC driver does not expose the firmware version — it reads the identity block at startup but only surfaces <code>getProtocolMinor()</code>, <code>getCapabilities()</code> and <code>isOdometryVariant()</code> from it:</p>
+<p>The FTC driver does not expose the firmware version — it reads the identity block at startup but only surfaces <code>getProtocolMinor()</code> and <code>getCapabilities()</code> from it:</p>
 <div class="highlight"><pre><span></span><code><span class="n">telemetry</span><span class="p">.</span><span class="na">addData</span><span class="p">(</span><span class="s">"protocol"</span><span class="p">,</span><span class="w"> </span><span class="s">"1.%d"</span><span class="p">,</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">getProtocolMinor</span><span class="p">());</span>
-<span class="n">telemetry</span><span class="p">.</span><span class="na">addData</span><span class="p">(</span><span class="s">"odometry variant"</span><span class="p">,</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">isOdometryVariant</span><span class="p">());</span>
 </code></pre></div>
 
 <p>To read the firmware triplet itself, put the board on an Arduino or a Raspberry Pi for a moment and use the tab beside this one. The board is the same board whatever is talking to it, so the answer is the same.</p>
@@ -127,31 +126,10 @@
 </div>
 <p>The <strong>firmware</strong> version and the <strong>protocol</strong> version are different numbers and move independently. The protocol version is the contract the drivers are written against; the firmware version identifies the build. A driver only refuses to run over a mismatched <em>protocol major</em>.</p>
 <h2 id="put-the-board-in-bootloader-mode">Put the board in bootloader mode<a class="headerlink" href="#put-the-board-in-bootloader-mode" title="Permanent link">#</a></h2>
-<p>The board can be told to do this over I2C, from whatever host is already talking to it — no cable-swapping, and nothing to press:</p>
-<div class="tabs">
-<div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
-<div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
-<div class="highlight"><pre><span></span><code><span class="n">exp</span><span class="p">.</span><span class="na">runCommand</span><span class="p">(</span><span class="mh">0xF0</span><span class="p">,</span><span class="w"> </span><span class="mh">0x5A</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w">   </span><span class="c1">// REBOOT_BOOTLOADER, with its required argument</span>
-</code></pre></div>
-
-</div>
-<div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
-<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="p">.</span><span class="n">runCommand</span><span class="p">(</span><span class="mh">0xF0</span><span class="p">,</span><span class="w"> </span><span class="mh">0x5A</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w">   </span><span class="c1">// REBOOT_BOOTLOADER, with its required argument</span>
-</code></pre></div>
-
-</div>
-<div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
-<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="mh">0xF0</span><span class="p">,</span> <span class="mh">0x5A</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>   <span class="c1"># REBOOT_BOOTLOADER, with its required argument</span>
-</code></pre></div>
-
-</div>
-</div>
+<p>Hold the <strong>USB select</strong> button down, then plug the USB cable in. Keep the button held until the drive appears; you can let go after that.</p>
+<p>The board comes up in its bootloader rather than running the firmware, disconnects from I2C, and appears on your computer as a USB drive named <strong>RPI-RP2</strong>.</p>
 <div class="hint hint-info">
-<p><strong>That call is expected to fail, and the failure means it worked.</strong> The command never returns — the board is already in the bootloader by the time a reply would have been sent — so the driver waits for a status that cannot arrive and reports a timeout or a transport error. Ignore it. If instead the call <em>succeeds</em>, the command was rejected: the argument <code>0x5A</code> is required precisely so a stray write cannot reboot a robot mid-match.</p>
-</div>
-<p>The board then disconnects from I2C and appears over USB as a drive named <strong>RPI-RP2</strong>.</p>
-<div class="hint hint-warning">
-<p><strong>The physical route into the bootloader is not documented here yet</strong> — whether this board carries a BOOTSEL button, and where. Do not guess from a Pico: the layout is not the same. The I2C command above is the supported route until this page says otherwise.</p>
+<p><strong>No drive appeared?</strong> The button was not down early enough — it is read once, as the board powers up, so pressing it after the cable is in does nothing. Unplug, press and hold, plug back in.</p>
 </div>
 <h2 id="copy-the-uf2-across">Copy the UF2 across<a class="headerlink" href="#copy-the-uf2-across" title="Permanent link">#</a></h2>
 <p>Drag the <code>.uf2</code> file onto the RPI-RP2 drive, or:</p>
@@ -166,7 +144,7 @@ cp<span class="w"> </span>bbr-digital-expander-1.0.0.uf2<span class="w"> </span>
 <p>The exception is a firmware that changes the <em>configuration schema</em>. When that happens the board loads defaults rather than misreading an old layout, and says so: <code>STATUS</code> raises its <code>CFG_DEFAULTED</code> bit, which <code>device_info</code> prints as <code>config-defaulted</code>. Any release that does this will say so in its notes. Re-teach and re-save if you see it.</p>
 <h2 id="if-it-goes-wrong">If it goes wrong<a class="headerlink" href="#if-it-goes-wrong" title="Permanent link">#</a></h2>
 <p><strong>The drive appeared, the file copied, and now nothing is on the bus.</strong> Put it back in bootloader mode and copy the UF2 again. A UF2 is verified as it is written, so a half-copied image is not the usual cause; a wrong <code>.uf2</code> — one built for a different board — is.</p>
-<p><strong>Nothing appears when you run the reboot command.</strong> The board was probably not answering in the first place. Confirm it is there at all before blaming the update: see <a href="../reference/troubleshooting.html">Troubleshooting</a>.</p>
+<p><strong>The RPI-RP2 drive never appears.</strong> Hold the USB select button down <em>before</em> the cable goes in and keep holding it — that is the whole trick. If it still does not appear, try another USB cable: a charge-only cable powers the board but carries no data, so the board is alive and the computer cannot see it.</p>
     </article>
     <nav class="pager-row"><a class="pager prev" href="../getting-started/platforms.html"><span class="pager-label">Previous</span><span class="pager-title">Choose your platform</span></a><a class="pager next" href="../ftc/install.html"><span class="pager-label">Next</span><span class="pager-title">Install the driver</span></a></nav>
     <footer class="page-footer">
