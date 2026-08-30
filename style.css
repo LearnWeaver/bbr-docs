@@ -243,6 +243,13 @@ a:hover { text-decoration: underline; }
 .prose h4 { font-size: 1rem; font-weight: 650; margin: 1.5rem 0 .5rem; }
 
 .prose p, .prose ul, .prose ol { margin: 0 0 1.1rem; }
+
+/* Images are product shots on a white ground: never wider than the column,
+   and given a border so the white does not bleed into the page. */
+.prose img {
+  max-width: 100%; height: auto; display: block;
+  margin: 0 0 1.1rem; border-radius: 8px; border: 1px solid var(--border);
+}
 .prose li { margin-bottom: .4rem; }
 .prose li > ul, .prose li > ol { margin: .4rem 0 0; }
 .prose strong { font-weight: 650; color: var(--text); }

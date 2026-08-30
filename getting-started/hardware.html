@@ -132,6 +132,7 @@
 <p>If a heading or pose call <strong>fails</strong> — an exception in Java, <code>false</code> or <code>NAN</code> in C++ — that means the board cannot give you a trustworthy answer: a gyro that isn&rsquo;t responding, or one that hasn&rsquo;t settled yet. It fails rather than returning zero on purpose. See <a href="../reference/troubleshooting.html">Troubleshooting</a>.</p>
 </div>
 <h2 id="ports-and-numbering">Ports and numbering<a class="headerlink" href="#ports-and-numbering" title="Permanent link">#</a></h2>
+<p><img alt="The board's ports as they are labelled on the silkscreen: E0-E3 for encoders, S0-S3 for sensors, 0-3 for the digital outputs, and HUB for the cable back to your robot controller." src="../images/BBRDigitalExpander.png" /></p>
 <p>Everything is numbered <strong>0 to 3</strong>, and each group is numbered independently:</p>
 <ul>
 <li><strong>Encoder channels 0–3</strong> — quadrature by default; each can be switched to read a pulse-width (PWM) absolute encoder instead. On the odometry variant, <strong>two of these carry the localizer&rsquo;s tracking pods</strong> — you choose which two, and they must stay in quadrature mode. See <a href="../guides/odometry.html#which-encoder-ports-the-pods-use">Which encoder ports the pods use</a>.</li>
