@@ -102,7 +102,7 @@
 <p>You configure a condition <strong>once</strong>. The board watches for it continuously, at a speed your loop cannot match, and reports the answer on a pin. Your code reads that pin as an ordinary digital input.</p>
 <p>The result: no I2C traffic, no BBR driver on the hot path, no loop cost, and the condition keeps being enforced even if your code crashes or never runs.</p>
 <h2 id="setting-one-up">Setting one up<a class="headerlink" href="#setting-one-up" title="Permanent link">#</a></h2>
-<p>Write a setup program. Run it once. It never needs to run again.</p>
+<p>Write a setup routine — an OpMode, a sketch or a script. Run it once. It configures the board, and it never needs to run again.</p>
 <div class="tabs">
 <div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
@@ -226,14 +226,14 @@
 </div>
 <p>All of them take an output number 0–3, apply sensible debounce and hysteresis for you, and <strong>save to flash automatically</strong>. See <a href="heading.html">Heading (IMU)</a> for what the heading trigger does at the ±180 seam.</p>
 <h2 id="set-up-once-never-every-loop">Set up once — never every loop<a class="headerlink" href="#set-up-once-never-every-loop" title="Permanent link">#</a></h2>
-<p>Saving to flash is what makes a trigger survive power-off. It is also why these helpers belong in a setup program you run once, or behind a button press, and <strong>never in your main loop</strong>.</p>
+<p>Saving to flash is what makes a trigger survive power-off. It is also why these helpers belong in a setup routine you run once, or behind a button press, and <strong>never in your main loop</strong>.</p>
 <p>Calling one repeatedly with the <em>same</em> values is harmless. The board compares the new configuration against what it already holds and, finding no difference, does nothing at all — no write, no delay.</p>
 <p>Calling one repeatedly with <em>changing</em> values — a threshold following a stick, a heading re-armed every loop — is a different story. Three things go wrong, in the order you will notice them:</p>
 <p><strong>Your loop slows to a crawl.</strong> The board accepts at most one real save per second and rejects anything sooner. Both drivers wait that limit out rather than failing, so every call blocks for up to a full second. A loop that should run at 50 Hz runs at 1 Hz.</p>
 <p><strong>The board stops sensing while it writes.</strong> A save halts sampling for up to 500 ms. During that window outputs hold their last state, debounce counters stop, and anything that passes a sensor is never seen — including in <code>LATCHED</code> mode, which is exactly the case you chose latching to catch. Nothing on the pin indicates this happened.</p>
 <p><strong>Eventually the flash wears out.</strong> Endurance is roughly 100,000 erase cycles per sector, and the board alternates two sectors, so about 200,000 saves. At the one-per-second ceiling that is around 55 hours of continuous saving. Not a number you hit by accident, but well within a season of a robot left powered on the bench with a save in the loop.</p>
 <div class="hint hint-danger">
-<p>Keep <code>teachColor()</code> and every <code>triggerOn…</code> / <code>triggerWhen…</code> helper out of your main loop. Run them in a setup program, or on a button press with edge detection so holding the button doesn&rsquo;t re-fire them.</p>
+<p>Keep <code>teachColor()</code> and every <code>triggerOn…</code> / <code>triggerWhen…</code> helper out of your main loop. Run them in a setup routine, or on a button press with edge detection so holding the button doesn&rsquo;t re-fire them.</p>
 </div>
 <h3 id="changing-a-trigger-at-runtime">Changing a trigger at runtime<a class="headerlink" href="#changing-a-trigger-at-runtime" title="Permanent link">#</a></h3>
 <p>If a threshold genuinely has to move while the robot is running, use the advanced tier, which does <strong>not</strong> auto-save:</p>

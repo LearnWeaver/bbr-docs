@@ -208,7 +208,7 @@
 <p>A setup helper is being called inside your main loop with values that keep changing.</p>
 <p>Teaching and the trigger helpers save to flash, and the board accepts only one save per second. Both drivers wait that limit out rather than failing, so each call costs up to a full second.</p>
 <ul>
-<li>Move the call into a setup program, or behind a button press with edge detection so holding the button doesn&rsquo;t re-fire it every loop.</li>
+<li>Move the call into a setup routine, or behind a button press with edge detection so holding the button doesn&rsquo;t re-fire it every loop.</li>
 <li>If the value genuinely has to change at runtime, use advanced-tier <code>configureOutput()</code>, which changes the trigger in RAM without touching flash, and save only when you want it to persist.</li>
 </ul>
 <p>Repeating a call with <strong>unchanged</strong> values is not the cause — the board recognises there is nothing new to store and skips the write. It is changing values every loop that costs you.</p>
