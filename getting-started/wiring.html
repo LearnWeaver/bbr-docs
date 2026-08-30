@@ -101,6 +101,7 @@
 <p><strong>This page needs the physical connector details filled in before publishing.</strong> The electrical facts below are taken from the board design and are correct. The silkscreen labels, connector types, and cable part numbers are not yet documented here — do not guess them.</p>
 </div>
 <h2 id="the-one-connection-that-matters">The one connection that matters<a class="headerlink" href="#the-one-connection-that-matters" title="Permanent link">#</a></h2>
+<p><img alt="The Expander mounted on a robot chassis rail, with encoder cables running into the E0 and E1 ports and a single cable from the HUB port back to the robot controller." src="../images/BBRDigitalExpander-wiring.png" /></p>
 <p>The Expander connects over a <strong>single I2C bus</strong>. That one connection carries power and data for the whole board — all four sensors included.</p>
 <p>The board answers at 7-bit address <code>0x38</code> by default. The address jumpers move it to <code>0x39</code>, <code>0x3A</code> or <code>0x3B</code>, which is how you put more than one Expander on the same bus.</p>
 <h2 id="power">Power<a class="headerlink" href="#power" title="Permanent link">#</a></h2>
