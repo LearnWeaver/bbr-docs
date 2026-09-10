@@ -119,6 +119,35 @@ the colour has passed. The pin is only cleared when the code asks for it with
 of a second, far too briefly for a loop to be guaranteed to catch it, and the
 output still comes on and stays on. See
 <a href="../guides/digital-outputs.html#latching">Latching</a> for the code.</p>
+<h2 id="latching-a-plain-digital-sensor">Latching a plain digital sensor<a class="headerlink" href="#latching-a-plain-digital-sensor" title="Permanent link">#</a></h2>
+<figure class="video">
+<div class="video-frame">
+<iframe allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube-nocookie.com/embed/zSe9ei4IOoM" title="Embedded video"></iframe>
+</div>
+<figcaption>
+<p>BBR Digital Expander Latching — Digital Sensor: a high/low sensor on an encoder
+port latching a digital output.</p>
+</figcaption>
+</figure>
+<p>The sensor here is not a colour or distance sensor on a sensor port — it is an
+ordinary digital sensor whose output is simply high or low, plugged into an
+<strong>encoder</strong> port&rsquo;s A line, latching a digital output when it changes state.</p>
+<p>Worth knowing before you copy it: the board has no digital-input trigger source.
+An output can watch a sensor class, an encoder count or the IMU heading, and
+that is the list. What makes this work is that with the B line left unconnected
+and idle, the quadrature decoder stops accumulating and its count simply follows
+A&rsquo;s level — so an ordinary encoder-count trigger becomes a digital-input
+trigger, and <code>LATCHED</code> mode works on it like anything else.</p>
+<p>Two things that catch people out:</p>
+<ul>
+<li><strong>Which count means &ldquo;triggered&rdquo; is not fixed.</strong> It depends on the level the
+  input happened to be at when the channel was last reset, so read the count in
+  both states once and set the window from what you see, rather than assuming
+  it is <code>1</code>.</li>
+<li><strong>The B line must sit still.</strong> Anything driving B turns the count back into a
+  real quadrature count and the trigger stops meaning anything.</li>
+</ul>
+<p>A native digital-input source would remove both caveats, and is on the list.</p>
     </article>
     <nav class="pager-row"><a class="pager prev" href="../guides/odometry.html"><span class="pager-label">Previous</span><span class="pager-title">Odometry and pose</span></a><a class="pager next" href="../reference/troubleshooting.html"><span class="pager-label">Next</span><span class="pager-title">Troubleshooting</span></a></nav>
     <footer class="page-footer">
@@ -130,6 +159,8 @@ output still comes on and stays on. See
     <p class="toc-title">On this page</p>
 <ul class="toc-list">
 <li><a href="#latching-a-colour-trigger">Latching a colour trigger</a>
+</li>
+<li><a href="#latching-a-plain-digital-sensor">Latching a plain digital sensor</a>
 </li>
 </ul>
   </aside>
