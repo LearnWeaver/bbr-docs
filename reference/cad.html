@@ -106,30 +106,6 @@ board in your hand.</p>
 <p><a href="../downloads/BBR-Digital-Expander-step.zip"><strong>Download the STEP model</strong></a> (ZIP,
 about 5 MB — the STEP inside is around 35 MB)</p>
 </div>
-<p>STEP (<code>.step</code>, ISO 10303) imports into every CAD package teams actually use —
-Onshape, Fusion, SolidWorks, Inventor, FreeCAD — with no conversion. Unzip it
-first; CAD tools want the <code>.step</code> itself, not the archive.</p>
-<h2 id="what-it-is-for">What it is for<a class="headerlink" href="#what-it-is-for" title="Permanent link">#</a></h2>
-<p>The model is a <strong>mechanical reference</strong>, not a manufacturing document. Use it to
-work out where the board goes and what will hit what:</p>
-<ul>
-<li>Mounting positions and hole locations.</li>
-<li>Clearance for the connectors and the cables that plug into them — measure
-  against the model rather than the bare PCB outline, because a JST lead needs
-  more room than the connector body does.</li>
-<li>Interference checks against the rest of your robot.</li>
-</ul>
-<p>Take dimensions from the model itself in your own CAD package. Numbers copied
-out of a document drift out of date; the model does not.</p>
-<h2 id="what-it-is-not">What it is not<a class="headerlink" href="#what-it-is-not" title="Permanent link">#</a></h2>
-<p>It does not describe the electronics. There is no schematic, no netlist and no
-board file here, and the geometry is not a substitute for the pinout — for
-which pin does what, see <a href="../getting-started/hardware.html">What you have</a> and
-the wiring guide.</p>
-<p>Component bodies in the model are representative shapes for fit checking. If
-you need a critical dimension for something that must not touch the board —
-a tolerance stack that ends in millimetres of margin — measure the real board
-as well.</p>
     </article>
     <nav class="pager-row"><a class="pager prev" href="../reference/videos.html"><span class="pager-label">Previous</span><span class="pager-title">Example videos</span></a><a class="pager next" href="../reference/troubleshooting.html"><span class="pager-label">Next</span><span class="pager-title">Troubleshooting</span></a></nav>
     <footer class="page-footer">
@@ -138,13 +114,7 @@ as well.</p>
   </main>
 
   <aside class="onpage" aria-label="On this page">
-    <p class="toc-title">On this page</p>
-<ul class="toc-list">
-<li><a href="#what-it-is-for">What it is for</a>
-</li>
-<li><a href="#what-it-is-not">What it is not</a>
-</li>
-</ul>
+    
   </aside>
 </div>
 
