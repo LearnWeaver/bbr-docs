@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CAD model · BBR Digital Expander</title>
+<meta name="description" content="CAD model A STEP model of the Expander, for designing a mount, checking clearance around the connectors, or dropping the board into a robot assembly before you have the board in yo">
+<link rel="canonical" href="https://expander.buildingblockrobotics.com/reference/cad.html">
+<link rel="stylesheet" href="../style.css">
+<script>
+  // Set the theme before first paint so the page never flashes the wrong one.
+  try {
+    var t = localStorage.getItem('bbr-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
+</head>
+<body class="page">
+
+<a class="skip" href="#content">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-btn" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <a class="brand" href="../index.html">
+    <span class="brand-name">BBR Digital Expander</span>
+    <span class="brand-tagline">Documentation</span>
+  </a>
+  <div class="search" role="search">
+    <input type="search" id="search-input" placeholder="Search"
+           autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <kbd class="search-key">/</kbd>
+    <div id="search-results" class="search-results" hidden></div>
+  </div>
+  <button class="theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.5"/>
+      <g class="rays"><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.4 4.4l2.1 2.1M17.5 17.5l2.1 2.1M19.6 4.4l-2.1 2.1M6.5 17.5l-2.1 2.1"/></g>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>
+    </svg>
+  </button>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <nav aria-label="Documentation">
+      <ul class="nav-list">
+<li><a href="../index.html">BBR Digital Expander</a></li>
+</ul>
+<p class="nav-group">Getting started</p>
+<ul class="nav-list">
+<li><a href="../getting-started/hardware.html">What you have</a></li>
+<li><a href="../getting-started/wiring.html">Wiring it up</a></li>
+<li><a href="../getting-started/platforms.html">Choose your platform</a></li>
+<li><a href="../getting-started/firmware.html">Updating the firmware</a></li>
+</ul>
+<p class="nav-group">FTC (Java)</p>
+<ul class="nav-list">
+<li><a href="../ftc/install.html">Install the driver</a></li>
+<li><a href="../ftc/first-opmode.html">Your first OpMode</a></li>
+<li><a href="../ftc/api.html">Java API summary</a></li>
+<li><a href="../ftc/examples.html">Example OpModes</a></li>
+</ul>
+<p class="nav-group">Arduino (C++)</p>
+<ul class="nav-list">
+<li><a href="../arduino/install.html">Install the library</a></li>
+<li><a href="../arduino/first-sketch.html">Your first sketch</a></li>
+<li><a href="../arduino/api.html">Arduino API summary</a></li>
+<li><a href="../arduino/examples.html">Example sketches</a></li>
+</ul>
+<p class="nav-group">Raspberry Pi (Python)</p>
+<ul class="nav-list">
+<li><a href="../raspberry-pi/install.html">Install the driver</a></li>
+<li><a href="../raspberry-pi/first-script.html">Your first script</a></li>
+<li><a href="../raspberry-pi/api.html">Python API summary</a></li>
+<li><a href="../raspberry-pi/examples.html">Example scripts</a></li>
+</ul>
+<p class="nav-group">Guides</p>
+<ul class="nav-list">
+<li><a href="../guides/encoders.html">Encoders</a></li>
+<li><a href="../guides/colour.html">Colour sensors</a></li>
+<li><a href="../guides/distance.html">Distance sensors</a></li>
+<li><a href="../guides/digital-outputs.html">Digital outputs and triggers</a></li>
+<li><a href="../guides/heading.html">Heading (IMU)</a></li>
+<li><a href="../guides/odometry.html">Odometry and pose</a></li>
+</ul>
+<p class="nav-group">Reference</p>
+<ul class="nav-list">
+<li><a href="../reference/videos.html">Example videos</a></li>
+<li><a href="../reference/cad.html" class="active">CAD model</a></li>
+<li><a href="../reference/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+    </nav>
+  </aside>
+
+  <main id="content" class="content">
+    <article class="prose">
+      <h1 id="cad-model">CAD model<a class="headerlink" href="#cad-model" title="Permanent link">#</a></h1>
+<p>A STEP model of the Expander, for designing a mount, checking clearance around
+the connectors, or dropping the board into a robot assembly before you have the
+board in your hand.</p>
+<div class="hint hint-info">
+<p><a href="../downloads/BBR-Digital-Expander-step.zip"><strong>Download the STEP model</strong></a> (ZIP,
+about 5 MB — the STEP inside is around 35 MB)</p>
+</div>
+<p>STEP (<code>.step</code>, ISO 10303) imports into every CAD package teams actually use —
+Onshape, Fusion, SolidWorks, Inventor, FreeCAD — with no conversion. Unzip it
+first; CAD tools want the <code>.step</code> itself, not the archive.</p>
+<h2 id="what-it-is-for">What it is for<a class="headerlink" href="#what-it-is-for" title="Permanent link">#</a></h2>
+<p>The model is a <strong>mechanical reference</strong>, not a manufacturing document. Use it to
+work out where the board goes and what will hit what:</p>
+<ul>
+<li>Mounting positions and hole locations.</li>
+<li>Clearance for the connectors and the cables that plug into them — measure
+  against the model rather than the bare PCB outline, because a JST lead needs
+  more room than the connector body does.</li>
+<li>Interference checks against the rest of your robot.</li>
+</ul>
+<p>Take dimensions from the model itself in your own CAD package. Numbers copied
+out of a document drift out of date; the model does not.</p>
+<h2 id="what-it-is-not">What it is not<a class="headerlink" href="#what-it-is-not" title="Permanent link">#</a></h2>
+<p>It does not describe the electronics. There is no schematic, no netlist and no
+board file here, and the geometry is not a substitute for the pinout — for
+which pin does what, see <a href="../getting-started/hardware.html">What you have</a> and
+the wiring guide.</p>
+<p>Component bodies in the model are representative shapes for fit checking. If
+you need a critical dimension for something that must not touch the board —
+a tolerance stack that ends in millimetres of margin — measure the real board
+as well.</p>
+    </article>
+    <nav class="pager-row"><a class="pager prev" href="../reference/videos.html"><span class="pager-label">Previous</span><span class="pager-title">Example videos</span></a><a class="pager next" href="../reference/troubleshooting.html"><span class="pager-label">Next</span><span class="pager-title">Troubleshooting</span></a></nav>
+    <footer class="page-footer">
+      <a href="https://github.com/LearnWeaver/BBRDigitalExpander/edit/main/docs/gitbook/reference/cad.md" rel="noopener">Edit this page on GitHub</a>
+    </footer>
+  </main>
+
+  <aside class="onpage" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+<ul class="toc-list">
+<li><a href="#what-it-is-for">What it is for</a>
+</li>
+<li><a href="#what-it-is-not">What it is not</a>
+</li>
+</ul>
+  </aside>
+</div>
+
+<div class="scrim" hidden></div>
+<script src="../app.js" defer></script>
+</body>
+</html>
