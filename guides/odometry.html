@@ -299,7 +299,7 @@ way round is not a subtle failure — the robot will think forward is sideways.<
 
 </div>
 </div>
-<p>The robot must be <strong>still</strong> for this. It takes one to two seconds.</p>
+<p>The robot must be <strong>still</strong> for this. It takes one to two seconds. If it moves, the call returns <code>false</code> instead of a fresh calibration: the pose is still zeroed and the localizer still starts, using the previous gyro bias, so a bump never ends the match.</p>
 <h2 id="reading-the-pose">Reading the pose<a class="headerlink" href="#reading-the-pose" title="Permanent link">#</a></h2>
 <div class="tabs">
 <div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>

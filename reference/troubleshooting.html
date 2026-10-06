@@ -224,7 +224,28 @@
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
 <h3 id="readings-freeze-mid-match">Readings freeze mid-match<a class="headerlink" href="#readings-freeze-mid-match" title="Permanent link">#</a></h3>
 <p>Check <code>isDataFresh()</code>. When a read can&rsquo;t reach the device the driver serves the last known good value rather than throwing, so a stale reading looks like a working one that stopped changing.</p>
-<p>A genuine wiring fault — a sustained streak of failures — throws a <code>BBRException</code> naming it. A brief blip does not.</p>
+<p>A sustained streak of failures logs a warning to the Robot Controller log and keeps serving the old value, so the OpMode keeps running. Check <code>isDataFresh()</code> before acting on a reading. To make that streak throw instead while you track the fault down, call <code>exp.setReadFailurePolicy(BBRDigitalExpander.ReadFailurePolicy.STOP_OPMODE)</code>.</p>
+<h3 id="did-the-board-reset-or-did-the-bus-drop-out">Did the board reset, or did the bus drop out?<a class="headerlink" href="#did-the-board-reset-or-did-the-bus-drop-out" title="Permanent link">#</a></h3>
+<p>On firmware 1.1.0 and later, <code>readDiagnostics()</code> answers it in one call. Read it when the OpMode starts and again after a dropout:</p>
+<div class="highlight"><pre><span></span><code><span class="n">BBRDigitalExpander</span><span class="p">.</span><span class="na">Diagnostics</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">readDiagnostics</span><span class="p">();</span>
+<span class="n">telemetry</span><span class="p">.</span><span class="na">addData</span><span class="p">(</span><span class="s">"last reset"</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="na">resetCause</span><span class="p">);</span>
+<span class="n">telemetry</span><span class="p">.</span><span class="na">addData</span><span class="p">(</span><span class="s">"resets since power-on"</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="na">resetsSincePowerOn</span><span class="p">);</span>
+<span class="n">telemetry</span><span class="p">.</span><span class="na">addData</span><span class="p">(</span><span class="s">"bus recoveries"</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="na">i2cRecoveryCount</span><span class="p">);</span>
+<span class="n">telemetry</span><span class="p">.</span><span class="na">addData</span><span class="p">(</span><span class="s">"bus arbitration lost"</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="na">i2cArbitrationLostCount</span><span class="p">);</span>
+</code></pre></div>
+
+<ul>
+<li><strong><code>resetsSincePowerOn</code> above 0 with <code>WATCHDOG</code>:</strong> the firmware hung and restarted. The driver also logs <code>expander REBOOTED</code>. On 1.1.0 bus noise could trigger this; <a href="../getting-started/firmware.html">update to 1.1.1</a>, which fixes it.</li>
+<li><strong><code>POWER_ON</code> mid-match, with the Hub still running:</strong> the board lost power briefly. Check the I2C cable&rsquo;s power pins and connectors.</li>
+<li><strong>No reset, but the bus counters climb:</strong> the board kept running and the I2C link itself was disturbed. <code>i2cArbitrationLostCount</code> going up usually means electrical noise on the cable. Route the I2C cable away from motor and motor-controller wiring, and check whether the errors follow particular encoder cables (unplug them one at a time).</li>
+</ul>
+<h3 id="the-hub-stops-talking-to-the-board-until-it-is-power-cycled">The Hub stops talking to the board until it is power-cycled<a class="headerlink" href="#the-hub-stops-talking-to-the-board-until-it-is-power-cycled" title="Permanent link">#</a></h3>
+<p>If readings stop and only a robot power cycle brings them back, the Hub&rsquo;s I2C port has given up after too many corrupted transfers. First <a href="../getting-started/firmware.html">update to 1.1.1</a>, so the board itself never holds the bus. Then reduce what corrupts the transfers:</p>
+<ul>
+<li><strong>Route the I2C cable away from motor and motor-controller wiring</strong>, and away from the encoder cables of the noisiest motors.</li>
+<li><strong>Read less often.</strong> Every transaction is another chance to be hit by noise. Read once per loop, and only what you use.</li>
+<li><strong>Watch the counters.</strong> <code>i2cArbitrationLostCount</code> and <code>i2cRecoveryCount</code> from <code>readDiagnostics()</code> climbing while a mechanism runs points at that mechanism&rsquo;s wiring.</li>
+</ul>
 <h3 id="everything-breaks-when-the-opmode-stops">Everything breaks when the OpMode stops<a class="headerlink" href="#everything-breaks-when-the-opmode-stops" title="Permanent link">#</a></h3>
 <p>Expected, and already handled. The SDK tears the I2C device down at stop, so a read already in flight comes back empty. The driver raises <code>BBRTransportException</code> for that case.</p>
 <p>If you have a polling loop, catch it and <code>break</code> — the IMU and localizer examples show the pattern. It means &ldquo;the read never reached the device&rdquo;, not &ldquo;something is broken&rdquo;.</p>
@@ -292,6 +313,8 @@
 <li><a href="#platform-specific">Platform-specific</a>
 <ul class="toc-sub">
 <li><a href="#readings-freeze-mid-match">Readings freeze mid-match</a></li>
+<li><a href="#did-the-board-reset-or-did-the-bus-drop-out">Did the board reset, or did the bus drop out?</a></li>
+<li><a href="#the-hub-stops-talking-to-the-board-until-it-is-power-cycled">The Hub stops talking to the board until it is power-cycled</a></li>
 <li><a href="#everything-breaks-when-the-opmode-stops">Everything breaks when the OpMode stops</a></li>
 <li><a href="#every-call-returns-false-after-one-failure">Every call returns false after one failure</a></li>
 <li><a href="#the-sketch-compiles-but-does-nothing">The sketch compiles but does nothing</a></li>

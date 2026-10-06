@@ -203,6 +203,10 @@ once, or on a button press, never in a match loop. See
 <td><code>FORWARD</code> or <code>REVERSE</code> for one channel</td>
 </tr>
 <tr>
+<td><code>setEncoderVelocityWindowMs(ms)</code></td>
+<td>Window for all encoder velocities, 1–255 ms (default 25): longer is smoother, shorter reacts faster</td>
+</tr>
+<tr>
 <td><code>clearOutputLatch(output)</code></td>
 <td>Un-latch one output</td>
 </tr>
@@ -232,7 +236,7 @@ once, or on a button press, never in a match loop. See
 </tr>
 <tr>
 <td><code>calibrateGyro()</code></td>
-<td>— (robot must be still, ~1 s)</td>
+<td><code>boolean</code> — <code>false</code> if the robot moved; the previous bias is kept (~1 s, keep it still)</td>
 </tr>
 <tr>
 <td><code>getPose()</code></td>
@@ -241,6 +245,10 @@ once, or on a button press, never in a match loop. See
 <tr>
 <td><code>setPose(pose)</code></td>
 <td>—</td>
+</tr>
+<tr>
+<td><code>resetLocalizerAndCalibrateImu()</code></td>
+<td><code>boolean</code> — <code>false</code> if the robot moved; the pose still resets and the localizer still starts</td>
 </tr>
 <tr>
 <td><code>waitForLocalizerReady(timeoutMs)</code></td>
@@ -267,6 +275,10 @@ once, or on a button press, never in a match loop. See
 <td>Which way that channel counts</td>
 </tr>
 <tr>
+<td><code>getEncoderVelocityWindowMs()</code></td>
+<td>Current encoder velocity window in ms</td>
+</tr>
+<tr>
 <td><code>setEncoderInvertMask(mask)</code></td>
 <td>All four at once; bit per channel, set = inverted</td>
 </tr>
@@ -284,7 +296,7 @@ once, or on a button press, never in a match loop. See
 </tr>
 </tbody>
 </table>
-<h2 id="board-identity">Board identity<a class="headerlink" href="#board-identity" title="Permanent link">#</a></h2>
+<h2 id="board-identity-and-health">Board identity and health<a class="headerlink" href="#board-identity-and-health" title="Permanent link">#</a></h2>
 <table>
 <thead>
 <tr>
@@ -293,6 +305,10 @@ once, or on a button press, never in a match loop. See
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>getFirmwareVersion()</code></td>
+<td>Firmware on the board, e.g. <code>"1.1.1"</code></td>
+</tr>
 <tr>
 <td><code>getCapabilities()</code></td>
 <td>Capability bits</td>
@@ -304,6 +320,18 @@ once, or on a button press, never in a match loop. See
 <tr>
 <td><code>isDataFresh()</code></td>
 <td>Did the last read actually reach the device</td>
+</tr>
+<tr>
+<td><code>getRebootCount()</code></td>
+<td>Reboots seen since the Robot Controller app started</td>
+</tr>
+<tr>
+<td><code>readDiagnostics()</code></td>
+<td>Why the board last reset, and I2C bus-trouble counters (firmware 1.1.0+)</td>
+</tr>
+<tr>
+<td><code>setReadFailurePolicy(policy)</code></td>
+<td><code>KEEP_RUNNING</code> (default) or <code>STOP_OPMODE</code> when reads keep failing</td>
 </tr>
 </tbody>
 </table>
@@ -318,7 +346,9 @@ once, or on a button press, never in a match loop. See
 <p><strong>Commands are idempotent.</strong> Every command carries a token, so an I2C retry cannot execute it twice.</p>
 <p><strong>Config writes are verified by readback.</strong> The bus layer never NAKs, so an out-of-range value would otherwise be silently ignored.</p>
 <p><strong>IMU access throws when the gyro cannot be trusted</strong> rather than returning zeros, because a heading of <code>0.00</code> that never changes is indistinguishable from working software.</p>
-<p><strong>Failed reads serve the last known good value.</strong> When a read cannot reach the device — or, for the localizer, when three reads in a row fail their checksum — the driver returns the previous snapshot and <code>isDataFresh()</code> goes false, rather than throwing. This is what stops a normal OpMode shutdown, or a burst of bus noise mid-match, from detonating your loop. A genuine wiring fault — a long streak of failures — still throws.</p>
+<p><strong>Failed reads serve the last known good value.</strong> When a read cannot reach the device — or, for the localizer, when three reads in a row fail their checksum — the driver returns the previous snapshot and <code>isDataFresh()</code> goes false, rather than throwing. This is what stops a normal OpMode shutdown, or a burst of bus noise mid-match, from detonating your loop. A long streak of failures (over half a second) logs one warning to the Robot Controller log and keeps going, so <strong>anything that acts on a reading, like a flywheel controller, should check <code>isDataFresh()</code> first</strong>. For bench testing, <code>setReadFailurePolicy(ReadFailurePolicy.STOP_OPMODE)</code> makes that streak throw instead.</p>
+<p><strong>Telemetry is checksummed on firmware 1.1.0 and later.</strong> Encoder, sensor and localizer readings that arrive damaged are re-read, so a corrupted value never reaches your code looking real. Older firmware has no checksum on the encoder and sensor block.</p>
+<p><strong>Reboots are logged.</strong> If the board restarts, the driver notices its uptime clock jump backwards, logs <code>expander REBOOTED</code> with the reason (firmware 1.1.0+), and counts it in <code>getRebootCount()</code>.</p>
 <p><strong><code>BBRTransportException</code> means the read never reached the device</strong>, not that anything is broken. The SDK tears the I2C device down when an OpMode stops, so a read already in flight comes back empty. A polling loop should catch it and <code>break</code>.</p>
     </article>
     <nav class="pager-row"><a class="pager prev" href="../ftc/first-opmode.html"><span class="pager-label">Previous</span><span class="pager-title">Your first OpMode</span></a><a class="pager next" href="../ftc/examples.html"><span class="pager-label">Next</span><span class="pager-title">Example OpModes</span></a></nav>
@@ -342,7 +372,7 @@ once, or on a button press, never in a match loop. See
 </li>
 <li><a href="#mounting-and-direction">Mounting and direction</a>
 </li>
-<li><a href="#board-identity">Board identity</a>
+<li><a href="#board-identity-and-health">Board identity and health</a>
 </li>
 <li><a href="#advanced-tier">Advanced tier</a>
 </li>

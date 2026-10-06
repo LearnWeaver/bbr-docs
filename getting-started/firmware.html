@@ -104,24 +104,31 @@
 <p>Firmware is published as a <strong>UF2</strong> on the driver repository&rsquo;s releases page:</p>
 <p><strong><a href="https://github.com/BuildingBlockRobotics/DigitalExpander/releases/latest">Latest firmware release</a></strong></p>
 <p>A UF2 is the Raspberry Pi Foundation&rsquo;s drag-and-drop firmware format. There is nothing to install to use one — the board appears as a USB drive and you copy the file onto it.</p>
+<h2 id="whats-new-in-111">What&rsquo;s new in 1.1.1<a class="headerlink" href="#whats-new-in-111" title="Permanent link">#</a></h2>
+<p>Update if your robot sees I2C dropouts, or the driver logs <code>expander REBOOTED</code>.</p>
+<ul>
+<li><strong>No more hangs under bus noise.</strong> Electrical noise on the I2C cable could make 1.1.0 freeze for half a second and restart, holding the bus while it did. 1.1.1 fixes the cause.</li>
+<li><strong>Faster recovery from noise.</strong> When a noise spike puts the board out of step with the Hub, it now lets go of the bus within about 1 ms instead of 50.</li>
+<li><strong>No lost read after a pause.</strong> The first read after the Hub has been quiet for a while is no longer at risk of being reset.</li>
+<li><strong>Checksummed telemetry and diagnostics</strong> (new since 1.0.0, protocol 1.2): encoder and sensor readings are CRC-checked like the pose, and the board reports why it last reset and how often its I2C link has been disturbed.</li>
+</ul>
 <h2 id="which-version-am-i-on">Which version am I on?<a class="headerlink" href="#which-version-am-i-on" title="Permanent link">#</a></h2>
 <p>Ask the board rather than guessing. Every driver prints it:</p>
 <div class="tabs">
 <div class="tab-btns" role="tablist"><button type="button" class="tab-btn" role="tab" data-tab="FTC (Java)" aria-selected="true">FTC (Java)</button><button type="button" class="tab-btn" role="tab" data-tab="Arduino (C++)">Arduino (C++)</button><button type="button" class="tab-btn" role="tab" data-tab="Raspberry Pi (Python)">Raspberry Pi (Python)</button></div>
 <div class="tab-panel" data-tab="FTC (Java)" role="tabpanel">
-<p>The FTC driver does not expose the firmware version — it reads the identity block at startup but only surfaces <code>getProtocolMinor()</code> and <code>getCapabilities()</code> from it:</p>
-<div class="highlight"><pre><span></span><code><span class="n">telemetry</span><span class="p">.</span><span class="na">addData</span><span class="p">(</span><span class="s">"protocol"</span><span class="p">,</span><span class="w"> </span><span class="s">"1.%d"</span><span class="p">,</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">getProtocolMinor</span><span class="p">());</span>
+<div class="highlight"><pre><span></span><code><span class="n">telemetry</span><span class="p">.</span><span class="na">addData</span><span class="p">(</span><span class="s">"firmware"</span><span class="p">,</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">getFirmwareVersion</span><span class="p">());</span><span class="w">   </span><span class="c1">// 1.1.1</span>
+<span class="n">telemetry</span><span class="p">.</span><span class="na">addData</span><span class="p">(</span><span class="s">"protocol"</span><span class="p">,</span><span class="w"> </span><span class="s">"1.%d"</span><span class="p">,</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="na">getProtocolMinor</span><span class="p">());</span>
 </code></pre></div>
 
-<p>To read the firmware triplet itself, put the board on an Arduino or a Raspberry Pi for a moment and use the tab beside this one. The board is the same board whatever is talking to it, so the answer is the same.</p>
 </div>
 <div class="tab-panel" data-tab="Arduino (C++)" hidden="hidden" role="tabpanel">
-<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="p">.</span><span class="n">printDeviceInfo</span><span class="p">(</span><span class="n">Serial</span><span class="p">);</span><span class="w">   </span><span class="c1">// firmware    1.0.0</span>
+<div class="highlight"><pre><span></span><code><span class="n">expander</span><span class="p">.</span><span class="n">printDeviceInfo</span><span class="p">(</span><span class="n">Serial</span><span class="p">);</span><span class="w">   </span><span class="c1">// firmware    1.1.1</span>
 </code></pre></div>
 
 </div>
 <div class="tab-panel" data-tab="Raspberry Pi (Python)" hidden="hidden" role="tabpanel">
-<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>examples/device_info.py<span class="w">     </span><span class="c1"># firmware    1.0.0</span>
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>examples/device_info.py<span class="w">     </span><span class="c1"># firmware    1.1.1</span>
 </code></pre></div>
 
 </div>
@@ -135,8 +142,8 @@
 </div>
 <h2 id="copy-the-uf2-across">Copy the UF2 across<a class="headerlink" href="#copy-the-uf2-across" title="Permanent link">#</a></h2>
 <p>Drag the <code>.uf2</code> file onto the RPI-RP2 drive, or:</p>
-<div class="highlight"><pre><span></span><code>cp<span class="w"> </span>bbr-digital-expander-1.0.0.uf2<span class="w"> </span>/Volumes/RPI-RP2/<span class="w">     </span><span class="c1"># macOS</span>
-cp<span class="w"> </span>bbr-digital-expander-1.0.0.uf2<span class="w"> </span>/media/<span class="nv">$USER</span>/RPI-RP2/<span class="w"> </span><span class="c1"># Linux</span>
+<div class="highlight"><pre><span></span><code>cp<span class="w"> </span>bbr-digital-expander-1.1.1.uf2<span class="w"> </span>/Volumes/RPI-RP2/<span class="w">     </span><span class="c1"># macOS</span>
+cp<span class="w"> </span>bbr-digital-expander-1.1.1.uf2<span class="w"> </span>/media/<span class="nv">$USER</span>/RPI-RP2/<span class="w"> </span><span class="c1"># Linux</span>
 </code></pre></div>
 
 <p>The drive disappears on its own as soon as the copy finishes — that is the board rebooting into the new firmware, not an error or an ejection failure. It is back on the I2C bus a moment later.</p>
@@ -158,6 +165,8 @@ cp<span class="w"> </span>bbr-digital-expander-1.0.0.uf2<span class="w"> </span>
     <p class="toc-title">On this page</p>
 <ul class="toc-list">
 <li><a href="#get-the-release">Get the release</a>
+</li>
+<li><a href="#whats-new-in-111">What’s new in 1.1.1</a>
 </li>
 <li><a href="#which-version-am-i-on">Which version am I on?</a>
 </li>

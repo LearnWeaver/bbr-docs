@@ -169,7 +169,7 @@
 </div>
 <p>This measures the gyro&rsquo;s bias — the small non-zero reading it produces while sitting still, which would otherwise accumulate into heading drift.</p>
 <div class="hint hint-danger">
-<p>The robot must be genuinely still. Not &ldquo;mostly still&rdquo;, not &ldquo;someone is holding it&rdquo;. If the board detects movement it refuses rather than storing a bad bias, because a wrong bias is worse than an old one.</p>
+<p>The robot must be genuinely still. Not &ldquo;mostly still&rdquo;, not &ldquo;someone is holding it&rdquo;. If the board detects movement it refuses rather than storing a bad bias, because a wrong bias is worse than an old one: the call returns <code>false</code> and the previous bias stays in use. Nothing stops your program, so a bump during init costs you a little drift, never the match.</p>
 </div>
 <p>Doing it while the robot sits waiting to start is the natural place for it.</p>
 <h2 id="checking-the-state">Checking the state<a class="headerlink" href="#checking-the-state" title="Permanent link">#</a></h2>

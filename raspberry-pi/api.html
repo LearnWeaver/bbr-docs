@@ -155,7 +155,7 @@
 </tbody>
 </table>
 <p>Every one carries <code>.message</code> and <code>.status</code>, a <code>Status</code> value you can branch on.</p>
-<p><strong>Failed reads serve the last known good value.</strong> When a snapshot read cannot reach the device — or, for the localizer, when three reads in a row fail their checksum — the driver returns the previous snapshot and <code>is_data_fresh()</code> goes false, rather than raising. A bus being torn down, or a burst of noise, should not kill a running program. Fail-loud survives where it matters: a device that has never answered raises <code>TransportError</code>, and a streak still failing after half a second (5+ reads) raises <code>BBRError</code>. The FTC driver behaves identically.</p>
+<p><strong>Failed reads serve the last known good value.</strong> When a snapshot read cannot reach the device — or, for the localizer, when three reads in a row fail their checksum — the driver returns the previous snapshot and <code>is_data_fresh()</code> goes false, rather than raising. A bus being torn down, or a burst of noise, should not kill a running program. Fail-loud survives where it matters: a device that has never answered raises <code>TransportError</code>, and a streak still failing after half a second (5+ reads) raises <code>BBRError</code>. The FTC driver differs here: by default it logs that streak and keeps running, because ending an OpMode mid-match costs more than stale data that <code>isDataFresh()</code> already flags.</p>
 <table>
 <thead>
 <tr>
@@ -304,7 +304,7 @@
 </tr>
 <tr>
 <td><code>calibrate_gyro()</code></td>
-<td>— (robot must be still, ~1 s)</td>
+<td><code>bool</code> — <code>False</code> if the robot moved; the previous bias is kept (~1 s, keep it still)</td>
 </tr>
 <tr>
 <td><code>read_imu()</code></td>
@@ -332,7 +332,7 @@
 </tr>
 <tr>
 <td><code>reset_localizer_and_calibrate_imu()</code></td>
-<td>—</td>
+<td><code>bool</code> — <code>False</code> if the robot moved; the pose still resets and the localizer still starts</td>
 </tr>
 <tr>
 <td><code>set_localizer_params(params)</code> / <code>get_localizer_params()</code></td>
